@@ -1,10 +1,10 @@
 <script setup>
-import Table from '../components/Table.vue'
+import TaskList from '../components/TaskList.vue'
 </script>
  
 <template>
 <div>
-    <Table/>
+    <TaskList/>
 </div>
 </template>
  
