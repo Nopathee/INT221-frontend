@@ -1,15 +1,12 @@
 <script setup>
-import TaskList from "./views/Task.vue";
-import { RouterView } from "vue-router";
+import TaskList from './views/Task.vue'
+import { RouterView } from 'vue-router'
 </script>
- 
-<template>
-<div>
-  <RouterView/>
-  <TaskList></TaskList>
-</div>
-</template>
- 
-<style scoped>
 
-</style>
+<template>
+  <div>
+    <RouterView />
+  </div>
+</template>
+
+<style scoped></style>
