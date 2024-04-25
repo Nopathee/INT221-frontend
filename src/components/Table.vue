@@ -16,11 +16,11 @@
                 <th>Assignees</th>
                 <th>Status</th>
             </tr>
-            <tr v-for="(task,index) in tasks" :key="index">
-                <td class="text-black text-center" >{{ task.taskId }}</td>
-                <td class="text-blue-400" >{{ task.taskTitle }}</td>
-                <td class="text-black">{{ task.assignees }}</td>
-                <td class="bg-green-500/60 bg-left bg-clip-content rounded-full size-1  text-black">{{ task.status }}</td>
+            <tr v-for="(task,index) in tasks" :class="itbkk-item" :key="index">
+                <td class=" text-black text-center" >{{ task.taskId }}</td>
+                <td class="itbkk-title text-blue-400" >{{ task.taskTitle }}</td>
+                <td class="itbkk-assignees text-black">{{ task.assignees }}</td>
+                <td class="itbkk-status bg-green-500/60 bg-left bg-clip-content rounded-full size-1  text-black">{{ task.status }}</td>
             </tr>
         </thead>
     </table>
