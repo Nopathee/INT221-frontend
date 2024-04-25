@@ -1,7 +1,24 @@
 <script setup>
+import { ref } from 'vue';
+
+import Popup from "../components/Popup.vue";
+
+
     defineProps({
-        tasks: Array
+        tasks: Array,
     })
+
+ 
+
+
+
+const showModal = ref(false);
+  const toggleModal = () => {
+  showModal.value = !showModal.value
+  tasks.value = tasks.value.filter((tt)=>tt == task.taskId)
+};
+
+
 </script>
  
 <template>
@@ -18,12 +35,26 @@
             </tr>
             <tr v-for="(task,index) in tasks" :key="index">
                 <td class="text-black text-center" >{{ task.taskId }}</td>
-                <td class="text-blue-400" >{{ task.taskTitle }}</td>
+                <td @click="showModal = true" class="text-blue-400 hover:underline">{{ task.taskTitle }}</td>
                 <td class="text-black">{{ task.assignees }}</td>
-                <td class="bg-green-500/60 bg-left bg-clip-content rounded-full size-1  text-black">{{ task.status }}</td>
+                
+                <td class="bg-green-500/60 bg-left bg-clip-content rounded-full size-1  text-black ">{{ task.status }}</td>
             </tr>
         </thead>
     </table>
+    <Popup :showModal="showModal"
+    @close= "toggleModal"; >
+    
+      <div  class="text-black ">{{tasks[0].taskTitle}}</div>
+    <div class="text-black ">Description</div>
+    <div class="text-black ">Assignees</div>
+    <div class="text-black ">Status</div>
+    <div class="text-black ">Timezone</div>
+    <div class="text-black ">Created On</div>
+    <div class="text-black ">Updated On</div>
+    
+    </Popup>
+   
 </div>
 </template>
  
@@ -31,7 +62,6 @@
 
 
 td {
-
     padding: 24px;
   border:3px black solid;
 
@@ -40,7 +70,7 @@ td {
     padding: 12px;
   border:3px black solid;
  }
-
+ 
 
 
 </style>    
