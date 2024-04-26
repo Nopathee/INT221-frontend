@@ -11,7 +11,7 @@ const toggleModal = () => {
   tasks.value = tasks.value.filter((tt) => tt == task.taskId)
 }
 
-defineEmits(['taskToShow'])
+defineEmits(['showDetail'])
 </script>
 
 <template>
@@ -30,9 +30,7 @@ defineEmits(['taskToShow'])
         <tr v-for="(task, index) in tasks" :key="index">
           <td class="text-black text-center">{{ task.taskId }}</td>
           <td class="text-blue-400 hover:underline">
-            <RouterLink :to="{ name: 'Popup', params: { taskId:task.Id } }">
-              {{ task.taskTitle }}</RouterLink
-            >
+            <button @click="$emit('showDetail',task)">{{ task.taskTitle }}</button>
           </td>
           <td class="text-black">{{ task.assignees }}</td>
 
@@ -44,15 +42,6 @@ defineEmits(['taskToShow'])
         </tr>
       </thead>
     </table>
-    <Popup :showModal="showModal" @close="toggleModal" ;>
-      <div class="text-black">{{ tasks[0].taskTitle }}</div>
-      <div class="text-black">Description</div>
-      <div class="text-black">Assignees</div>
-      <div class="text-black">Status</div>
-      <div class="text-black">Timezone</div>
-      <div class="text-black">Created On</div>
-      <div class="text-black">Updated On</div>
-    </Popup>
   </div>
 </template>
 

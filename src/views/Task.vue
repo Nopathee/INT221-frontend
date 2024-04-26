@@ -4,7 +4,8 @@ import TaskList from '../components/TaskList.vue'
  
 <template>
 <div>
-    <TaskList/>
+    <TaskList/> 
+    
 </div>
 </template>
  

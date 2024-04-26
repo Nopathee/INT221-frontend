@@ -18,6 +18,24 @@ class TaskManagement {
         })
     }
 
+    addTasks(newTasks){
+        newTasks.forEach((newTask) =>
+            this.addTask(newTask.id, newTask.title, newTask.description, newTask.assignees, newTask.status, newTask.createdOn, newTask.updatedOn)
+        )
+    }
+
+    addTask(id,title,description,assignees,status,createdOn,updatedOn) {
+        this.tasks.push({
+            id: id,
+            title: title,
+            description: description,
+            assignees: assignees,
+            status: status,
+            createdOn: createdOn,
+            updatedOn: updatedOn
+        })
+    }
+
     getTasks() {
         return this.tasks
     }
