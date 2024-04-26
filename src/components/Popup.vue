@@ -17,7 +17,7 @@ const showTask = computed(() => {
 
 <template>
   <div class=" flex flex-col p-2 gap-5">
-    <h1 class = "font-semibold text-2xl itbkk-title " ></h1>
+    <h1 class = "font-semibold text-2xl itbkk-title " > {{ props.task ? props.task.title : ''}}</h1>
   </div>
   <hr>
   <div class=" flex">
