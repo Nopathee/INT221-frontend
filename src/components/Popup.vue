@@ -8,7 +8,9 @@ const props = defineProps({
 
 console.log(props.task)
 
-
+const showTask = computed(() => {
+  return props.task
+})
 
 
 </script>

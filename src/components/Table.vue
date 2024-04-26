@@ -11,6 +11,7 @@ const toggleModal = () => {
   tasks.value = tasks.value.filter((tt) => tt == task.taskId)
 }
 
+
 defineEmits(['showDetail'])
 </script>
 
@@ -30,7 +31,7 @@ defineEmits(['showDetail'])
         <tr v-for="(task, index) in tasks" :key="index" class="itbkk-item">
           <td class="text-black text-center">{{ task.taskId }}</td>
           <td class="text-blue-400 hover:underline itbkk-title">
-            <button @click="$emit('showDetail',task)">{{ task.taskTitle }}</button>
+            <button @click="$emit('showDetail',task.taskId)">{{ task.taskTitle }}</button>
           </td>
           <td class="text-black itbkk-assignees" :style="{ fontStyle: task.assignees ? 'normal' : 'italic' }" ç>{{ task.assignees ? task.assignees : "Unassigned" }}</td>
 

@@ -22,8 +22,8 @@ const clearModal = (flagModal) => {
     showModal.value = flagModal
 }
 
-const showDetailModal = async (task) => {
-    selectedTask.value = await taskToShow(task.taskId)
+const showDetailModal = async (taskId) => {
+    selectedTask.value = await taskToShow(taskId)
     showModal.value = true
     console.log(selectedTask.value)
 }
