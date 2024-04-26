@@ -13,6 +13,8 @@ onMounted(async () => {
     console.log(allTask.value.getTasks())
 })
 
+
+
 </script>
  
 <template>

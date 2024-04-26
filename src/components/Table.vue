@@ -1,8 +1,6 @@
 <script setup>
 import { ref } from 'vue'
 
-import Popup from '../components/Popup.vue'
-
 defineProps({
   tasks: Array,
 })
@@ -12,6 +10,8 @@ const toggleModal = () => {
   showModal.value = !showModal.value
   tasks.value = tasks.value.filter((tt) => tt == task.taskId)
 }
+
+defineEmits(['taskToShow'])
 </script>
 
 <template>
@@ -29,8 +29,10 @@ const toggleModal = () => {
         </tr>
         <tr v-for="(task, index) in tasks" :key="index">
           <td class="text-black text-center">{{ task.taskId }}</td>
-          <td @click="showModal = true" class="text-blue-400 hover:underline">
-            {{ task.taskTitle }}
+          <td class="text-blue-400 hover:underline">
+            <RouterLink :to="{ name: 'Popup', params: { taskId:task.Id } }">
+              {{ task.taskTitle }}</RouterLink
+            >
           </td>
           <td class="text-black">{{ task.assignees }}</td>
 
@@ -52,7 +54,6 @@ const toggleModal = () => {
       <div class="text-black">Updated On</div>
     </Popup>
   </div>
-  >>>>>>> aukky
 </template>
 
 <style scoped>
