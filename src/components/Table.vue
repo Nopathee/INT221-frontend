@@ -28,11 +28,11 @@ defineEmits(['showDetail'])
           <th>Status</th>
         </tr>
         <tr v-for="(task, index) in tasks" :key="index">
-          <td class="text-black text-center">{{ task.taskId }}</td>
+          <td class="text-black text-center"></td>
           <td class="text-blue-400 hover:underline">
-            <button @click="$emit('showDetail',task)">{{ task.taskTitle }}</button>
+            <button @click="$emit('showDetail',task)"></button>
           </td>
-          <td class="text-black">{{ task.assignees }}</td>
+          <td class="text-black" ></td>
 
           <td
             class="bg-green-500/60 bg-left bg-clip-content rounded-full size-1 text-black"
