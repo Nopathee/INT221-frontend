@@ -6,10 +6,10 @@ const props = defineProps({
   task: Object
 })
 
-console.log(props.task)
-
 const showTask = computed(() => {
+  console.log(props.task)
   return props.task
+  
 })
 
 
