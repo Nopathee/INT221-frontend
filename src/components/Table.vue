@@ -1,7 +1,17 @@
 <script setup>
+import { ref } from 'vue'
+
+import Popup from '../components/Popup.vue'
+
 defineProps({
   tasks: Array,
 })
+
+const showModal = ref(false)
+const toggleModal = () => {
+  showModal.value = !showModal.value
+  tasks.value = tasks.value.filter((tt) => tt == task.taskId)
+}
 </script>
 
 <template>
@@ -17,24 +27,32 @@ defineProps({
           <th>Assignees</th>
           <th>Status</th>
         </tr>
-        <tr v-for="(task, index) in tasks" :key="index" class="itbkk-item">
+        <tr v-for="(task, index) in tasks" :key="index">
           <td class="text-black text-center">{{ task.taskId }}</td>
-          <td class="itbkk-title text-blue-400">{{ task.taskTitle }}</td>
-          <td
-            class="itbkk-assignees text-black"
-            :style="{ fontStyle: task.assignees ? 'normal' : 'italic' }"
-          >
-            {{ task.assignees ? task.assignees : 'Unassigned' }}
+          <td @click="showModal = true" class="text-blue-400 hover:underline">
+            {{ task.taskTitle }}
           </td>
+          <td class="text-black">{{ task.assignees }}</td>
+
           <td
-            class="itbkk-status bg-green-500/60 bg-left bg-clip-content rounded-full size-1 text-black"
+            class="bg-green-500/60 bg-left bg-clip-content rounded-full size-1 text-black"
           >
             {{ task.status }}
           </td>
         </tr>
       </thead>
     </table>
+    <Popup :showModal="showModal" @close="toggleModal" ;>
+      <div class="text-black">{{ tasks[0].taskTitle }}</div>
+      <div class="text-black">Description</div>
+      <div class="text-black">Assignees</div>
+      <div class="text-black">Status</div>
+      <div class="text-black">Timezone</div>
+      <div class="text-black">Created On</div>
+      <div class="text-black">Updated On</div>
+    </Popup>
   </div>
+  >>>>>>> aukky
 </template>
 
 <style scoped>
