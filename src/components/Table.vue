@@ -33,7 +33,7 @@ defineEmits(['showDetail'])
           <td class="text-blue-400 hover:underline itbkk-title">
             <button @click="$emit('showDetail',task.taskId)">{{ task.taskTitle }}</button>
           </td>
-          <td class="text-black itbkk-assignees" :style="{ fontStyle: task.assignees ? 'normal' : 'italic' }" ç>{{ task.assignees ? task.assignees : "Unassigned" }}</td>
+          <td class="text-black itbkk-assignees" :style="{ fontStyle: task.assignees ? 'normal' : 'italic' }">{{ task.assignees ? task.assignees : "Unassigned" }}</td>
 
           <td
             class="bg-green-500/60 bg-left bg-clip-content rounded-full size-1 text-black itbkk-status"
