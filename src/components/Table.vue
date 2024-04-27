@@ -1,9 +1,9 @@
 <script setup>
-import { ref } from 'vue'
 
 defineProps({
   tasks: Array,
 })
+
 
 </script>
 

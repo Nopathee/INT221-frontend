@@ -16,8 +16,8 @@ onMounted(async () => {
   )
 
   if (items.status === 404) {
-    alert('Path not found')
-    router.go('/task')
+    alert('The requested task does not exist')
+    router.push({ name: 'task' })
   } else {
     const formattedCreateOn = new Date(items.createdOn).toLocaleString('en-GB')
     const formattedUpdatedOn = new Date(items.updatedOn).toLocaleString('en-GB')
@@ -65,8 +65,8 @@ const getTimezone = () => {
         <div class="flex flex-col gap-3 w-1/3">
           <div class="ml-1">
             <p class="text-sm text-white">Assignees</p>
-            <textarea class="border-2 h-24 w-full itbkk-assignees rounded-md">{{
-              t.assignees
+            <textarea class="border-2 h-24 w-full itbkk-assignees rounded-md" :style="{fontStyle:t.assignees ? 'normal' : 'italic'}">{{
+              t.assignees ? t.assignees : 'Unassigned'
             }}</textarea>
           </div>
           <div class="ml-1">
