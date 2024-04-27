@@ -55,18 +55,19 @@ const formattedUpdatedOn = computed(() => {
 
 <template>
   <div class=" flex flex-col p-2 gap-5">
-    <h1 class="font-semibold text-2xl itbkk-title">{{ showTask && showTask.title ? showTask.title : ''}}</h1>
+    <h1 class = "font-semibold text-2xl itbkk-title text-black" > {{ showTask ? showTask.title : ''}}</h1>
   </div>
   <hr>
   <div class=" flex">
     <div class=" ml-2">
-      <p class="text-sm">Desription</p>
-      <textarea class="border-2 border-black h-52 w-96 itbkk-description">{{ showTask && showTask.description ? showTask.description : '' }}</textarea>
+
+      <p class=" text-sm text-black">Desription</p>
+      <textarea class="border-2 border-black h-52 w-96 itbkk-description " >{{ showTask ? showTask.description : '' }}</textarea>
     </div>
-    <div class="flex flex-col">
-      <div class="ml-1">
-        <p class="text-sm">Assignees</p>
-        <textarea class="border-2 border-slate-600 h-24 w-72 itbkk-assignees">{{ showTask && showTask.assignees ? showTask.assignees : '' }}</textarea>
+    <div class=" flex flex-col">
+      <div class=" ml-1">
+        <p class=" text-sm text-black">Assignees</p>
+        <textarea class=" border-2 border-slate-600 h-24 w-72 itbkk-assignees" >{{ showTask ? showTask.assignees : '' }}</textarea>
       </div>
       <div class="ml-1">
         <p class="text-sm">Status</p>
@@ -75,20 +76,18 @@ const formattedUpdatedOn = computed(() => {
           <option value="To Do">To Do</option>
           <option value="Doing">Doing</option>
           <option value="Done">Done</option>
+
         </select>
       </div>
-      <div class="m-1 flex">
-        <p class="text-sm">TimeZone</p>
-        <input type="text" class="border-2 border-slate-600 h-5 w-56 itbkk-timezone" v-model="showTime.timezone"></input>
+      <div class=" m-1 flex">
+        <p class=" text-sm text-black">TimeZone : {{ showTime.timezone }}</p>
       </div>
-      <div class="m-1 flex">
-        <p class="text-sm">CreateOn</p>
-        <input type="text" class="border-2 border-slate-600 h-5 w-56 itbkk-create-on" v-model="formattedCreateOn"></input>
+      <div class=" m-1 flex">
+        <p class=" text-sm text-black">CreateOn : {{ formattedCreateOn }}</p>
       </div>
-      <div class="m-1 flex">
-        <p class="text-sm">UpdatedOn</p>
-        <input type="text" class="border-2 border-slate-600 h-5 w-56 itbkk-updated-on" v-model="formattedUpdatedOn"></input>
-      </div>
+      <div class=" m-1 flex">
+        <p class=" text-sm text-black">UpdatedOn : {{ formattedUpdatedOn }}</p>
+        </div>
     </div>
   </div>
   <div class="flex justify-end gap-3 px-2">
