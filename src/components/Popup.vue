@@ -1,5 +1,5 @@
 <script setup>
-import { computed, ref } from 'vue';
+import { defineProps, defineEmits, ref, onMounted , computed ,  } from 'vue';
 
 defineEmits(['close'])
 const props = defineProps({
@@ -12,6 +12,36 @@ const showTask = computed(() => {
   
 })
 
+const showTime = ref({
+  timezone: ''
+});
+
+const getTimezone = () => {
+  showTime.value.timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+};
+
+onMounted(() => {
+  getTimezone();
+});
+
+const formattedCreateOn = computed(() => {
+  if (!props.task || !props.task.createdOn) return ''; 
+  const date = new Date(props.task.createdOn); 
+  const dateString = date.toLocaleDateString("en-GB");
+  const timeString = date.toLocaleTimeString("en-GB");
+  return `${dateString} ${timeString}`;
+});
+
+const formattedUpdatedOn = computed(() => {
+  if (!props.task || !props.task.updatedOn) return ''; 
+  const date = new Date(props.task.updatedOn); 
+  const dateString = date.toLocaleDateString("en-GB");
+  const timeString = date.toLocaleTimeString("en-GB");
+  return `${dateString} ${timeString}`;
+});
+
+
+
 
 </script>
 
@@ -23,7 +53,7 @@ const showTask = computed(() => {
   <div class=" flex">
     <div class=" ml-2">
       <p class=" text-sm">Desription</p>
-      <textarea class="border-2 border-black h-52 w-96 itbkk-description " >{{ showTask ? showTask.desription : '' }}</textarea>
+      <textarea class="border-2 border-black h-52 w-96 itbkk-description " >{{ showTask ? showTask.description : '' }}</textarea>
     </div>
     <div class=" flex flex-col">
       <div class=" ml-1">
@@ -41,15 +71,15 @@ const showTask = computed(() => {
       </div>
       <div class=" m-1 flex">
         <p class=" text-sm">TimeZone</p>
-        <input type="text" class="  border-2 border-slate-600 h-5 w-56 itbkk-timezone" >{{ showTask ? showTask.timezone : '' }}</input>
+        <input type="text" class="  border-2 border-slate-600 h-5 w-56 itbkk-timezone" v-model="showTime.timezone" ></input>
       </div>
       <div class=" m-1 flex">
         <p class=" text-sm">CreateOn</p>
-        <input type="text" class="  border-2 border-slate-600 h-5 w-56 itbkk-create-on" >{{ showTask ? showTask.createon : '' }}</input>
+        <input type="text" class="  border-2 border-slate-600 h-5 w-56 itbkk-create-on" v-model="formattedCreateOn"></input>
       </div>
       <div class=" m-1 flex">
         <p class=" text-sm">UpdatedOn</p>
-        <input type="text" class="  border-2 border-slate-600 h-5 w-56 itbkk-updated-on">{{ showTask ? showTask.updateon : '' }}</input>
+        <input type="text" class="  border-2 border-slate-600 h-5 w-56 itbkk-updated-on" v-model="formattedUpdatedOn"></input>
         </div>
     </div>
   </div>
