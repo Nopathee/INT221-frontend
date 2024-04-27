@@ -70,7 +70,7 @@ const formattedUpdatedOn = computed(() => {
       </div>
       <div class="ml-1">
         <p class="text-sm">Status</p>
-        <select class="border-2 border-slate-600 h-7 w-72 itbkk-status" v-model="showTask && showTask.status ? showTask.status : ''">
+        <select class="border-2 border-slate-600 h-7 w-72 itbkk-status" >
           <option value="No Status">No Status</option>
           <option value="To Do">To Do</option>
           <option value="Doing">Doing</option>
