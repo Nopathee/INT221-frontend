@@ -46,33 +46,33 @@ const getTimezone = () => {
 
 <template>
   <div class="w-full flex justify-center p-10" v-for="t in task.getTasks()">
-    <div class="bg-amber-800 w-2/4 flex flex-col p-2 gap-5 rounded-xl">
+    <div class="bg-amber-800 w-3/4 flex flex-col p-2 gap-5 rounded-xl">
       <div class="font-semibold text-2xl text-white">
         <h1 class="itbkk-title">{{ t.title }}</h1>
       </div>
       <hr />
-      <div class="flex gap-2">
-        <div class="ml-2">
+      <div class="flex gap-2 ">
+        <div class="ml-2 w-2/3">
           <p class="text-sm text-white">Description</p>
           <textarea
-            class="border-2 border-white h-72 w-96 itbkk-descriptio rounded-md"
+            class="border-2 border-white h-72 w-full itbkk-description rounded-md"
             :style="{ fontStyle: t.description ? 'normal' : 'italic' }"
             >{{
               t.description ? t.description : 'No Description Provided'
             }}</textarea
           >
         </div>
-        <div class="flex flex-col gap-3">
+        <div class="flex flex-col gap-3 w-1/3">
           <div class="ml-1">
             <p class="text-sm text-white">Assignees</p>
-            <textarea class="border-2 h-24 w-96 itbkk-assignees rounded-md">{{
+            <textarea class="border-2 h-24 w-full itbkk-assignees rounded-md">{{
               t.assignees
             }}</textarea>
           </div>
           <div class="ml-1">
             <p class="text-sm text-white">Status</p>
             <select
-              class="border-2 h-7 w-96 itbkk-status rounded-md"
+              class="border-2 h-7 w-full itbkk-status rounded-md"
               v-model="t.status"
             >
               <option value="No Status">No Status</option>
@@ -85,7 +85,7 @@ const getTimezone = () => {
             <p class="text-sm text-white">
               TimeZone:
               <label
-                class="itbkk-timezone bg-slate-100 p-1 px-16 mx-2 text-black rounded-lg"
+                class="itbkk-timezone bg-slate-100 p-1 px-10 mx-2 text-black rounded-lg"
               >
                 {{ showTime.timezone }}</label
               >
@@ -95,7 +95,7 @@ const getTimezone = () => {
             <p class="text-sm text-white">
               CreateOn:
               <label
-                class="itbkk-created-on bg-slate-100 p-1 px-10 mx-2 text-black rounded-lg"
+                class="itbkk-created-on bg-slate-100 p-1 px-5 mx-2 text-black rounded-lg"
               >
                 {{ t.createdOn }}</label
               >
@@ -105,7 +105,7 @@ const getTimezone = () => {
             <p class="text-sm text-white">
               UpdatedOn:
               <label
-                class="itbkk-updated-on bg-slate-100 p-1 px-8 mx-2 text-black rounded-lg"
+                class="itbkk-updated-on bg-slate-100 p-1 px-3 mx-2 text-black rounded-lg"
               >
                 {{ t.updatedOn }}</label
               >
