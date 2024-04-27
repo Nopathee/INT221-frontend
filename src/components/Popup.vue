@@ -23,12 +23,12 @@ const showTask = computed(() => {
   <div class=" flex">
     <div class=" ml-2">
       <p class=" text-sm">Desription</p>
-      <textarea class="border-2 border-black h-52 w-96 itbkk-description " ></textarea>
+      <textarea class="border-2 border-black h-52 w-96 itbkk-description " >{{ props.task ? props.task.desription : '' }}</textarea>
     </div>
     <div class=" flex flex-col">
       <div class=" ml-1">
         <p class=" text-sm">Assignees</p>
-        <textarea class=" border-2 border-slate-600 h-24 w-72 itbkk-assignees" ></textarea>
+        <textarea class=" border-2 border-slate-600 h-24 w-72 itbkk-assignees" >{{ props.task ? props.task.assignees : '' }}</textarea>
       </div>
       <div class=" ml-1">
         <p class=" text-sm">Status</p>
@@ -41,15 +41,15 @@ const showTask = computed(() => {
       </div>
       <div class=" m-1 flex">
         <p class=" text-sm">TimeZone</p>
-        <input type="text" class="  border-2 border-slate-600 h-5 w-56 itbkk-timezone" ></input>
+        <input type="text" class="  border-2 border-slate-600 h-5 w-56 itbkk-timezone" >{{ props.task ? props.task.timezone : '' }}</input>
       </div>
       <div class=" m-1 flex">
         <p class=" text-sm">CreateOn</p>
-        <input type="text" class="  border-2 border-slate-600 h-5 w-56 itbkk-create-on"></input>
+        <input type="text" class="  border-2 border-slate-600 h-5 w-56 itbkk-create-on">{{ props.task ? props.task.createon : '' }}</input>
       </div>
       <div class=" m-1 flex">
         <p class=" text-sm">UpdatedOn</p>
-        <input type="text" class="  border-2 border-slate-600 h-5 w-56 itbkk-updated-on"></input>
+        <input type="text" class="  border-2 border-slate-600 h-5 w-56 itbkk-updated-on">{{ props.task ? props.task.updateon : '' }}</input>
         </div>
     </div>
   </div>
