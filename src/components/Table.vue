@@ -12,7 +12,7 @@ defineProps({
       IT-Bangmod Kradan Kanban SSI-3
     </h1>
     <div class="flex justify-center">
-      <table class="border-collapse bg-white border w-3/4">
+      <table class="border-collapse bg-amber-200 border w-3/4">
         <thead>
           <tr class="bg-amber-800 text-white">
             <th></th>
@@ -36,7 +36,17 @@ defineProps({
             </td>
 
             <td
-              class="bg-green-500/60 bg-left bg-clip-content rounded-3xl size-1 text-black itbkk-status"
+              class="bg-left bg-clip-content rounded-full size-1 text-black itbkk-status"
+              :style="{
+                backgroundColor:
+                  task.status === 'To Do'
+                    ? 'red'
+                    : task.status === 'Doing'
+                    ? 'yellow'
+                    : task.status === 'Done'
+                    ? 'green'
+                    : 'grey',
+              }"
             >
               {{ task.status }}
             </td>
@@ -50,10 +60,10 @@ defineProps({
 <style scoped>
 td {
   padding: 24px;
-  border: 3px black solid;
+  border: 3px orange solid;
 }
 th {
   padding: 12px;
-  border: 3px black solid
+  border: 3px orange solid;
 }
 </style>
