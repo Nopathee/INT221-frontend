@@ -17,7 +17,7 @@ const showTask = computed(() => {
 
 <template>
   <div class=" flex flex-col p-2 gap-5">
-    <h1 class = "font-semibold text-2xl itbkk-title " ></h1>
+    <h1 class = "font-semibold text-2xl itbkk-title " >{{ props.task ? props.task.title : '' }}</h1>
   </div>
   <hr>
   <div class=" flex">
@@ -41,15 +41,15 @@ const showTask = computed(() => {
       </div>
       <div class=" m-1 flex">
         <p class=" text-sm">TimeZone</p>
-        <input type="text" class="  border-2 border-slate-600 h-5 w-56 itbkk-timezone" >{{ props.task ? props.task.timezone : '' }}</input>
+        <input type="text" class="  border-2 border-slate-600 h-5 w-56 itbkk-timezone" >{{ showTask.title ? showTask.title.toLocaleString() : '' }}</input>
       </div>
       <div class=" m-1 flex">
         <p class=" text-sm">CreateOn</p>
-        <input type="text" class="  border-2 border-slate-600 h-5 w-56 itbkk-create-on">{{ props.task ? props.task.createon : '' }}</input>
+        <input type="text" class="  border-2 border-slate-600 h-5 w-56 itbkk-create-on">{{ showTask.title ? showTask.title.CreateOn : '' }}</input>
       </div>
       <div class=" m-1 flex">
         <p class=" text-sm">UpdatedOn</p>
-        <input type="text" class="  border-2 border-slate-600 h-5 w-56 itbkk-updated-on">{{ props.task ? props.task.updateon : '' }}</input>
+        <input type="text" class="  border-2 border-slate-600 h-5 w-56 itbkk-updated-on">{{ showTask.title ? showTask.title.UpdatedOn : '' }}</input>
         </div>
     </div>
   </div>
