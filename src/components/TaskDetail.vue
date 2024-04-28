@@ -43,12 +43,10 @@ const getTimezone = () => {
   showTime.value.timezone = Intl.DateTimeFormat().resolvedOptions().timeZone
 }
 
-
 defineEmits(['close'])
 const props = defineProps({
-  task: Object
+  task: Object,
 })
-
 </script>
 
 <template>
@@ -58,7 +56,7 @@ const props = defineProps({
         <h1 class="itbkk-title">{{ t.title }}</h1>
       </div>
       <hr />
-      <div class="flex gap-2 ">
+      <div class="flex gap-2">
         <div class="ml-2 w-2/3">
           <p class="text-sm text-white">Description</p>
           <textarea
@@ -70,13 +68,15 @@ const props = defineProps({
           >
         </div>
         <div class="flex flex-col gap-3 w-1/3">
-          <div class="ml-1">
+          <div class="ml-1 mr-2">
             <p class="text-sm text-white">Assignees</p>
-            <textarea class="border-2 h-24 w-full itbkk-assignees rounded-md" :style="{fontStyle:t.assignees ? 'normal' : 'italic'}">{{
-              t.assignees ? t.assignees : 'Unassigned'
-            }}</textarea>
+            <textarea
+              class="border-2 h-24 w-full itbkk-assignees rounded-md"
+              :style="{ fontStyle: t.assignees ? 'normal' : 'italic' }"
+              >{{ t.assignees ? t.assignees : 'Unassigned' }}</textarea
+            >
           </div>
-          <div class="ml-1">
+          <div class="ml-1 mr-2">
             <p class="text-sm text-white">Status</p>
             <select
               class="border-2 h-7 w-full itbkk-status rounded-md"
@@ -117,23 +117,26 @@ const props = defineProps({
                 {{ t.updatedOn }}</label
               >
             </p>
-
           </div>
-          <div class=" flex justify-end gap-3 px-2">
+          <div class="flex justify-end gap-3 pb-2 mr-2">
+            <button
+              class="mt-8 btn btn-success py-2 px-6 text-right"
+              @click="$router.push({ name: 'task' })"
+            >
+              Ok
+            </button>
 
-          
-    <button class="text-black mt-8 bg-green-400 rounded-lg py-2 px-6 text-right" @click="$router.go(-1)">Ok</button>
-            
-   
-    <button class="text-black mt-8 bg-red-500 rounded-lg py-2 px-6 text-right" @click="$router.go(-1)"> Close </button>
-  </div>
+            <button
+              class="mt-8 btn btn-error py-2 px-6 text-right"
+              @click="$router.push({ name: 'task' })"
+            >
+              Close
+            </button>
+          </div>
         </div>
       </div>
     </div>
   </div>
-
 </template>
 
-<style scoped>
-
-</style>
+<style scoped></style>
