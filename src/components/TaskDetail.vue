@@ -42,6 +42,13 @@ const showTime = ref({
 const getTimezone = () => {
   showTime.value.timezone = Intl.DateTimeFormat().resolvedOptions().timeZone
 }
+
+
+defineEmits(['close'])
+const props = defineProps({
+  task: Object
+})
+
 </script>
 
 <template>
@@ -112,10 +119,21 @@ const getTimezone = () => {
             </p>
 
           </div>
+          <div class=" flex justify-end gap-3 px-2">
+
+          
+    <button class="text-black mt-8 bg-green-400 rounded-lg py-2 px-6 text-right" @click="$router.go(-1)">Ok</button>
+            
+   
+    <button class="text-black mt-8 bg-red-500 rounded-lg py-2 px-6 text-right" @click="$router.go(-1)"> Close </button>
+  </div>
         </div>
       </div>
     </div>
   </div>
+
 </template>
 
-<style scoped></style>
+<style scoped>
+
+</style>
