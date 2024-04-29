@@ -37,7 +37,7 @@ defineProps({
               >
             </td>
             <td
-              class="text-blue-800 itbkk-assignees font-semibold"
+              class="text-white itbkk-assignees font-semibold"
               :style="{ fontStyle: task.assignees ? 'normal' : 'italic' }"
             >
               {{ task.assignees ? task.assignees : 'Unassigned' }}
