@@ -11,8 +11,8 @@ const changeFormatStatus = (status) => {
       return 'Doing'
     case 'DONE':
       return 'Done'
-    default:
-      return 'No status'
+    case 'NO_STATUS':
+      return 'No Status'
   }
 }
 </script>
