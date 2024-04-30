@@ -2,11 +2,25 @@
 defineProps({
   tasks: Array,
 })
+
+const changeFormatStatus = (status) => {
+  switch (status) {
+    case 'TO_DO':
+      return 'To Do'
+    case 'DOING':
+      return 'Doing'
+    case 'DONE':
+      return 'Done'
+    default:
+      return 'No status'
+  }
+}
+
 </script>
 
 <template>
   <div class="w-full flex justify-center items-center">
-    <div class="w-3/4 rounded-xl p-5">
+    <div class="rounded-xl p-5">
       <h1 class="text-center text-2xl bg-clip-content p-3 font-extrabold">
         IT-Bangmod Kradan Kanban SSI-3
       </h1>
@@ -28,9 +42,7 @@ defineProps({
             <td class="text-white text-center font-semibold">
               {{ task.taskId }}
             </td>
-            <td
-              class="text-blue-800 hover:underline itbkk-title font-semibold"
-            >
+            <td class="text-blue-800 hover:underline itbkk-title font-semibold">
               <RouterLink
                 :to="{ name: 'taskDetail', params: { id: task.taskId } }"
                 >{{ task.taskTitle }}</RouterLink
@@ -47,12 +59,12 @@ defineProps({
               <button
                 class="badge itbkk-status w-24"
                 :class="{
-                  'badge-success': task.status === 'Done',
-                  'badge-warning': task.status === 'Doing',
-                  'badge-info': task.status === 'To Do',
+                  'badge-success': task.status === 'DONE',
+                  'badge-warning': task.status === 'DOING',
+                  'badge-info': task.status === 'TO_DO',
                 }"
               >
-                {{ task.status }}
+                {{ changeFormatStatus(task.status) }}
               </button>
             </td>
           </tr>
