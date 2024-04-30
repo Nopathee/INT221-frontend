@@ -47,6 +47,20 @@ defineEmits(['close'])
 const props = defineProps({
   task: Object,
 })
+
+const changeFormatStatus = (status) => {
+  switch (status) {
+    case 'TO_DO':
+      return 'To Do'
+    case 'DOING':
+      return 'Doing'
+    case 'DONE':
+      return 'Done'
+    default:
+      return 'No status'
+  }
+}
+
 </script>
 
 <template>
@@ -62,6 +76,7 @@ const props = defineProps({
           <textarea
             class="border-2 border-white h-72 w-full itbkk-description rounded-md"
             :style="{ fontStyle: t.description ? 'normal' : 'italic' }"
+            :class="t.description ? 'text-black' : 'text-gray-500'"
             >{{
               t.description ? t.description : 'No Description Provided'
             }}</textarea
@@ -73,6 +88,7 @@ const props = defineProps({
             <textarea
               class="border-2 h-24 w-full itbkk-assignees rounded-md"
               :style="{ fontStyle: t.assignees ? 'normal' : 'italic' }"
+              :class="t.assignees ? 'text-black' : 'text-gray-500'"
               >{{ t.assignees ? t.assignees : 'Unassigned' }}</textarea
             >
           </div>
@@ -82,10 +98,10 @@ const props = defineProps({
               class="border-2 h-7 w-full itbkk-status rounded-md"
               v-model="t.status"
             >
-              <option value="No Status">No Status</option>
-              <option value="To Do">To Do</option>
-              <option value="Doing">Doing</option>
-              <option value="Done">Done</option>
+              <option value="NO_STATUS">No Status</option>
+              <option value="TO_DO">To Do</option>
+              <option value="DOING">Doing</option>
+              <option value="DONE">Done</option>
             </select>
           </div>
           <div class="m-1 flex">
