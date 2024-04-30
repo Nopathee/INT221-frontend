@@ -48,8 +48,9 @@ const changeFormatStatus = (status) => {
               >
             </td>
             <td
-              class="text-white itbkk-assignees font-semibold"
+              class="itbkk-assignees font-semibold"
               :style="{ fontStyle: task.assignees ? 'normal' : 'italic' }"
+              :class="task.assignees ? 'text-white' : 'text-gray-500'"
             >
               {{ task.assignees ? task.assignees : 'Unassigned' }}
             </td>
