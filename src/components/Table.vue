@@ -41,7 +41,9 @@ const changeFormatStatus = (status) => {
             <td class="text-white text-center font-semibold">
               {{ task.id }}
             </td>
-            <td class="text-blue-800 hover:underline itbkk-title font-semibold">
+            <td
+              class="text-blue-800 hover:underline itbkk-title font-semibold flex justify-center"
+            >
               <RouterLink
                 :to="{ name: 'taskDetail', params: { id: task.id } }"
                 >{{ task.title }}</RouterLink
