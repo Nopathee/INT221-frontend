@@ -15,7 +15,6 @@ const changeFormatStatus = (status) => {
       return 'No status'
   }
 }
-
 </script>
 
 <template>
@@ -40,12 +39,12 @@ const changeFormatStatus = (status) => {
             class="bg-blue-300 itbkk-item"
           >
             <td class="text-white text-center font-semibold">
-              {{ task.taskId }}
+              {{ task.id }}
             </td>
             <td class="text-blue-800 hover:underline itbkk-title font-semibold">
               <RouterLink
-                :to="{ name: 'taskDetail', params: { id: task.taskId } }"
-                >{{ task.taskTitle }}</RouterLink
+                :to="{ name: 'taskDetail', params: { id: task.id } }"
+                >{{ task.title }}</RouterLink
               >
             </td>
             <td

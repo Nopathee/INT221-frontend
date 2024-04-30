@@ -5,14 +5,14 @@ class TaskManagement {
 
     addDtoTasks(newTasks) {
         newTasks.forEach((newTask) =>
-            this.addDtoTask(newTask.taskId, newTask.taskTitle , newTask.assignees, newTask.status)
+            this.addDtoTask(newTask.id, newTask.title , newTask.assignees, newTask.status)
         )
     }
 
-    addDtoTask(taskId, taskTitle , assignees , status) {
+    addDtoTask(id, title , assignees , status) {
         this.tasks.push({
-            taskId: taskId,
-            taskTitle: taskTitle,
+            id: id,
+            title: title,
             assignees: assignees,
             status: status
         })
