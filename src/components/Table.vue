@@ -26,7 +26,7 @@ const changeFormatStatus = (status) => {
       <table class="w-full table table-lg rounded-lg overflow-hidden">
         <thead>
           <tr class="font-bold text-red-800 text-lg bg-pink-300">
-            <th><img src="./icon/AddBtn.svg" class="" /></th>
+            <th><img src="./icon/InsertBtn.svg" alt="" /></th>
             <th>Title</th>
             <th>Assignees</th>
             <th>Status</th>
