@@ -2,7 +2,7 @@
 import { onMounted, ref } from 'vue';
 import Table from './Table.vue';
 
-import { getItems , getItemById } from '@/libs/fetchUtils.js'
+import { getItems, getItemById } from '@/libs/fetchUtils.js'
 import { TaskManagement } from '../libs/TaskManagement.js'
 console.log(`${import.meta.env.VITE_API_ENDPOINT}/tasks`)
 const allTask = ref(new TaskManagement())
@@ -16,13 +16,13 @@ onMounted(async () => {
 
 
 </script>
- 
+
 <template>
-<div>
-    <Table :tasks="allTask.getTasks()"/>
-</div>
+     <div>
+        <Table :tasks="allTask.getTasks()" />
+    </div>
 </template>
- 
+
 <style scoped>
 
 </style>
