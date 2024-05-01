@@ -40,6 +40,17 @@ const changeFormatStatus = (status) => {
           >
             <td class="text-white text-center font-semibold">
               {{ task.id }}
+              <div class="dropdown dropdown-top">
+                <div tabindex="0" role="button">
+                  <img src="./icon/Threebtn.svg" />
+                </div>
+                <ul
+                  class="p-1 shadow menu dropdown-content z-[1] bg-base-100 rounded-box w-32"
+                >
+                  <li><a class="text-black">Edit</a></li>
+                  <li><a class="text-red-600">Delete</a></li>
+                </ul>
+              </div>
             </td>
             <td
               class="text-blue-800 hover:underline itbkk-title font-semibold flex justify-center"
