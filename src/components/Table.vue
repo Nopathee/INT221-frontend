@@ -4,7 +4,7 @@ defineProps({
   tasks: Array,
 })
 
-defineEmits(['openModal', 'closeModal', 'saveTask', 'cancelTask' , 'editTask' , 'showDetail'])
+defineEmits(['openModal', 'closeModal', 'editTask' , 'showDetail'])
 
 const changeFormatStatus = (status) => {
   switch (status) {

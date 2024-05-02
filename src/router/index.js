@@ -1,6 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import Task from '../views/Task.vue'
-import Detail from '@/views/Detail.vue'
+
 
 const history = createWebHistory()
 
