@@ -96,6 +96,7 @@ const cancelTask = () => {
                   <img src="./icon/Threebtn.svg" />
                 </div>
                 <ul class="p-1 shadow menu dropdown-content z-[1] bg-base-100 rounded-box w-32">
+
                   <li><a class="text-black">Edit</a></li>
                   <li><a class="text-red-600">Delete</a></li>
                 </ul>
