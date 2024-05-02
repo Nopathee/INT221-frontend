@@ -5,10 +5,28 @@ defineProps({
   tasks: Array,
 })
 
+<<<<<<< Updated upstream
 const showModal = ref(false)
 const toggleModal = () => {
   showModal.value = !showModal.value
   tasks.value = tasks.value.filter((tt) => tt == task.taskId)
+=======
+defineEmits(['openModal', 'closeModal', 'editTask', 'showDetail', 'deleteTask'])
+
+
+
+const changeFormatStatus = (status) => {
+  switch (status) {
+    case 'TO_DO':
+      return 'To Do'
+    case 'DOING':
+      return 'Doing'
+    case 'DONE':
+      return 'Done'
+    case 'NO_STATUS':
+      return 'No Status'
+  }
+>>>>>>> Stashed changes
 }
 
 

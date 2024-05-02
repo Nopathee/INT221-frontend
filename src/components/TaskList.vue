@@ -4,10 +4,18 @@ import Table from './Table.vue';
 
 import { getItems , getItemById } from '@/libs/fetchUtils.js'
 import { TaskManagement } from '../libs/TaskManagement.js'
+<<<<<<< Updated upstream
 import Popup from './Popup.vue';
+=======
+import router from '@/router'
+
+>>>>>>> Stashed changes
 console.log(`${import.meta.env.VITE_API_ENDPOINT}/tasks`)
 const allTask = ref(new TaskManagement())
 
+
+const RealtimeCreateOn = new Date(Date.now()).toLocaleString('en-GB')
+  const RealtimeUpdateOn = new Date(Date.now()).toLocaleString('en-GB')
 onMounted(async () => {
     const items = await getItems(`${import.meta.env.VITE_API_ENDPOINT}/tasks`)
     allTask.value.addDtoTasks(items)
@@ -28,9 +36,16 @@ const showDetailModal = async (taskId) => {
     console.log(selectedTask.value)
 }
 
+<<<<<<< Updated upstream
 const taskToShow = async (taskId) => {
     const task = await getItemById(`${import.meta.env.VITE_API_ENDPOINT}/tasks`, taskId)
     return task
+=======
+const saveTask = async (task) => {
+  console.log(task)
+  showModal.value = false
+  task.push(RealtimeCreateOn)
+>>>>>>> Stashed changes
 }
 
 </script>
