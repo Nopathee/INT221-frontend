@@ -1,7 +1,8 @@
 <script setup>
 import { onMounted, ref } from 'vue'
 import Table from './Table.vue'
-
+import TaskDetail from './TaskDetail.vue'
+import ConfirmDelete from './ConfirmDelete.vue'
 import TaskModal from './TaskModal.vue'
 import { getItems, getItemById } from '@/libs/fetchUtils.js'
 import { TaskManagement } from '../libs/TaskManagement.js'
@@ -16,6 +17,8 @@ onMounted(async () => {
 })
 
 const showModal = ref(false)
+
+const confirmDelete = ref(false)
 
 const clearModal = (flagModal) => {
   showModal.value = flagModal
@@ -40,17 +43,46 @@ const task = ref({
   status: 'NO_STATUS',
 })
 
+const taskDetail = ref({
+  id: '',
+  title: '',
+  description: null,
+  assignees: null,
+  status: 'NO_STATUS',
+  createdOn: '',
+  updatedOn: '',
+})
+
+const showModalDetail = ref(false)
+
 const showDetail = async (id) => {
   console.log(id)
-  task.value = await getItemById(
+  const detail = await getItemById(
     `${import.meta.env.VITE_API_ENDPOINT}/tasks`,
     id
   )
 
   router.push('/task/' + id)
 
-  console.log(task.value)
-  showModal.value = true
+  taskDetail.value = { ...detail }
+  console.log(taskDetail.value)
+  showModalDetail.value = true
+}
+
+const deleteTask = ref('')
+
+const showDelete = (id) => {
+  deleteTask.value = id
+  confirmDelete.value = true
+}
+
+const closeDelete = () => {
+  confirmDelete.value = false
+}
+
+const closeDetail = () => {
+  showModalDetail.value = false
+  router.push('/task')
 }
 </script>
 
@@ -60,10 +92,21 @@ const showDetail = async (id) => {
       :tasks="allTask.getTasks()"
       @openModal="showInsert"
       @showDetail="showDetail"
+      @deleteTask="showDelete"
     />
-    <Teleport to="#detailModal">
+    <Teleport to="#modal">
       <div v-show="showModal">
         <TaskModal @cancelTask="clearModal" @saveTask="saveTask" :task="task" />
+      </div>
+    </Teleport>
+    <Teleport to="#modal">
+      <div v-show="confirmDelete">
+        <ConfirmDelete @close="closeDelete" :id="deleteTask" />
+      </div>
+    </Teleport>
+    <Teleport to="#modal">
+      <div v-show="showModalDetail">
+        <TaskDetail @close="closeDetail" :task="taskDetail" />
       </div>
     </Teleport>
   </div>
