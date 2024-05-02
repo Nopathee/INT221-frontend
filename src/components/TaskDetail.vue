@@ -48,6 +48,12 @@ const props = defineProps({
   task: Object,
 })
 
+
+const formatterCreateOn = new Date(props.task.createdOn).toLocaleString('en-GB')
+const formatterUpdatedOn = new Date(props.task.updatedOn).toLocaleString(
+  'en-GB'
+)
+
 const changeFormatStatus = (status) => {
   switch (status) {
     case 'TO_DO':
@@ -61,8 +67,7 @@ const changeFormatStatus = (status) => {
   }
 }
 
-  console.log(props.task)
-
+console.log(props.task)
 </script>
 
 <template>
@@ -78,10 +83,14 @@ const changeFormatStatus = (status) => {
             <p class="text-sm text-white">Description</p>
             <textarea
               class="border-2 border-white h-72 w-full itbkk-description rounded-md"
-              :style="{ fontStyle: props.task.description ? 'normal' : 'italic' }"
+              :style="{
+                fontStyle: props.task.description ? 'normal' : 'italic',
+              }"
               :class="props.task.description ? 'text-black' : 'text-gray-500'"
               >{{
-                props.task.description ? props.task.description : 'No Description Provided'
+                props.task.description
+                  ? props.task.description
+                  : 'No Description Provided'
               }}</textarea
             >
           </div>
@@ -90,9 +99,13 @@ const changeFormatStatus = (status) => {
               <p class="text-sm text-white">Assignees</p>
               <textarea
                 class="border-2 h-24 w-full itbkk-assignees rounded-md"
-                :style="{ fontStyle: props.task.assignees ? 'normal' : 'italic' }"
+                :style="{
+                  fontStyle: props.task.assignees ? 'normal' : 'italic',
+                }"
                 :class="props.task.assignees ? 'text-black' : 'text-gray-500'"
-                >{{ props.task.assignees ? props.task.assignees : 'Unassigned' }}</textarea
+                >{{
+                  props.task.assignees ? props.task.assignees : 'Unassigned'
+                }}</textarea
               >
             </div>
             <div class="ml-1 mr-2">
@@ -123,7 +136,7 @@ const changeFormatStatus = (status) => {
                 <label
                   class="itbkk-created-on bg-slate-100 p-1 px-5 mx-2 text-black rounded-lg"
                 >
-                  {{ props.task.createdOn }}</label
+                  {{ formatterCreateOn }}</label
                 >
               </p>
             </div>
@@ -133,7 +146,7 @@ const changeFormatStatus = (status) => {
                 <label
                   class="itbkk-updated-on bg-slate-100 p-1 px-3 mx-2 text-black rounded-lg"
                 >
-                  {{ props.task.updatedOn }}</label
+                  {{ formatterUpdatedOn }}</label
                 >
               </p>
             </div>
