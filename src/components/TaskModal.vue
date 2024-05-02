@@ -1,29 +1,23 @@
 <script setup>
-
 defineProps({
-    task  : {
-      type : Object,
-      default : {
-        id : undefined,
-        title : '',
-        description : null,
-        assignees : null,
-        status : 'NO_STATUS'
-      }
-    }
-  })
+  task: {
+    type: Object,
+    default: {
+      id: undefined,
+      title: '',
+      description: null,
+      assignees: null,
+      status: 'NO_STATUS',
+    },
+  },
+})
 
 defineEmits(['saveTask', 'cancelTask'])
-
-
-
 </script>
-  
+
 <template>
   <div>
-    <div
-      class="fixed inset-0 flex items-center justify-center z-50"
-    >
+    <div class="fixed inset-0 flex items-center justify-center z-50">
       <div class="bg-white rounded-lg p-8 max-w-md dark:bg-gray-700">
         <div
           class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600"
@@ -44,7 +38,7 @@ defineEmits(['saveTask', 'cancelTask'])
                 id="taskTitle"
                 type="text"
                 v-model="task.title"
-                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500 itbkk-title"
               />
             </div>
             <div class="col-span-2 sm:col-span-1">
@@ -57,7 +51,7 @@ defineEmits(['saveTask', 'cancelTask'])
                 id="taskAssignees"
                 type="text"
                 v-model="task.assignees"
-                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500 itbkk-assignees"
               />
             </div>
             <div class="col-span-2 sm:col-span-1 dropdown">
@@ -68,7 +62,7 @@ defineEmits(['saveTask', 'cancelTask'])
               >
               <select
                 v-model="task.status"
-                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500 itbkk-status"
               >
                 <option value="NO_STATUS">No Status</option>
                 <option value="TO_DO">To Do</option>
@@ -84,7 +78,7 @@ defineEmits(['saveTask', 'cancelTask'])
               >
               <textarea
                 v-model="task.description"
-                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500 itbkk-description"
               >
               </textarea>
             </div>
@@ -92,13 +86,13 @@ defineEmits(['saveTask', 'cancelTask'])
           <div class="flex justify-end">
             <button
               @click="$emit('saveTask', task)"
-              class="px-4 py-2 bg-green-500 text-white rounded-md mr-2 disabled:opacity-50"
+              class="px-4 py-2 bg-green-500 text-white rounded-md mr-2 disabled:opacity-50 itbkk-button-confirm"
             >
               Save
             </button>
             <button
               @click="$emit('cancelTask', false)"
-              class="px-4 py-2 bg-red-500 text-white rounded-md"
+              class="px-4 py-2 bg-red-500 text-white rounded-md itbkk-button-cancel"
             >
               Cancel
             </button>

@@ -4,7 +4,7 @@ defineProps({
   tasks: Array,
 })
 
-defineEmits(['openModal', 'closeModal', 'editTask' , 'showDetail'])
+defineEmits(['openModal', 'closeModal', 'editTask', 'showDetail', 'deleteTask'])
 
 const changeFormatStatus = (status) => {
   switch (status) {
@@ -18,8 +18,6 @@ const changeFormatStatus = (status) => {
       return 'No Status'
   }
 }
-
-
 </script>
 
 <template>
@@ -36,7 +34,7 @@ const changeFormatStatus = (status) => {
                 src="./icon/InsertBtn.svg"
                 alt="Add Task"
                 @click="$emit('openModal', true)"
-                class="cursor-pointer"
+                class="cursor-pointer itbkk-button-add"
               />
             </th>
             <th>Title</th>
@@ -52,15 +50,22 @@ const changeFormatStatus = (status) => {
           >
             <td class="text-white text-center font-semibold">
               {{ task.id }}
-              <div class="dropdown dropdown-top">
-                <div tabindex="0" role="button">
+              <div class="dropdown dropdown-right dropdown-end">
+                <div tabindex="0" role="button" class="itbkk-button-action">
                   <img src="./icon/Threebtn.svg" />
                 </div>
                 <ul
                   class="p-1 shadow menu dropdown-content z-[1] bg-base-100 rounded-box w-32"
                 >
-                  <li><a class="text-black">Edit</a></li>
-                  <li><a class="text-red-600">Delete</a></li>
+                  <li><a class="text-black itbkk-button-edit">Edit</a></li>
+                  <li>
+                    <button
+                      @click="$emit('deleteTask', task.id)"
+                      class="text-red-600 itbkk-button-delete"
+                    >
+                      Delete
+                    </button>
+                  </li>
                 </ul>
               </div>
             </td>
@@ -93,7 +98,6 @@ const changeFormatStatus = (status) => {
           </tr>
         </tbody>
       </table>
-      
     </div>
   </div>
 </template>

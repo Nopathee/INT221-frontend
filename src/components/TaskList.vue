@@ -1,7 +1,7 @@
 <script setup>
 import { onMounted, ref } from 'vue'
 import Table from './Table.vue'
-
+import ConfirmDelete from './ConfirmDelete.vue'
 import TaskModal from './TaskModal.vue'
 import { getItems, getItemById } from '@/libs/fetchUtils.js'
 import { TaskManagement } from '../libs/TaskManagement.js'
@@ -16,6 +16,8 @@ onMounted(async () => {
 })
 
 const showModal = ref(false)
+
+const confirmDelete = ref(false)
 
 const clearModal = (flagModal) => {
   showModal.value = flagModal
@@ -52,6 +54,18 @@ const showDetail = async (id) => {
   console.log(task.value)
   showModal.value = true
 }
+
+const deleteTask = ref('')
+
+const showDelete = (id) => {
+  deleteTask.value = id
+  confirmDelete.value = true
+}
+
+
+const closeDelete = () => {
+  confirmDelete.value = false
+}
 </script>
 
 <template>
@@ -60,10 +74,16 @@ const showDetail = async (id) => {
       :tasks="allTask.getTasks()"
       @openModal="showInsert"
       @showDetail="showDetail"
+      @deleteTask="showDelete"
     />
-    <Teleport to="#detailModal">
+    <Teleport to="#modal">
       <div v-show="showModal">
         <TaskModal @cancelTask="clearModal" @saveTask="saveTask" :task="task" />
+      </div>
+    </Teleport>
+    <Teleport to="#modal">
+      <div v-show="confirmDelete">
+        <ConfirmDelete @close="closeDelete" :id="deleteTask"/>
       </div>
     </Teleport>
   </div>
