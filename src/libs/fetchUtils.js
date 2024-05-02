@@ -17,6 +17,23 @@ async function getItems(url){
       }
     }
     
+    async function addItem(url, newItem) {
+      try {
+        const res = await fetch(url, {
+          method: 'POST',
+          headers: {
+            'content-type': 'application/json',
+          },
+          body: JSON.stringify({
+            ...newItem,
+          }),
+        })
+        const addedItem = await res.json()
+        return addedItem
+      } catch (error) {
+        console.log(`error: ${error}`)
+      }
+    }
 
 
 

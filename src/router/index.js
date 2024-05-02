@@ -7,7 +7,8 @@ const history = createWebHistory()
 const routes = [
   { path: '/task', name: 'task', component: Task },
   { path: '/', name: 'home', redirect: '/task' },
-  {path: "/task/:id" , name : "taskDetail" , component: Detail},
+  {path: "/task/:id" , name : "taskDetail" , component: Task},
+  {path: "/task/add", name: "taskAdd", component: Task}
 ]
 
 const router = createRouter({
