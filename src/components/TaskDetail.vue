@@ -5,35 +5,6 @@ import router from '@/router'
 import { computed, onMounted, ref } from 'vue'
 import { useRoute } from 'vue-router'
 
-const { params } = useRoute()
-
-const task = ref(new TaskManagement())
-
-onMounted(async () => {
-  const items = await getItemById(
-    `${import.meta.env.VITE_API_ENDPOINT}/tasks`,
-    params.id
-  )
-
-  if (items.status === 404) {
-    alert('The requested task does not exist')
-    router.push({ name: 'task' })
-  } else {
-    const formattedCreateOn = new Date(items.createdOn).toLocaleString('en-GB')
-    const formattedUpdatedOn = new Date(items.updatedOn).toLocaleString('en-GB')
-    task.value.addTask(
-      items.id,
-      items.title,
-      items.description,
-      items.assignees,
-      items.status,
-      formattedCreateOn,
-      formattedUpdatedOn
-    )
-    console.log(task.value.getTasks())
-    getTimezone()
-  }
-})
 
 const showTime = ref({
   timezone: '',
@@ -48,6 +19,9 @@ const props = defineProps({
   task: Object,
 })
 
+onMounted(() => {
+  getTimezone()
+})
 
 const formatterCreateOn = new Date(props.task.createdOn).toLocaleString('en-GB')
 const formatterUpdatedOn = new Date(props.task.updatedOn).toLocaleString(

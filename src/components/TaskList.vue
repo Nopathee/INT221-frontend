@@ -64,7 +64,7 @@ const showDetail = async (id) => {
 
   router.push('/task/' + id)
 
-  taskDetail.value = { ...detail }
+  taskDetail.value = await detail
   console.log(taskDetail.value)
   showModalDetail.value = true
 }
@@ -105,7 +105,7 @@ const closeDetail = () => {
       </div>
     </Teleport>
     <Teleport to="#modal">
-      <div v-show="showModalDetail">
+      <div v-if="showModalDetail">
         <TaskDetail @close="closeDetail" :task="taskDetail" />
       </div>
     </Teleport>
