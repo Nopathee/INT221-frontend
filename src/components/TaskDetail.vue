@@ -5,7 +5,6 @@ import router from '@/router'
 import { computed, onMounted, ref } from 'vue'
 import { useRoute } from 'vue-router'
 
-
 const showTime = ref({
   timezone: '',
 })
@@ -24,17 +23,16 @@ onMounted(() => {
 })
 
 const formatterCreateOn = computed(() => {
-  if (!props.task || !props.task.createdOn) return ''; 
-  const createdOn = new Date(props.task.createdOn).toLocaleString('en-GB'); 
+  if (!props.task || !props.task.createdOn) return ''
+  const createdOn = new Date(props.task.createdOn).toLocaleString('en-GB')
   return createdOn
-});
-
+})
 
 const formatterUpdatedOn = computed(() => {
-  if (!props.task || !props.task.updatedOn) return ''; 
-  const updatedOn = new Date(props.task.updatedOn).toLocaleString('en-GB'); 
-  return updatedOn;
-});
+  if (!props.task || !props.task.updatedOn) return ''
+  const updatedOn = new Date(props.task.updatedOn).toLocaleString('en-GB')
+  return updatedOn
+})
 
 const changeFormatStatus = (status) => {
   switch (status) {
@@ -63,7 +61,7 @@ console.log(props.task)
           <div class="ml-2 w-2/3">
             <p class="text-sm text-white">Description</p>
             <textarea
-              class="border-2 border-white h-72 w-full itbkk-description rounded-md"
+              class="textarea border-2 border-white h-72 w-full itbkk-description rounded-md"
               :style="{
                 fontStyle: props.task.description ? 'normal' : 'italic',
               }"
@@ -79,7 +77,7 @@ console.log(props.task)
             <div class="ml-1 mr-2">
               <p class="text-sm text-white">Assignees</p>
               <textarea
-                class="border-2 h-24 w-full itbkk-assignees rounded-md"
+                class="textarea h-24 w-full itbkk-assignees rounded-md"
                 :style="{
                   fontStyle: props.task.assignees ? 'normal' : 'italic',
                 }"
@@ -92,7 +90,7 @@ console.log(props.task)
             <div class="ml-1 mr-2">
               <p class="text-sm text-white">Status</p>
               <select
-                class="border-2 h-7 w-full itbkk-status rounded-md"
+                class="select select-bordered w-full max-w-xs itbkk-status"
                 v-model="props.task.status"
               >
                 <option value="NO_STATUS">No Status</option>

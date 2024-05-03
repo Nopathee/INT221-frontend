@@ -1,11 +1,15 @@
 <script setup>
-defineEmits(['close'])
+
+
+defineEmits(['close','confirm'])
 
 const props = defineProps({
   id: String,
 })
 
 console.log(props.id)
+
+
 </script>
 
 <template>
@@ -19,7 +23,7 @@ console.log(props.id)
         <div class="flex justify-center gap-2 mt-3">
           <button
             class="btn btn-sm w-16 bg-red-500 text-white hover:bg-red-700"
-            @click=""
+            @click="$emit('confirm',props.id)"
           >
             Delete
           </button>
