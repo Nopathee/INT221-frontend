@@ -10,7 +10,9 @@ const showTime = ref({
   timezone: '',
 })
 
-
+const getTimezone = () => {
+  showTime.value.timezone = Intl.DateTimeFormat().resolvedOptions().timeZone
+}
 
 defineEmits(['close'])
 const props = defineProps({
