@@ -49,6 +49,16 @@ class TaskManagement {
     })
   }
 
+  addNewTask(id,title, description, assignees, status) {
+    this.tasks.push({
+      id: id,
+      title: title,
+      description: description,
+      assignees: assignees,
+      status: status,
+    })
+  }
+
   removeTask(removeId) {
     this.tasks.splice(
       this.tasks.findIndex((task) => task.id === removeId),

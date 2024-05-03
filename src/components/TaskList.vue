@@ -47,8 +47,9 @@ const saveTask = async (task) => {
         status: task.status,
       }
     )
-    console.log(newTask)
-    console.log(newTask.status)
+      console.log(newTask)
+    allTask.value.addNewTask(newTask.id,newTask.title, newTask.description, newTask.assignees, newTask.status)
+
     showModal.value = false
     router.push('/task')
   }
