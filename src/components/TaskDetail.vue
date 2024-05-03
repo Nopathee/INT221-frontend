@@ -9,10 +9,14 @@ const { params } = useRoute()
 
 const task = ref(new TaskManagement())
 
+const getTimezone = () => {
+  showTime.value.timezone = Intl.DateTimeFormat().resolvedOptions().timeZone
+}
 onMounted(async () => {
   const items = await getItemById(
     `${import.meta.env.VITE_API_ENDPOINT}/tasks`,
-    params.id
+    params.id,
+    getTimezone()
   )
 
   if (items.status === 404) {
@@ -39,9 +43,7 @@ const showTime = ref({
   timezone: '',
 })
 
-const getTimezone = () => {
-  showTime.value.timezone = Intl.DateTimeFormat().resolvedOptions().timeZone
-}
+
 
 defineEmits(['close'])
 const props = defineProps({
@@ -52,14 +54,14 @@ const props = defineProps({
 const formatterCreateOn = computed(() => {
   if (!props.task || !props.task.createdOn) return ''; 
   const createdOn = new Date(props.task.createdOn).toLocaleString('en-GB'); 
-  return `${createdOn}`;
+  return createdOn
 });
 
 
 const formatterUpdatedOn = computed(() => {
   if (!props.task || !props.task.updatedOn) return ''; 
   const updatedOn = new Date(props.task.updatedOn).toLocaleString('en-GB'); 
-  return `${updatedOn}`;
+  return updatedOn;
 });
 
 const changeFormatStatus = (status) => {
@@ -74,7 +76,6 @@ const changeFormatStatus = (status) => {
       return 'No status'
   }
 }
-
 console.log(props.task)
 </script>
 
