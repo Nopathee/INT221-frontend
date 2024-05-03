@@ -4,7 +4,12 @@ import Table from './Table.vue'
 import TaskDetail from './TaskDetail.vue'
 import ConfirmDelete from './ConfirmDelete.vue'
 import TaskModal from './TaskModal.vue'
-import { getItems, getItemById, deleteItemById } from '@/libs/fetchUtils.js'
+import {
+  getItems,
+  getItemById,
+  deleteItemById,
+  addItem,
+} from '@/libs/fetchUtils.js'
 import { TaskManagement } from '../libs/TaskManagement.js'
 import router from '@/router'
 console.log(`${import.meta.env.VITE_API_ENDPOINT}/tasks`)
@@ -32,7 +37,21 @@ const showInsert = (flagModal) => {
 
 const saveTask = async (task) => {
   console.log(task)
-  showModal.value = false
+  if (task.id === undefined) {
+    const newTask = await addItem(
+      `${import.meta.env.VITE_API_ENDPOINT}/tasks`,
+      {
+        title: task.title,
+        description: task.description,
+        assignees: task.assignees,
+        status: task.status,
+      }
+    )
+    console.log(newTask)
+    console.log(newTask.status)
+    showModal.value = false
+    router.push('/task')
+  }
 }
 
 const task = ref({
@@ -64,14 +83,13 @@ const showDetail = async (id) => {
   if (detail.status === 404) {
     alert('The requested task does not exist')
     router.push({ name: 'task' })
-  } else{
+  } else {
     router.push('/task/' + id)
 
     taskDetail.value = await detail
     console.log(taskDetail.value)
     showModalDetail.value = true
   }
-  
 }
 
 const deleteTask = ref('')
@@ -91,7 +109,7 @@ const closeDetail = () => {
   router.push('/task')
 }
 
-const confDelete = async(id) => {
+const confDelete = async (id) => {
   const status = await deleteItemById(
     `${import.meta.env.VITE_API_ENDPOINT}/tasks`,
     id
@@ -119,7 +137,11 @@ const confDelete = async(id) => {
     </Teleport>
     <Teleport to="#modal">
       <div v-if="confirmDelete">
-        <ConfirmDelete @close="closeDelete" @confirm="confDelete" :id="deleteTask" />
+        <ConfirmDelete
+          @close="closeDelete"
+          @confirm="confDelete"
+          :id="deleteTask"
+        />
       </div>
     </Teleport>
     <Teleport to="#modal">

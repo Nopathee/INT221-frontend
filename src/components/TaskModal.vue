@@ -89,10 +89,12 @@ defineEmits(['saveTask', 'cancelTask'])
           
           </div>
    
-          <div class="flex justify-end ">
+          
+        </form><div class="flex justify-end ">
             <button
               @click="$emit('saveTask', task)"
-              class="px-4 py-2 bg-green-500 text-white rounded-md mr-2 disabled:opacity-50 itbkk-button-confirm"
+              class="px-4 py-2 bg-green-500 text-white rounded-md mr-2 disabled:opacity-50 itbkk-button-confirm "
+              :disabled="!task.title.trim()"
             >
               Save
             </button>
@@ -103,7 +105,6 @@ defineEmits(['saveTask', 'cancelTask'])
               Cancel
             </button>
           </div>
-        </form>
       </div>
     </div>
   </div>
