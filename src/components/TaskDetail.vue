@@ -10,9 +10,7 @@ const showTime = ref({
   timezone: '',
 })
 
-const getTimezone = () => {
-  showTime.value.timezone = Intl.DateTimeFormat().resolvedOptions().timeZone
-}
+
 
 defineEmits(['close'])
 const props = defineProps({
@@ -23,10 +21,18 @@ onMounted(() => {
   getTimezone()
 })
 
-const formatterCreateOn = new Date(props.task.createdOn).toLocaleString('en-GB')
-const formatterUpdatedOn = new Date(props.task.updatedOn).toLocaleString(
-  'en-GB'
-)
+const formatterCreateOn = computed(() => {
+  if (!props.task || !props.task.createdOn) return ''; 
+  const createdOn = new Date(props.task.createdOn).toLocaleString('en-GB'); 
+  return createdOn
+});
+
+
+const formatterUpdatedOn = computed(() => {
+  if (!props.task || !props.task.updatedOn) return ''; 
+  const updatedOn = new Date(props.task.updatedOn).toLocaleString('en-GB'); 
+  return updatedOn;
+});
 
 const changeFormatStatus = (status) => {
   switch (status) {
@@ -40,7 +46,6 @@ const changeFormatStatus = (status) => {
       return 'No status'
   }
 }
-
 console.log(props.task)
 </script>
 

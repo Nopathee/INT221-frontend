@@ -14,6 +14,7 @@ async function getItems(url){
         return item
       } catch (error) {
         console.log(`error: ${error}`)
+        throw error
       }
     }
     
