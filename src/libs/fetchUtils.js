@@ -14,9 +14,11 @@ async function getItemById(url, id) {
     return item
   } catch (error) {
     console.log(`error: ${error}`)
-    throw error
+    
   }
 }
+
+
 
 async function addItem(url, newItem) {
   try {

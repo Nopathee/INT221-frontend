@@ -1,9 +1,7 @@
 <script setup>
-import { TaskManagement } from '@/libs/TaskManagement'
-import { getItemById } from '@/libs/fetchUtils'
-import router from '@/router'
+
 import { computed, onMounted, ref } from 'vue'
-import { useRoute } from 'vue-router'
+
 
 const showTime = ref({
   timezone: '',
@@ -34,18 +32,7 @@ const formatterUpdatedOn = computed(() => {
   return updatedOn
 })
 
-const changeFormatStatus = (status) => {
-  switch (status) {
-    case 'TO_DO':
-      return 'To Do'
-    case 'DOING':
-      return 'Doing'
-    case 'DONE':
-      return 'Done'
-    default:
-      return 'No status'
-  }
-}
+
 console.log(props.task)
 </script>
 
