@@ -69,12 +69,14 @@ const changeFormatStatus = (status) => {
                 </ul>
               </div>
             </td>
+            
             <td
-              class="text-blue-800 hover:underline itbkk-title font-semibold flex justify-center"
+              class="text-blue-800 hover:underline itbkk-title font-semibold flex justify-center transition-property: transition-property: transform;"
               @click="$emit('showDetail', task.id)"
             >
               {{ task.title }}
             </td>
+   
             <td
               class="itbkk-assignees font-semibold"
               :style="{ fontStyle: task.assignees ? 'normal' : 'italic' }"
@@ -102,4 +104,5 @@ const changeFormatStatus = (status) => {
   </div>
 </template>
 
-<style scoped></style>
+<style scoped>
+</style>

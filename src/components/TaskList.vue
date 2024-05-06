@@ -17,8 +17,10 @@ const allTask = ref(new TaskManagement())
 
 onMounted(async () => {
   const items = await getItems(`${import.meta.env.VITE_API_ENDPOINT}/tasks`)
-  allTask.value.addDtoTasks(items)
+    allTask.value.addDtoTasks(items)
   console.log(allTask.value.getTasks())
+  
+
 })
 
 const showModal = ref(false)
@@ -93,7 +95,47 @@ const showDetail = async (id) => {
 
 }
 
+// const showDetail = async (id) => {
+//   console.log(id)
 
+//   try {
+//     const detail = await getItemById(
+//       `${import.meta.env.VITE_API_ENDPOINT}/tasks/${id}`
+//     );
+
+//     // If the request is successful but the detail is null, it means the resource does not exist
+//     if (!detail) {
+//       alert('The requested task does not exist');
+//       router.push("/task");
+//       return;
+//     }
+
+//     taskDetail.value = detail;
+//     showModalDetail.value = true;
+//     router.push(`/task/${id}`);
+//   } catch (error) {
+//     if (error.response && error.response.status === 404) {
+//       alert('The requested task does not exist');
+//       router.push("/task");
+//     } else {
+//       console.error("Error fetching task detail:", error);
+//     }
+//   }
+// }
+
+
+// const showDetail = async (id) => {
+//
+//       const response = await getItemById(
+//         `${import.meta.env.VITE_BASE_URL}/v1/tasks/${id}`
+//       )
+//       if (response.ok) {
+//         const data = await response.json()
+//         taskDetail.value = data
+//       } else if (response.status === 404) {
+//         alert("The requested task does not exist")
+//         router.push("/task")
+// }
 
  
 const deleteTask = ref('')
@@ -149,11 +191,15 @@ const confDelete = async (id) => {
       </div>
     </Teleport>
     <Teleport to="#modal">
+      
       <div v-if="showModalDetail">
         <TaskDetail @close="closeDetail" :task="taskDetail" />
       </div>
+  
     </Teleport>
   </div>
 </template>
 
-<style scoped></style>
+<style scoped>
+ 
+</style>
