@@ -11,7 +11,7 @@ async function getItemById(url, id) {
   try {
     const data = await fetch(`${url}/${id}`)
     const item = await data.json()
-    return item
+    return {item:item , status: data.status}
   } catch (error) {
     console.log(`error: ${error}`)
     

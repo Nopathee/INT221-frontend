@@ -84,11 +84,12 @@ const showDetail = async (id) => {
     `${import.meta.env.VITE_API_ENDPOINT}/tasks`,
     id
   )
+  console.log(detail.status)
   if (detail.status === 404) {
     alert('The requested task does not exist')
     router.push("/task")
   } else {
-    taskDetail.value = await detail
+    taskDetail.value = await detail.item
     showModalDetail.value = true
     router.push(`/task/${id}`)
   } 
