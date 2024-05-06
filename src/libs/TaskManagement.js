@@ -49,7 +49,7 @@ class TaskManagement {
     })
   }
 
-  addNewTask(id,title, description, assignees, status) {
+  addNewTask(id, title, description, assignees, status) {
     this.tasks.push({
       id: id,
       title: title,
@@ -64,6 +64,14 @@ class TaskManagement {
       this.tasks.findIndex((task) => task.id === removeId),
       1
     )
+  }
+
+  updateTask(id, title, description, assignees, status) {
+    this.tasks = this.tasks.map((task) => {
+      return task.id === id
+        ? { ...task, title: title, description: description, assignees: assignees, status: status}
+        : task
+    })
   }
 
   getTasks() {

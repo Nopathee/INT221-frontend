@@ -57,7 +57,14 @@ const changeFormatStatus = (status) => {
                 <ul
                   class="p-1 shadow menu dropdown-content z-[1] bg-base-100 rounded-box w-32"
                 >
-                  <li><a class="text-black itbkk-button-edit">Edit</a></li>
+                  <li>
+                    <button
+                      @click="$emit('editTask', task.id)"
+                      class="text-black itbkk-button-edit"
+                    >
+                      Edit
+                    </button>
+                  </li>
                   <li>
                     <button
                       @click="$emit('deleteTask', task.id)"
@@ -69,14 +76,14 @@ const changeFormatStatus = (status) => {
                 </ul>
               </div>
             </td>
-            
+
             <td
               class="text-blue-800 hover:underline itbkk-title font-semibold transition-property: transition-property: transform;"
               @click="$emit('showDetail', task.id)"
             >
               {{ task.title }}
             </td>
-   
+
             <td
               class="itbkk-assignees font-semibold"
               :style="{ fontStyle: task.assignees ? 'normal' : 'italic' }"
@@ -104,5 +111,4 @@ const changeFormatStatus = (status) => {
   </div>
 </template>
 
-<style scoped>
-</style>
+<style scoped></style>

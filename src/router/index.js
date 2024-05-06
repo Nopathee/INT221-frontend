@@ -21,6 +21,17 @@ const router = createRouter({
     }
   },
     { path: '/task/add', name: 'taskAdd', component: Task },
+    {path: '/task/:id/edit', name: 'taskEdit', component: Task, props: true, async beforeEnter(to, from) {
+      const id = to.params.id
+      const url = `http://localhost:8080/v1/tasks`
+      const {item, status} = await getItemById(url, id)
+      if (status === 404) {
+        alert('Task not found')
+        return {name: 'task'}
+      }
+      to.params.item = item
+    }
+  }
   ]
 });
 

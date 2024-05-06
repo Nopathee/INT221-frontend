@@ -9,6 +9,7 @@ import {
   getItemById,
   deleteItemById,
   addItem,
+  editItem
 } from '@/libs/fetchUtils.js'
 import { TaskManagement } from '../libs/TaskManagement.js'
 import router from '@/router'
@@ -17,10 +18,8 @@ const allTask = ref(new TaskManagement())
 
 onMounted(async () => {
   const items = await getItems(`${import.meta.env.VITE_API_ENDPOINT}/tasks`)
-    allTask.value.addDtoTasks(items)
+  allTask.value.addDtoTasks(items)
   console.log(allTask.value.getTasks())
-  
-
 })
 
 const showModal = ref(false)
@@ -28,6 +27,13 @@ const showModal = ref(false)
 const confirmDelete = ref(false)
 
 const clearModal = (flagModal) => {
+  task.value = {
+    id: undefined,
+    title: '',
+    description: null,
+    assignees: null,
+    status: 'NO_STATUS',
+  }
   showModal.value = flagModal
   router.push('/task')
 }
@@ -49,8 +55,36 @@ const saveTask = async (task) => {
         status: task.status,
       }
     )
-      console.log(newTask)
-    allTask.value.addNewTask(newTask.id,newTask.title, newTask.description, newTask.assignees, newTask.status)
+    console.log(newTask)
+    allTask.value.addNewTask(
+      newTask.id,
+      newTask.title,
+      newTask.description,
+      newTask.assignees,
+      newTask.status
+    )
+
+    showModal.value = false
+    router.push('/task')
+  } else {
+    const updatedTask = await editItem(
+      `${import.meta.env.VITE_API_ENDPOINT}/tasks`,
+      task.id,
+      {
+        title: task.title,
+        description: task.description,
+        assignees: task.assignees,
+        status: task.status,
+      }
+    )
+    console.log(updatedTask)
+    allTask.value.updateTask(
+      updatedTask.id,
+      updatedTask.title,
+      updatedTask.description,
+      updatedTask.assignees,
+      updatedTask.status
+    )
 
     showModal.value = false
     router.push('/task')
@@ -87,13 +121,12 @@ const showDetail = async (id) => {
   console.log(detail.status)
   if (detail.status === 404) {
     alert('The requested task does not exist')
-    router.push("/task")
+    router.push('/task')
   } else {
     taskDetail.value = await detail.item
     showModalDetail.value = true
     router.push(`/task/${id}`)
-  } 
-
+  }
 }
 
 // const showDetail = async (id) => {
@@ -124,7 +157,6 @@ const showDetail = async (id) => {
 //   }
 // }
 
-
 // const showDetail = async (id) => {
 //
 //       const response = await getItemById(
@@ -138,7 +170,6 @@ const showDetail = async (id) => {
 //         router.push("/task")
 // }
 
- 
 const deleteTask = ref('')
 
 const showDelete = async (id) => {
@@ -167,6 +198,17 @@ const confDelete = async (id) => {
     confirmDelete.value = false
   }
 }
+
+const showEdit = async (id) => {
+  const detail = await getItemById(
+    `${import.meta.env.VITE_API_ENDPOINT}/tasks`,
+    id
+  )
+  task.value = await detail.item
+  showModal.value = true
+  router.push(`/task/${id}/edit`)
+}
+
 </script>
 
 <template>
@@ -176,6 +218,7 @@ const confDelete = async (id) => {
       @openModal="showInsert"
       @showDetail="showDetail"
       @deleteTask="showDelete"
+      @editTask="showEdit"
     />
     <Teleport to="#modal">
       <div v-show="showModal">
@@ -192,15 +235,11 @@ const confDelete = async (id) => {
       </div>
     </Teleport>
     <Teleport to="#modal">
-      
       <div v-if="showModalDetail">
         <TaskDetail @close="closeDetail" :task="taskDetail" />
       </div>
-  
     </Teleport>
   </div>
 </template>
 
-<style scoped>
- 
-</style>
+<style scoped></style>

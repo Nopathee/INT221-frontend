@@ -24,7 +24,7 @@ defineEmits(['saveTask', 'cancelTask'])
           class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600"
         >
           <h2 class="text-lg font-semibold text-gray-900 dark:text-white">
-            Add New Task
+            {{ task.id ? 'Edit Task' : 'Add Task' }}
           </h2>
         </div>
         <form class="p-4 md:p-5 ">
