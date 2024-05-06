@@ -71,7 +71,7 @@ const changeFormatStatus = (status) => {
             </td>
             
             <td
-              class="text-blue-800 hover:underline itbkk-title font-semibold flex justify-center transition-property: transition-property: transform;"
+              class="text-blue-800 hover:underline itbkk-title font-semibold transition-property: transition-property: transform;"
               @click="$emit('showDetail', task.id)"
             >
               {{ task.title }}
