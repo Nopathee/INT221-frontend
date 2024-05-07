@@ -30,6 +30,14 @@ const showModal = ref(false)
 
 const confirmDelete = ref(false)
 
+const task = ref({
+  id: undefined,
+  title: '',
+  description: null,
+  assignees: null,
+  status: 'NO_STATUS',
+})
+
 const clearModal = (flagModal) => {
   task.value = {
     id: undefined,
@@ -47,16 +55,16 @@ const showInsert = (flagModal) => {
   router.push('/task/add')
 }
 
-const saveTask = async (task) => {
-  console.log(task)
-  if (task.id === undefined) {
+const saveTask = async (selectedTask) => {
+  console.log(selectedTask)
+  if (selectedTask.id === undefined) {
     const newTask = await addItem(
       `${import.meta.env.VITE_API_ENDPOINT}/tasks`,
       {
-        title: task.title,
-        description: task.description,
-        assignees: task.assignees,
-        status: task.status,
+        title: selectedTask.title,
+        description: selectedTask.description,
+        assignees: selectedTask.assignees,
+        status: selectedTask.status,
       }
     )
     console.log(newTask)
@@ -83,12 +91,12 @@ const saveTask = async (task) => {
   } else {
     const updatedTask = await editItem(
       `${import.meta.env.VITE_API_ENDPOINT}/tasks`,
-      task.id,
+      selectedTask.id,
       {
-        title: task.title,
-        description: task.description,
-        assignees: task.assignees,
-        status: task.status,
+        title: selectedTask.title,
+        description: selectedTask.description,
+        assignees: selectedTask.assignees,
+        status: selectedTask.status,
       }
     )
     console.log(updatedTask)
@@ -113,14 +121,6 @@ const saveTask = async (task) => {
     router.push('/task')
   }
 }
-
-const task = ref({
-  id: undefined,
-  title: '',
-  description: null,
-  assignees: null,
-  status: 'NO_STATUS',
-})
 
 const taskDetail = ref({
   id: '',
@@ -235,7 +235,7 @@ const showEdit = async (id) => {
 </script>
 
 <template>
-  <div class="toast toast-top toast-end">
+  <div class="toast toast-bottom toast-center">
     <div
       v-if="successToast"
       id="toast-success"
