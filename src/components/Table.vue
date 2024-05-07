@@ -23,9 +23,7 @@ const changeFormatStatus = (status) => {
 <template>
   <div class="w-full flex justify-center items-center">
     <div class="rounded-xl p-5">
-      <h1 class="text-center text-2xl bg-clip-content p-3 font-extrabold">
-        IT-Bangmod Kradan Kanban SSI-3
-      </h1>
+      
       <table class="w-full table table-lg rounded-lg overflow-hidden">
         <thead>
           <tr class="font-bold text-red-800 text-lg bg-pink-300">
@@ -49,7 +47,7 @@ const changeFormatStatus = (status) => {
             class="bg-blue-300 itbkk-item"
           >
             <td class="text-white text-center font-semibold">
-              {{ task.id }}
+              {{ index + 1 }}
               <div class="dropdown dropdown-right dropdown-end">
                 <div tabindex="0" role="button" class="itbkk-button-action">
                   <img src="./icon/Threebtn.svg" />
@@ -67,7 +65,7 @@ const changeFormatStatus = (status) => {
                   </li>
                   <li>
                     <button
-                      @click="$emit('deleteTask', task.id)"
+                      @click="$emit('deleteTask', task.id , index + 1)"
                       class="text-red-600 itbkk-button-delete"
                     >
                       Delete

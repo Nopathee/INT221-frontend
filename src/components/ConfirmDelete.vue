@@ -1,29 +1,36 @@
 <script setup>
+import { getItemById } from '@/libs/fetchUtils'
+import { onMounted, ref } from 'vue'
 
-
-defineEmits(['close','confirm'])
+defineEmits(['close', 'confirm'])
 
 const props = defineProps({
-  id: String,
+  task: Object,
+  index: Number,
 })
 
-console.log(props.id)
-
+console.log(props.task.item.title)
+console.log(props.task.item.id)
 
 </script>
 
 <template>
   <div>
     <div class="fixed inset-0 items-center flex justify-center">
-      <div class="bg-white w-52 h-48 drop-shadow-xl border rounded-lg">
-        <div class="flex justify-center mt-3">
+      <div class="bg-white items-center drop-shadow-xl border rounded-lg">
+        <div class="flex justify-center mt-6">
           <img src="../components/icon/remove.svg" alt="" />
         </div>
-        <h1 class="flex justify-center font-bold itbkk-message">Are You Sure?</h1>
-        <div class="flex justify-center gap-2 mt-3">
+        <h1 class="flex text-xl justify-center font-bold itbkk-message">
+          Delete Task {{ props.index }}
+        </h1>
+        <h2 class=" flex justify-center itbkk-message mx-6">
+          Do you really want to delete the task "<span class=" font-semibold italic text-red-800">{{ props.task.item.title }}</span>"?
+        </h2>
+        <div class="flex justify-center gap-2 mt-3 mb-6">
           <button
             class="btn btn-sm w-16 bg-red-500 text-white hover:bg-red-700 itbkk-button-confirm"
-            @click="$emit('confirm',props.id)"
+            @click="$emit('confirm', props.task.item.id)"
           >
             Delete
           </button>
