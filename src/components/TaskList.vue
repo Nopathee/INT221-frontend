@@ -88,6 +88,10 @@ const saveTask = async (selectedTask) => {
     router.push('/task')
 
     successToast.value = true
+
+    setTimeout(() => {
+      successToast.value = false
+    }, 3000)
   } else {
     const updatedTask = await editItem(
       `${import.meta.env.VITE_API_ENDPOINT}/tasks`,
@@ -218,6 +222,9 @@ const confDelete = async (id) => {
 
   if (status === 200) {
     deletedToast.value = true
+    setTimeout(() => {
+      deletedToast.value = false
+    }, 3000)
     allTask.value.removeTask(id)
     confirmDelete.value = false
   }
