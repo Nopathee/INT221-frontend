@@ -63,8 +63,18 @@ const saveTask = async (task) => {
       newTask.assignees,
       newTask.status
     )
+    
+    
 
     showModal.value = false
+
+    task.value = {
+      id: undefined,
+      title: '',
+      description: null,
+      assignees: null,
+      status: 'NO_STATUS',
+    }
     router.push('/task')
   } else {
     const updatedTask = await editItem(
@@ -87,6 +97,15 @@ const saveTask = async (task) => {
     )
 
     showModal.value = false
+
+    task.value = {
+      id: undefined,
+      title: '',
+      description: null,
+      assignees: null,
+      status: 'NO_STATUS',
+    }
+
     router.push('/task')
   }
 }

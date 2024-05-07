@@ -38,7 +38,7 @@ defineEmits(['saveTask', 'cancelTask'])
               <input
                 id="taskTitle"
                 type="text"
-                v-model="task.title"
+                v-model.trim="task.title"
                 class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500 itbkk-title"
               />
             </div>
@@ -64,7 +64,7 @@ defineEmits(['saveTask', 'cancelTask'])
               <textarea
                 id="taskAssignees"
                 type="text"
-                v-model="task.assignees"
+                v-model.trim="task.assignees"
 
                 class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500 itbkk-assignees h-5/6"
               >
