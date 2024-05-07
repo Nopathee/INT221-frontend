@@ -150,20 +150,15 @@ const showModalDetail = ref(false)
 
 const showDetail = async (id) => {
   console.log(id)
-
+  router.push(`/task/${id}`)
   const detail = await getItemById(
     `${import.meta.env.VITE_API_ENDPOINT}/tasks`,
     id
   )
   console.log(detail.status)
-  if (detail.status === 404) {
-    alert('The requested task does not exist')
-    router.push('/task')
-  } else {
+    
     taskDetail.value = await detail.item
     showModalDetail.value = true
-    router.push(`/task/${id}`)
-  }
 }
 
 const deleteTask = ref('')
@@ -214,13 +209,14 @@ const confDelete = async (id) => {
 }
 
 const showEdit = async (id) => {
+  router.push(`/task/${id}/edit`)
   const detail = await getItemById(
     `${import.meta.env.VITE_API_ENDPOINT}/tasks`,
     id
   )
   task.value = await detail.item
   showModal.value = true
-  router.push(`/task/${id}/edit`)
+  
 }
 </script>
 
