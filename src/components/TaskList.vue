@@ -7,7 +7,13 @@ import TaskModal from './TaskModal.vue'
 import { getItems, getItemById } from '@/libs/fetchUtils.js'
 import { TaskManagement } from '../libs/TaskManagement.js'
 import router from '@/router'
+<<<<<<< Updated upstream
 console.log(`${import.meta.env.VITE_API_ENDPOINT}/tasks`)
+=======
+
+
+console.log(`${import.meta.env.VITE_API_ENDPOINT}/v1/tasks`)
+>>>>>>> Stashed changes
 const allTask = ref(new TaskManagement())
 
 onMounted(async () => {
@@ -20,6 +26,23 @@ const showModal = ref(false)
 
 const confirmDelete = ref(false)
 
+<<<<<<< Updated upstream
+=======
+const taskInsert = ref('')
+
+const errorToast = ref(false)
+
+const task = ref({
+  id: undefined,
+  title: '',
+  description: null,
+  assignees: null,
+  status: 'NO_STATUS',
+})
+
+
+
+>>>>>>> Stashed changes
 const clearModal = (flagModal) => {
   showModal.value = flagModal
   router.push('/task')
@@ -84,12 +107,51 @@ const closeDetail = () => {
   showModalDetail.value = false
   router.push('/task')
 }
+<<<<<<< Updated upstream
+=======
+
+const confDelete = async (id) => {
+  const status = await deleteItemById(
+    `${import.meta.env.VITE_API_ENDPOINT}/v1/tasks`,
+    id
+  )
+
+  if (status === 200) {
+    deletedToast.value = true
+    setTimeout(() => {
+      deletedToast.value = false
+    }, 3000)
+    allTask.value.removeTask(id)
+    confirmDelete.value = false
+  } else {
+    errorToast.value = true
+    setTimeout(() => {
+      errorToast.value = false
+    }, 3000)
+    confirmDelete.value = false
+  }
+}
+
+const showEdit = async (id) => {
+  
+  const detail = await getItemById(
+    `${import.meta.env.VITE_API_ENDPOINT}/v1/tasks`,
+    id
+  )
+  task.value = await detail.item
+
+  
+}
+
+
+>>>>>>> Stashed changes
 </script>
 
 <template>
   <div>
     <Table
       :tasks="allTask.getTasks()"
+      
       @openModal="showInsert"
       @showDetail="showDetail"
       @deleteTask="showDelete"
