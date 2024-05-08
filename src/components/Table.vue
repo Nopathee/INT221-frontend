@@ -4,7 +4,7 @@ defineProps({
   tasks: Array,
 })
 
-defineEmits(['openModal', 'closeModal', 'editTask', 'showDetail', 'deleteTask'])
+defineEmits(['openModal', 'closeModal', 'editTask', 'showDetail', 'deleteTask','statusDetail'  ])
 
 const changeFormatStatus = (status) => {
   switch (status) {
@@ -23,7 +23,9 @@ const changeFormatStatus = (status) => {
 <template>
   <div class="w-full flex justify-center items-center">
     <div class="rounded-xl p-5">
-      
+      <button class="bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 px-4 border-b-4 border-blue-700 hover:border-blue-500 rounded-lg  mb-4 "><router-link to="/task/statuses" @click="$emit('statusDetail')">
+  Manage Status</router-link>
+</button>
       <table class="w-full table table-lg rounded-lg overflow-hidden">
         <thead>
           <tr class="font-bold text-red-800 text-lg bg-pink-300">

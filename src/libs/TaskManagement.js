@@ -77,6 +77,19 @@ class TaskManagement {
   getTasks() {
     return this.tasks
   }
+
+  getStatus() {
+    return this.statuses
+  }
+
+  addStatus(id,name,description) {
+    this.statuses.push({
+      id: id,
+      name: name,
+      description: description,
+    })
+  }
+
 }
 
 export { TaskManagement }

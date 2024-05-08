@@ -1,7 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import Task from '../views/Task.vue';
 import { getItemById } from '@/libs/fetchUtils.js'; 
-
+import StatusList from '@/components/StatusList.vue';
 const history = createWebHistory();
 
 const router = createRouter({
@@ -31,7 +31,7 @@ const router = createRouter({
       }
       to.params.item = item
     }
-  }
+  } ,{ path: '/task/statuses', component: StatusList },
   ]
 });
 
