@@ -16,11 +16,11 @@ import {
 } from '@/libs/fetchUtils.js'
 import { TaskManagement } from '../libs/TaskManagement.js'
 import router from '@/router'
-console.log(`${import.meta.env.VITE_API_ENDPOINT}/tasks`)
+console.log(`${import.meta.env.VITE_API_ENDPOINT}/v1/tasks`)
 const allTask = ref(new TaskManagement())
 
 onMounted(async () => {
-  const items = await getItems(`${import.meta.env.VITE_API_ENDPOINT}/tasks`)
+  const items = await getItems(`${import.meta.env.VITE_API_ENDPOINT}/v1/tasks`)
   allTask.value.addDtoTasks(items)
   console.log(allTask.value.getTasks())
 })
@@ -66,7 +66,7 @@ const saveTask = async (selectedTask) => {
   console.log(selectedTask)
   if (selectedTask.id === undefined) {
     const newTask = await addItem(
-      `${import.meta.env.VITE_API_ENDPOINT}/tasks`,
+      `${import.meta.env.VITE_API_ENDPOINT}/v1/tasks`,
       {
         title: selectedTask.title,
         description: selectedTask.description,
@@ -104,7 +104,7 @@ const saveTask = async (selectedTask) => {
     }, 3000)
   } else {
     const updatedTask = await editItem(
-      `${import.meta.env.VITE_API_ENDPOINT}/tasks`,
+      `${import.meta.env.VITE_API_ENDPOINT}/v1/tasks`,
       selectedTask.id,
       {
         title: selectedTask.title,
@@ -152,7 +152,7 @@ const showDetail = async (id) => {
   console.log(id)
   router.push(`/task/${id}`)
   const detail = await getItemById(
-    `${import.meta.env.VITE_API_ENDPOINT}/tasks`,
+    `${import.meta.env.VITE_API_ENDPOINT}/v1/tasks`,
     id
   )
   console.log(detail.status)
@@ -166,7 +166,7 @@ const deleteIndex = ref('')
 
 const showDelete = async (id, index) => {
   const task = await getItemById(
-    `${import.meta.env.VITE_API_ENDPOINT}/tasks`,
+    `${import.meta.env.VITE_API_ENDPOINT}/v1/tasks`,
     id
   )
 
@@ -188,7 +188,7 @@ const closeDetail = () => {
 
 const confDelete = async (id) => {
   const status = await deleteItemById(
-    `${import.meta.env.VITE_API_ENDPOINT}/tasks`,
+    `${import.meta.env.VITE_API_ENDPOINT}/v1/tasks`,
     id
   )
 
@@ -211,7 +211,7 @@ const confDelete = async (id) => {
 const showEdit = async (id) => {
   router.push(`/task/${id}/edit`)
   const detail = await getItemById(
-    `${import.meta.env.VITE_API_ENDPOINT}/tasks`,
+    `${import.meta.env.VITE_API_ENDPOINT}/v1/tasks`,
     id
   )
   task.value = await detail.item
