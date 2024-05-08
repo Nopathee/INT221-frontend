@@ -39,16 +39,17 @@ console.log(props.task)
 <template>
   <div class="fixed inset-0 flex items-center justify-center">
     <div class="w-full flex justify-center p-10">
-      <div class="bg-amber-800 w-3/4 flex flex-col p-2 gap-5 rounded-xl">
-        <div class="font-semibold text-2xl text-white">
-          <h1 class="itbkk-title">{{ props.task.title }}</h1>
+      <div class="bg-white shadow-lg w-3/4 flex flex-col p-2 gap-5 rounded-xl">
+        <div class="font-bold text-2xl ">
+          <h1 class="itbkk-title mt-3 ml-2">{{ props.task.title }}</h1>
         </div>
         <hr />
         <div class="flex gap-2">
           <div class="ml-2 w-2/3">
-            <p class="text-sm text-white">Description</p>
+            <p class="text-sm font-semibold">Description</p>
             <textarea
-              class="textarea border-2 border-white h-72 w-full itbkk-description rounded-md"
+              class="textarea bg-slate-100 border-slate-300 h-72 w-full itbkk-description rounded-md"
+              readonly = "true"
               :style="{
                 fontStyle: props.task.description ? 'normal' : 'italic',
               }"
@@ -62,9 +63,10 @@ console.log(props.task)
           </div>
           <div class="flex flex-col gap-3 w-1/3">
             <div class="ml-1 mr-2">
-              <p class="text-sm text-white">Assignees</p>
+              <p class="text-sm font-semibold ">Assignees</p>
               <textarea
-                class="textarea h-24 w-full itbkk-assignees rounded-md"
+                class="textarea h-24 w-full itbkk-assignees rounded-md bg-slate-100 border-slate-300"
+                readonly = "true"
                 :style="{
                   fontStyle: props.task.assignees ? 'normal' : 'italic',
                 }"
@@ -75,9 +77,10 @@ console.log(props.task)
               >
             </div>
             <div class="ml-1 mr-2">
-              <p class="text-sm text-white">Status</p>
+              <p class="text-sm ">Status</p>
               <select
-                class="select select-bordered w-full max-w-xs itbkk-status"
+                class="select select-bordered w-full max-w-xs itbkk-status disabled:border-slate-300 disabled:bg-slate-100 disabled:text-black disabled:cursor-not-allowed"
+                disabled = "true"
                 v-model="props.task.status"
               >
                 <option value="NO_STATUS">No Status</option>
@@ -87,7 +90,7 @@ console.log(props.task)
               </select>
             </div>
             <div class="m-1 flex">
-              <p class="text-sm text-white">
+              <p class="text-sm ">
                 TimeZone:
                 <label
                   class="itbkk-timezone bg-slate-100 p-1 px-10 mx-2 text-black rounded-lg"
@@ -97,7 +100,7 @@ console.log(props.task)
               </p>
             </div>
             <div class="m-1 flex">
-              <p class="text-sm text-white">
+              <p class="text-sm ">
                 CreateOn:
                 <label
                   class="itbkk-created-on bg-slate-100 p-1 px-5 mx-2 text-black rounded-lg"
@@ -107,7 +110,7 @@ console.log(props.task)
               </p>
             </div>
             <div class="m-1 flex">
-              <p class="text-sm text-white">
+              <p class="text-sm ">
                 UpdatedOn:
                 <label
                   class="itbkk-updated-on bg-slate-100 p-1 px-3 mx-2 text-black rounded-lg"
@@ -121,14 +124,7 @@ console.log(props.task)
                 class="mt-8 btn btn-success py-2 px-6 text-right"
                 @click="$emit('close')"
               >
-                Ok
-              </button>
-
-              <button
-                class="mt-8 btn btn-error py-2 px-6 text-right"
-                @click="$emit('close')"
-              >
-                Close
+                Done
               </button>
             </div>
           </div>

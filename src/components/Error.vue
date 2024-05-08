@@ -29,7 +29,7 @@ defineEmits(['closeToast'])
         </div>
         <div class="m-2">
           <h2 class="text-lg text-orange-500 font-bold">Error</h2>
-          <p class="text-orange-800">An error occurred deleting the task "{{ props.errorTask }}"</p>
+          <p class="text-orange-800">An error occurred deleting the task</p>
         </div>
       </div>
     </div>
