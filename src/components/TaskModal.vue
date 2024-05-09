@@ -1,4 +1,7 @@
 <script setup>
+import { onMounted, ref } from 'vue'
+import { StatusManagement } from '../libs/StatusManagement.js'
+import { getItems } from '@/libs/fetchUtils'
 defineProps({
   task: {
     type: Object,
@@ -7,9 +10,19 @@ defineProps({
       title: '',
       description: null,
       assignees: null,
-      status: 'NO_STATUS',
+      status: '1',
     },
   },
+})
+
+const statuses = ref(new StatusManagement())
+
+onMounted(async () => {
+  const items = await getItems(
+    `${import.meta.env.VITE_API_ENDPOINT}/v2/statuses`
+  )
+  statuses.value.addStatuses(items)
+  console.log(statuses.value.getStatuses())
 })
 
 defineEmits(['saveTask', 'cancelTask'])
@@ -42,7 +55,6 @@ defineEmits(['saveTask', 'cancelTask'])
                 maxlength="100"
                 class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500 itbkk-title"
               />
-
             </div>
             <div class="row-span-10">
               <label
@@ -74,7 +86,6 @@ defineEmits(['saveTask', 'cancelTask'])
                 class="itbkk-assignees bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500 itbkk-assignees h-5/6"
               >
               </textarea>
-
             </div>
             <div class="row-span-2 dropdown">
               <label
@@ -86,10 +97,14 @@ defineEmits(['saveTask', 'cancelTask'])
                 v-model="task.status"
                 class="itbkk-status bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500 itbkk-status"
               >
-                <option value="NO_STATUS">No Status</option>
-                <option value="TO_DO">To Do</option>
-                <option value="DOING">Doing</option>
-                <option value="DONE">Done</option>
+                <option value="" disabled>Select Status</option>
+                <option
+                  v-for="status in statuses.getStatuses()"
+                  :key="status.id"
+                  :value="status.id"
+                >
+                  {{ status.name }}
+                </option>
               </select>
             </div>
           </div>
