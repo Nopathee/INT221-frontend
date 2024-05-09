@@ -64,7 +64,6 @@ const showInsert = (flagModal) => {
 
 const saveTask = async (selectedTask) => {
   console.log(selectedTask)
-  console.log(selectedTask.status.toString())
   if (selectedTask.id === undefined) {
     const newTask = await addItem(
       `${import.meta.env.VITE_API_ENDPOINT}/v2/tasks`,
@@ -105,6 +104,7 @@ const saveTask = async (selectedTask) => {
       successToast.value = false
     }, 3000)
   } else {
+    console.log(selectedTask)
     const updatedTask = await editItem(
       `${import.meta.env.VITE_API_ENDPOINT}/v2/tasks`,
       selectedTask.id,
@@ -112,7 +112,7 @@ const saveTask = async (selectedTask) => {
         title: selectedTask.title,
         description: selectedTask.description,
         assignees: selectedTask.assignees,
-        status: selectedTask.status,
+        status: selectedTask.status.id,
       }
     )
     console.log(updatedTask)
@@ -216,6 +216,7 @@ const showEdit = async (id) => {
     `${import.meta.env.VITE_API_ENDPOINT}/v2/tasks`,
     id
   )
+  console.log(detail.item)
   task.value = await detail.item
   showModal.value = true
   
@@ -227,6 +228,7 @@ const showEdit = async (id) => {
     <h1 class="text-center text-2xl bg-clip-content p-3 font-extrabold mt-5">
       IT-Bangmod Kradan Kanban SSI-3
     </h1>
+
     <Succes v-if="successToast" :taskInsert="taskInsert" @closeToast="successToast = false" />
     <Delete v-if="deletedToast" :taskDelete="deleteTask.item.title" @closeToast="deletedToast = false"/>
     <Table
@@ -238,7 +240,7 @@ const showEdit = async (id) => {
     />
 
     <Teleport to="#modal">
-      <div v-show="showModal">
+      <div v-if="showModal">
         <TaskModal @cancelTask="clearModal" @saveTask="saveTask" :task="task" />
       </div>
     </Teleport>
