@@ -4,13 +4,13 @@ import router from '@/router'
 import { TaskManagement } from '../libs/TaskManagement.js'
 import { StatusManagement } from '@/libs/StatusManagement'
 import { getItems } from '@/libs/fetchUtils'
+import StatusModal from './StatusModal.vue'
 
 defineProps({
   statuses: Array,
 })
 
-defineEmits(['addStatus'])
-
+const showModalStatus = ref(false)
 const statuses = ref(new StatusManagement())
 onMounted(async () => {
   const items = await getItems(
@@ -23,6 +23,14 @@ onMounted(async () => {
 const back = () => {
   router.go(-1)
 }
+const openModal = () => {
+  showModalStatus.value = true
+}
+
+const clearModal = () => {
+  showModalStatus.value = false
+}
+
 </script>
 
 <template>
@@ -46,7 +54,7 @@ const back = () => {
         </div>
         <button
           class="bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 px-4 border-b-4 border-blue-700 hover:border-blue-500 rounded"
-          @click="$emit('addStatus')"
+          @click="openModal"
         >
           Add Status
         </button>
@@ -108,7 +116,9 @@ const back = () => {
   </div>
 
   <Teleport to="#modal">
-    
+    <div v-if="showModalStatus">
+        <StatusModal @cancelTask="clearModal" @saveTask="saveTask"  />
+      </div>
   </Teleport>
 </template>
 
