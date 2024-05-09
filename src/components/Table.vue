@@ -26,7 +26,7 @@ defineEmits([
         >
       </button>
     </div>
-      <table class="w-full table table-lg rounded-lg overflow-hidden">
+      <table class="w-full table table-lg rounded-lg overflow-hidden ">
         <thead>
           <tr class="font-bold text-red-800 text-lg bg-pink-300">
             <th>

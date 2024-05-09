@@ -1,25 +1,29 @@
 <script setup>
 import { defineProps, onMounted, ref } from 'vue'
 import router from '@/router'
-import { TaskManagement } from '../libs/TaskManagement.js'
 import { StatusManagement } from '@/libs/StatusManagement'
 import { getItems } from '@/libs/fetchUtils'
-
+import StatusModal from './StatusModal.vue'
 defineProps({
   statuses: Array,
 })
 
-defineEmits(['addStatus'])
+defineEmits(['addStatus'] )
 
 const statuses = ref(new StatusManagement())
 
-// const status = ref({
-//   id: undefined,
-//   name: '',
-//   description: null,
-//   action: null,
+const editStatus = ref(false)
 
-// })
+const clearModal = () => {
+  editStatus.value = false
+
+}
+
+const editModal = async () => {
+  
+  editStatus.value = true
+  
+}
 
 onMounted(async () => {
   const items = await getItems(
@@ -50,8 +54,10 @@ const back = () => {
           >
             HOME
           </h1>
-          <span class="mr-2"> > </span>
-          <h1>Task Status</h1>
+      
+          
+          <span class="mr-2 font-semibold text-2xl px-2"> > 
+          Task Status</span>
         </div>
         <button
           class="bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 px-4 border-b-4 border-blue-700 hover:border-blue-500 rounded"
@@ -95,16 +101,16 @@ const back = () => {
 
             <td class=" text-center" >
               <button
-                @click="$emit('editStatus', status.id)"
+                @click="editModal"
                 class="btn bg-slate-200 text-black itbkk-button-edit mr-2"
-                v-if="index !== 0"
+                v-if="index !== 0" 
               >
                 Edit
               </button>
               <button
                 @click="$emit('deleteStatus', status.id)"
                 class="btn btn-error itbkk-button-delete ml-2 "
-                v-if="index !== 0"
+                v-if="index !== 0" 
               >
                 Delete
               </button>
@@ -117,7 +123,13 @@ const back = () => {
   </div>
 
   <Teleport to="#modal">
-    
+    <div v-if="editStatus">
+        <StatusModal  @cancelTask="clearModal" @saveTask="saveTask">
+          
+        
+        
+        </StatusModal>
+      </div>
   </Teleport>
 </template>
 
