@@ -12,15 +12,6 @@ defineProps({
 defineEmits(['addStatus'])
 
 const statuses = ref(new StatusManagement())
-
-// const status = ref({
-//   id: undefined,
-//   name: '',
-//   description: null,
-//   action: null,
-
-// })
-
 onMounted(async () => {
   const items = await getItems(
     `${import.meta.env.VITE_API_ENDPOINT}/v2/statuses`
