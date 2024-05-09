@@ -35,11 +35,11 @@ const back = () => {
 </script>
 
 <template>
-  <h1 class="text-center text-2xl bg-clip-content p-3 font-extrabold mt-5">
+  <h1 class="  text-center text-2xl bg-clip-content p-3 font-extrabold mt-5">
         IT-Bangmod Kradan Kanban SSI-3
     </h1>
     <div class=" flex justify-center">
-  <table class="table w-3/4 flex justify-center items-center">
+  <div class="flex justify-center items-center">
     <div class="rounded-xl p-5">
       
       <div class="text-left flex items-center justify-between">
@@ -62,7 +62,7 @@ const back = () => {
       </div>
 
       <table
-        class="w-full table table-lg rounded-lg overflow-hidden mt-5"  
+        class="w- table table-lg rounded-lg overflow-hidden mt-5"  
       >
         <thead>
           <tr class="font-bold text-red-800 text-lg bg-pink-300">
@@ -111,7 +111,7 @@ const back = () => {
         </tbody>
       </table>
     </div>
-  </table>
+  </div>
   </div>
 </template>
 
