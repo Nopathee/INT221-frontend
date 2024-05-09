@@ -1,7 +1,9 @@
 <script setup>
-import { defineProps, ref } from 'vue'
+import { defineProps, onMounted, ref } from 'vue'
 import router from '@/router';
 import { TaskManagement } from '../libs/TaskManagement.js'
+import { StatusManagement } from '@/libs/StatusManagement';
+import { getItems } from '@/libs/fetchUtils'
 
 defineProps({
   statuses: Array,
@@ -9,7 +11,7 @@ defineProps({
 
 defineEmits(['addStatus'])
 
-const allTask = ref(new TaskManagement())
+const statuses = ref(new StatusManagement())
 
 // const status = ref({
 //   id: undefined,
@@ -19,6 +21,14 @@ const allTask = ref(new TaskManagement())
   
 // })
 
+onMounted(async () => {
+  const items = await getItems(
+    `${import.meta.env.VITE_API_ENDPOINT}/v2/statuses`
+  )
+  statuses.value.addStatuses(items)
+  console.log(statuses.value.getStatuses())
+
+})
 
 const back = () => {
     router.go(-1)
@@ -44,7 +54,7 @@ const back = () => {
     </button>
 </div>
 
-<table class="w-full table table-lg rounded-lg overflow-hidden" :status="allTask.getStatus()" >
+<table class="w-full table table-lg rounded-lg overflow-hidden" :status="statuses.getStatuses()" >
         <thead>
           <tr class="font-bold text-red-800 text-lg bg-pink-300">
             <th>id</th>
@@ -55,7 +65,7 @@ const back = () => {
         </thead>
         <tbody>
           <tr
-            v-for="(status, index) in statuses"
+            v-for="(status, index) in statuses.getStatuses()"
             :key="index"
             class="bg-blue-300 itbkk-item"
           >

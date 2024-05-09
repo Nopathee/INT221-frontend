@@ -31,7 +31,7 @@ const router = createRouter({
       }
       to.params.item = item
     }
-  } ,{ path: '/task/statuses', component: StatusList },
+  } ,{ path: '/task/statuses',name:'status', component: StatusList },
   ]
 });
 
