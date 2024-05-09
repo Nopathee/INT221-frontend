@@ -93,16 +93,18 @@ const back = () => {
               {{ status.description }}
             </td>
 
-            <td class=" text-right">
+            <td class=" text-right" >
               <button
                 @click="$emit('editStatus', status.id)"
-                class="btn bg-slate-200 text-black itbkk-button-edit mx-2"
+                class="btn bg-slate-200 text-black itbkk-button-edit mr-2"
+                v-if="index !== 0"
               >
                 Edit
               </button>
               <button
                 @click="$emit('deleteStatus', status.id)"
-                class="btn btn-error itbkk-button-delete mx-2"
+                class="btn btn-error itbkk-button-delete ml-2 "
+                v-if="index !== 0"
               >
                 Delete
               </button>
