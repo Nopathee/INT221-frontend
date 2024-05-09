@@ -36,7 +36,7 @@ defineEmits(['openModal', 'closeModal', 'editTask', 'showDetail', 'deleteTask','
             :key="index"
             class="bg-blue-300 itbkk-item"
           >
-            <td class="text-white text-center font-semibold">
+            <td class="text-white text-center font-semibold flex">
               {{ index + 1 }}
               <div class="dropdown dropdown-right dropdown-end">
                 <div tabindex="0" role="button" class="itbkk-button-action">
