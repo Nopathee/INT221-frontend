@@ -79,9 +79,9 @@ console.log(props.task)
             <div class="ml-1 mr-2">
               <p class="text-sm ">Status</p>
               <select
-                class="select select-bordered w-full max-w-xs itbkk-status disabled:border-slate-300 disabled:bg-slate-100 disabled:text-black disabled:cursor-not-allowed"
+                class="select select-bordered w-full max-w-xs itbkk-status disabled:border-slate-300 disabled:bg-slate-100 disabled:text-black"
                 disabled = "true"
-                v-model="props.task.status"
+                v-model="props.task.status.name"
               >
                 <option value="NO_STATUS">No Status</option>
                 <option value="TO_DO">To Do</option>

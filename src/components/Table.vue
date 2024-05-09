@@ -6,18 +6,6 @@ defineProps({
 
 defineEmits(['openModal', 'closeModal', 'editTask', 'showDetail', 'deleteTask'])
 
-const changeFormatStatus = (status) => {
-  switch (status) {
-    case 'TO_DO':
-      return 'To Do'
-    case 'DOING':
-      return 'Doing'
-    case 'DONE':
-      return 'Done'
-    case 'NO_STATUS':
-      return 'No Status'
-  }
-}
 </script>
 
 <template>
@@ -89,17 +77,16 @@ const changeFormatStatus = (status) => {
             >
               {{ task.assignees ? task.assignees : 'Unassigned' }}
             </td>
-
             <td>
               <button
                 class="badge itbkk-status w-24"
                 :class="{
-                  'badge-success': task.status === 'DONE',
-                  'badge-warning': task.status === 'DOING',
-                  'badge-info': task.status === 'TO_DO',
+                  'badge-success': task.status.name === 'DONE',
+                  'badge-warning': task.status.name === 'DOING',
+                  'badge-info': task.status.name === 'TO_DO',
                 }"
               >
-                {{ changeFormatStatus(task.status) }}
+                {{ task.status.name }}
               </button>
             </td>
           </tr>
