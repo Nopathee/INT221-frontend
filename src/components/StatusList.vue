@@ -30,7 +30,7 @@ const back = () => {
         IT-Bangmod Kradan Kanban SSI-3
     </h1>
     <div class=" flex justify-center">
-  <div class="flex justify-center items-center">
+  <div class=" flex justify-center items-center">
     <div class="rounded-xl p-5">
       
       <div class="text-left flex items-center justify-between">
@@ -53,7 +53,7 @@ const back = () => {
       </div>
 
       <table
-        class="w- table table-lg rounded-lg overflow-hidden mt-5"  
+        class="w-full table table-lg rounded-lg overflow-hidden mt-5"  
       >
         <thead>
           <tr class="font-bold text-red-800 text-lg bg-pink-300">
@@ -84,16 +84,18 @@ const back = () => {
               {{ status.description }}
             </td>
 
-            <td class=" text-right">
+            <td class=" text-center" >
               <button
                 @click="$emit('editStatus', status.id)"
-                class="btn bg-slate-200 text-black itbkk-button-edit mx-2"
+                class="btn bg-slate-200 text-black itbkk-button-edit mr-2"
+                v-if="index !== 0"
               >
                 Edit
               </button>
               <button
                 @click="$emit('deleteStatus', status.id)"
-                class="btn btn-error itbkk-button-delete mx-2"
+                class="btn btn-error itbkk-button-delete ml-2 "
+                v-if="index !== 0"
               >
                 Delete
               </button>
@@ -104,6 +106,10 @@ const back = () => {
     </div>
   </div>
   </div>
+
+  <Teleport to="#modal">
+    
+  </Teleport>
 </template>
 
 <style scoped></style>

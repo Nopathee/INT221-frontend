@@ -2,7 +2,7 @@
 import { onMounted, ref } from 'vue'
 import { StatusManagement } from '../libs/StatusManagement.js'
 import { getItems } from '@/libs/fetchUtils'
-defineProps({
+const props = defineProps({
   task: {
     type: Object,
     default: {
@@ -25,6 +25,8 @@ onMounted(async () => {
   console.log(statuses.value.getStatuses())
 })
 
+console.log(props.task)
+
 defineEmits(['saveTask', 'cancelTask'])
 </script>
 
@@ -36,7 +38,7 @@ defineEmits(['saveTask', 'cancelTask'])
           class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600"
         >
           <h2 class="text-lg font-semibold text-gray-900 dark:text-white">
-            {{ task.id ? 'Edit Task' : 'Add Task' }}
+            {{ props.task.id ? 'Edit Task' : 'Add Task' }}
           </h2>
         </div>
         <form class="p-4 md:p-5">
@@ -51,7 +53,7 @@ defineEmits(['saveTask', 'cancelTask'])
               <input
                 id="taskTitle"
                 type="text"
-                v-model.trim="task.title"
+                v-model.trim="props.task.title"
                 maxlength="100"
                 class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500 itbkk-title"
               />
@@ -66,7 +68,7 @@ defineEmits(['saveTask', 'cancelTask'])
               <textarea
                 id="taskDescription"
                 type="text"
-                v-model.trim="task.description"
+                v-model.trim="props.task.description"
                 maxlength="500"
                 class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full h-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500 itbkk-description"
               >
@@ -81,7 +83,7 @@ defineEmits(['saveTask', 'cancelTask'])
               <textarea
                 id="taskAssignees"
                 type="text"
-                v-model.trim="task.assignees"
+                v-model.trim="props.task.assignees"
                 maxlength="30"
                 class="itbkk-assignees bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500 itbkk-assignees h-5/6"
               >
@@ -94,7 +96,7 @@ defineEmits(['saveTask', 'cancelTask'])
                 >Status:</label
               >
               <select
-                v-model="task.status"
+                v-model="props.task.status.id"
                 class="itbkk-status bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500 itbkk-status"
               >
                 <option value="" disabled>Select Status</option>
@@ -111,9 +113,9 @@ defineEmits(['saveTask', 'cancelTask'])
         </form>
         <div class="flex justify-end">
           <button
-            @click="$emit('saveTask', task)"
+            @click="$emit('saveTask', props.task)"
             class="px-4 py-2 bg-green-500 text-white rounded-md mr-2 disabled:opacity-50 itbkk-button-confirm"
-            :disabled="!task.title.trim()"
+            :disabled="!props.task.title.trim()"
           >
             Save
           </button>

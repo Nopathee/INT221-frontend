@@ -4,16 +4,28 @@ defineProps({
   tasks: Array,
 })
 
-defineEmits(['openModal', 'closeModal', 'editTask', 'showDetail', 'deleteTask','statusDetail'  ])
-
+defineEmits([
+  'openModal',
+  'closeModal',
+  'editTask',
+  'showDetail',
+  'deleteTask',
+  'statusDetail',
+])
 </script>
 
 <template>
   <div class="w-full flex justify-center items-center">
     <div class="rounded-xl p-5">
-      <button class="bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 px-4 border-b-4 border-blue-700 hover:border-blue-500 rounded-lg  mb-4 "><router-link to="/task/statuses" @click="$emit('statusDetail')">
-  Manage Status</router-link>
-</button>
+      <div class=" flex justify-end">
+        <button
+        class="bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 px-4 border-b-4 border-blue-700 hover:border-blue-500 rounded-lg mb-4 "
+      >
+        <router-link to="/task/statuses" @click="$emit('statusDetail')">
+          Manage Status</router-link
+        >
+      </button>
+    </div>
       <table class="w-full table table-lg rounded-lg overflow-hidden">
         <thead>
           <tr class="font-bold text-red-800 text-lg bg-pink-300">
@@ -55,7 +67,7 @@ defineEmits(['openModal', 'closeModal', 'editTask', 'showDetail', 'deleteTask','
                   </li>
                   <li>
                     <button
-                      @click="$emit('deleteTask', task.id , index + 1)"
+                      @click="$emit('deleteTask', task.id, index + 1)"
                       class="text-red-600 itbkk-button-delete"
                     >
                       Delete
