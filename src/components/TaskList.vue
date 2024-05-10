@@ -211,7 +211,7 @@ const confDelete = async (id) => {
 }
 
 const showEdit = async (id) => {
-  router.push(`/task/${id}/edit`)
+  
   const detail = await getItemById(
     `${import.meta.env.VITE_API_ENDPOINT}/v2/tasks`,
     id
@@ -219,7 +219,7 @@ const showEdit = async (id) => {
   console.log(detail.item)
   task.value = await detail.item
   showModal.value = true
-  
+  router.push(`/task/${id}/edit`)
 }
 </script>
 
