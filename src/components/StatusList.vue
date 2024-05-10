@@ -3,33 +3,124 @@ import { defineProps, onMounted, ref } from 'vue'
 import router from '@/router'
 import { TaskManagement } from '../libs/TaskManagement.js'
 import { StatusManagement } from '@/libs/StatusManagement'
-import { getItems } from '@/libs/fetchUtils'
 import StatusModal from './StatusModal.vue'
+import {
+  getItems,
+  getItemById,
+  addItem,
+  editItem
+} from '@/libs/fetchUtils.js'
+
 
 defineProps({
   statuses: Array,
 })
 
-const taskStatus = ref({
+const statuses = ref(new StatusManagement())
+console.log(`${import.meta.env.VITE_API_ENDPOINT}/v2/tasks`)
+const allTask = ref(new TaskManagement())
+
+onMounted(async () => {
+  const items = await getItems(`${import.meta.env.VITE_API_ENDPOINT}/v2/tasks`)
+  allTask.value.addDtoTasks(items)
+  console.log(allTask.value.getTasks())
+})
+
+
+const successToast = ref(false)
+
+const showModal = ref(false)
+
+const taskInsert = ref('')
+
+
+
+
+const task = ref({
+  id: '',
   statusName: '',
   description: ''
 })
 
-const showModalStatus = ref(false)
-const showAdd= async (id) => {
-  console.log(id)
-  router.push(`/task/${id}`)
-  const detail = await getItemById(
-    `${import.meta.env.VITE_API_ENDPOINT}/v2/tasks`,
-    id
-  )
-  console.log(detail.status)
 
-  taskStatus.value = await detail.item
-  showModalStatus.value = true
+const clearModal = (flagModal) => {
+  task.value = {
+    id: '',
+    statusName: '',
+    description: ''
+  }
+  showModal.value = flagModal
+  router.push('/task')
 }
 
-const editStatus = ref(false)
+const showInsert = (flagModal) => {
+  showModal.value = flagModal
+  router.push('/task/add')
+}
+const saveTask = async (selectedTask) => {
+  console.log(selectedTask)
+  if (selectedTask.id === undefined) {
+    const newTask = await addItem(
+      `${import.meta.env.VITE_API_ENDPOINT}/v2/tasks`,
+      {
+        statusName: selectedTask.statusName,
+        description: selectedTask.description
+      }
+    )
+
+    taskInsert.value = selectedTask.title
+
+    console.log(newTask)
+    console.log(newTask.status.toString())
+    allTask.value.addNewTask(
+      newTask.id,
+      newTask.statusName,
+      newTask.description
+    )
+
+    showModal.value = false
+
+    task.value = {
+      id: '',
+      statusName: '',
+      description: ''
+    }
+    router.push('/task')
+
+    successToast.value = true
+
+    setTimeout(() => {
+      successToast.value = false
+    }, 3000)
+  } else {
+    console.log(selectedTask)
+    const updatedTask = await editItem(
+      `${import.meta.env.VITE_API_ENDPOINT}/v2/tasks`,
+      selectedTask.id,
+      {
+        statusName: selectedTask.statusName,
+        description: selectedTask.description
+      }
+    )
+    console.log(updatedTask)
+    allTask.value.updateTask(
+      updatedTask.id,
+      updatedTask.statusName,
+      updatedTask.description
+    )
+
+    showModal.value = false
+
+    task.value = {
+      id: '',
+      statusName: '',
+      description: ''
+    }
+
+    router.push('/task')
+  }
+}
+
 const showEdit = async (id) => {
   router.push(`/task/${id}/edit`)
   const detail = await getItemById(
@@ -38,38 +129,33 @@ const showEdit = async (id) => {
   )
   console.log(detail.item)
   task.value = await detail.item
-  showModalStatus.value = true
-  
+  showModal.value = true
+}
+
+const openModal = () => {
+  showModal.value = true
 }
 
 
 
 
-const statuses = ref(new StatusManagement())
-onMounted(async () => {
-  const items = await getItems(
-    `${import.meta.env.VITE_API_ENDPOINT}/v2/statuses`
-  )
-  statuses.value.addStatuses(items)
-  console.log(statuses.value.getStatuses())
-})
+// const openModal = () => {
+//   showModalStatus.value = true
+// }
+
+// const clearModal = () => {
+//   showModalStatus.value = false
+//   editStatus.value = false
+// }
+
+// const editModal = async () => {
+
+//   editStatus.value = true
+
+// }
 
 const back = () => {
   router.go(-1)
-}
-const openModal = () => {
-  showModalStatus.value = true
-}
-
-const clearModal = () => {
-  showModalStatus.value = false
-  editStatus.value = false
-}
-
-const editModal = async () => {
-
-  editStatus.value = true
-
 }
 </script>
 
@@ -101,14 +187,14 @@ const editModal = async () => {
             <tr class="font-bold text-red-800 text-lg bg-pink-300">
               <th></th>
               <th>Name</th>
-              <th>Desciption</th>
-              <th class=" text-center">Action</th>
+              <th>Description</th>
+              <th class="text-center">Action</th>
             </tr>
           </thead>
           <tbody>
             <tr v-for="(status, index) in statuses.getStatuses()" :key="index" class="bg-blue-300 itbkk-item">
               <td class="text-white text-center font-semibold">
-                {{ index + 1 }}
+                {{ status.id }}
                 <div class="dropdown dropdown-right dropdown-end"></div>
               </td>
 
@@ -121,7 +207,7 @@ const editModal = async () => {
                 {{ status.description }}
               </td>
 
-              <td class=" text-center">
+              <td class="text-center">
                 <button @click="editStatus" class="btn bg-slate-200 text-black itbkk-button-edit mr-2"
                   v-if="index !== 0">
                   Edit
@@ -135,22 +221,15 @@ const editModal = async () => {
             </tr>
           </tbody>
         </table>
+
       </div>
     </div>
   </div>
 
-  <Table
-      :tasks="allTask.getTasks()"
-      @editTask="showEdit"
-    />
+  <Table :tasks="allTask.getTasks()" @editTask="showEdit" />
 
   <Teleport to="#modal">
-    <div v-if="showModalStatus">
-      <StatusModal @cancelTask="clearModal" @saveTask="saveTask" />
-    </div>
-  </Teleport>
-  <Teleport to="#modal">
-    <div v-if="editStatus">
+    <div v-if="showModal">
       <StatusModal @cancelTask="clearModal" @saveTask="saveTask" />
     </div>
   </Teleport>
