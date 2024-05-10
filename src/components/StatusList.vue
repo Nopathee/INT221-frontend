@@ -13,7 +13,7 @@ import {
 } from '@/libs/fetchUtils.js'
 import DeleteStatus from './DeleteStatus.vue'
 import TransferDelete from './TransferDelete.vue'
-import StatusModal from './StautsModal.vue'
+import StatusModal from './StatusModal.vue'
 
 defineProps({
   statuses: Array,
