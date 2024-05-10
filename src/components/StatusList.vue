@@ -9,7 +9,7 @@ import {
   getItems,
   transferItem,
   addItem,
-  editItem
+  editItem,
 } from '@/libs/fetchUtils.js'
 import DeleteStatus from './DeleteStatus.vue'
 import TransferDelete from './TransferDelete.vue'
@@ -155,7 +155,7 @@ const saveStatus = async (status) => {
       status.id,
       item
     )
-    
+
     statuses.value.updateStatus(
       updatedStatus.id,
       updatedStatus.name,
@@ -232,14 +232,14 @@ const saveStatus = async (status) => {
               <td class="text-center">
                 <button
                   @click="editStatus(status.id)"
-                  class="btn bg-slate-200 text-black itbkk-button-edit mr-2"
+                  class="btn btn-sm bg-slate-200 text-black itbkk-button-edit mr-2"
                   v-if="index !== 0"
                 >
                   Edit
                 </button>
                 <button
                   @click="deleteStatus(status.id)"
-                  class="btn btn-error itbkk-button-delete ml-2"
+                  class="btn btn-sm btn-error itbkk-button-delete ml-2"
                   v-if="index !== 0"
                 >
                   Delete

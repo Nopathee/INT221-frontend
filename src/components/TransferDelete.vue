@@ -58,6 +58,7 @@ defineEmits(['deleteStatus', 'closeDeleteModal'])
         <button
           class="btn btn-sm w-16 bg-red-500 text-white hover:bg-red-700 itbkk-button-confirm"
           @click="$emit('deleteStatus', props.status.item.id , selectedId)"
+          :disabled="selectedId === ''"
         >
           Delete
         </button>
