@@ -3,9 +3,17 @@ import { defineProps, onMounted, ref } from 'vue'
 import router from '@/router'
 import { TaskManagement } from '../libs/TaskManagement.js'
 import { StatusManagement } from '@/libs/StatusManagement'
-import { deleteItemById, getItemById, getItems, transferItem } from '@/libs/fetchUtils.js'
+import {
+  deleteItemById,
+  getItemById,
+  getItems,
+  transferItem,
+  addItem,
+  editItem
+} from '@/libs/fetchUtils.js'
 import DeleteStatus from './DeleteStatus.vue'
 import TransferDelete from './TransferDelete.vue'
+import StatusModal from './StautsModal.vue'
 
 defineProps({
   statuses: Array,
@@ -15,13 +23,11 @@ defineEmits(['addStatus'])
 
 const statuses = ref(new StatusManagement())
 
-// const status = ref({
-//   id: undefined,
-//   name: '',
-//   description: null,
-//   action: null,
-
-// })
+const status = ref({
+  id: undefined,
+  name: '',
+  description: null,
+})
 
 onMounted(async () => {
   const items = await getItems(
@@ -93,6 +99,78 @@ const transferStatus = async (id, newId) => {
     transDelete.value = false
   }
 }
+
+const editModal = ref(false)
+
+const editStatus = async (id) => {
+  const item = await getItemById(
+    `${import.meta.env.VITE_API_ENDPOINT}/v2/statuses`,
+    id
+  )
+
+  status.value = await item.item
+  console.log(status)
+  editModal.value = true
+}
+
+const addStatus = () => {
+  status.value = {
+    id: undefined,
+    name: '',
+    description: null,
+  }
+  editModal.value = true
+}
+
+const saveStatus = async (status) => {
+  console.log(status)
+  const item = {
+    name: status.name,
+    description: status.description,
+  }
+  if (status.id === undefined) {
+    const newStatus = await addItem(
+      `${import.meta.env.VITE_API_ENDPOINT}/v2/statuses`,
+      item
+    )
+
+    console.log(newStatus)
+
+    statuses.value.addStatus(
+      newStatus.id,
+      newStatus.name,
+      newStatus.description
+    )
+
+    editModal.value = false
+
+    status.value = {
+      id: undefined,
+      name: '',
+      description: null,
+    }
+  } else {
+    const updatedStatus = await editItem(
+      `${import.meta.env.VITE_API_ENDPOINT}/v2/statuses`,
+      status.id,
+      item
+    )
+    
+    statuses.value.updateStatus(
+      updatedStatus.id,
+      updatedStatus.name,
+      updatedStatus.description
+    )
+
+    editModal.value = false
+
+    status.value = {
+      id: undefined,
+      name: '',
+      description: null,
+    }
+  }
+}
 </script>
 
 <template>
@@ -115,7 +193,7 @@ const transferStatus = async (id, newId) => {
           </div>
           <button
             class="bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 px-4 border-b-4 border-blue-700 hover:border-blue-500 rounded"
-            @click="$emit('addStatus')"
+            @click="addStatus"
           >
             Add Status
           </button>
@@ -153,7 +231,7 @@ const transferStatus = async (id, newId) => {
 
               <td class="text-center">
                 <button
-                  @click="$emit('editStatus', status.id)"
+                  @click="editStatus(status.id)"
                   class="btn bg-slate-200 text-black itbkk-button-edit mr-2"
                   v-if="index !== 0"
                 >
@@ -174,7 +252,15 @@ const transferStatus = async (id, newId) => {
     </div>
   </div>
 
-  <Teleport to="#modal"> </Teleport>
+  <Teleport to="#modal">
+    <div v-if="editModal">
+      <StatusModal
+        :status="status"
+        @closeModal="editModal = false"
+        @saveStatus="saveStatus"
+      />
+    </div>
+  </Teleport>
 
   <Teleport to="#modal">
     <div v-if="deleteModal">
