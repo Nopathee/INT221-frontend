@@ -6,7 +6,7 @@ import { StatusManagement } from '@/libs/StatusManagement'
 import { deleteItemById, getItemById, getItems, transferItem } from '@/libs/fetchUtils.js'
 import DeleteStatus from './DeleteStatus.vue'
 import TransferDelete from './TransferDelete.vue'
-
+import StatusModal from './StatusModal.vue'
 defineProps({
   statuses: Array,
 })
@@ -15,13 +15,17 @@ defineEmits(['addStatus'])
 
 const statuses = ref(new StatusManagement())
 
-// const status = ref({
-//   id: undefined,
-//   name: '',
-//   description: null,
-//   action: null,
+const editStatus = ref(false)
 
-// })
+const clearModal = () => {
+  editStatus.value = false
+}
+
+const editModal = async () => {
+  
+  editStatus.value = true
+  
+}
 
 onMounted(async () => {
   const items = await getItems(
@@ -110,8 +114,8 @@ const transferStatus = async (id, newId) => {
             >
               HOME
             </h1>
-            <span class="mr-2"> > </span>
-            <h1>Task Status</h1>
+            <span class="mr-2 font-semibold text-2xl px-2"> > 
+          Task Status</span>
           </div>
           <button
             class="bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 px-4 border-b-4 border-blue-700 hover:border-blue-500 rounded"
@@ -153,7 +157,7 @@ const transferStatus = async (id, newId) => {
 
               <td class="text-center">
                 <button
-                  @click="$emit('editStatus', status.id)"
+                  @click="editModal"
                   class="btn bg-slate-200 text-black itbkk-button-edit mr-2"
                   v-if="index !== 0"
                 >
@@ -195,6 +199,16 @@ const transferStatus = async (id, newId) => {
         @closeDeleteModal="transDelete = false"
       />
     </div>
+  </Teleport>
+
+  <Teleport to="#modal">
+    <div v-if="editStatus">
+        <StatusModal  @cancelTask="clearModal" @saveTask="saveTask">
+          
+        
+        
+        </StatusModal>
+      </div>
   </Teleport>
 </template>
 
