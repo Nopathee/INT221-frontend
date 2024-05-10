@@ -20,7 +20,6 @@ async function getItemById(url, id) {
 }
 
 
-
 async function addItem(url, newItem) {
   try {
     const res = await fetch(url, {
@@ -52,6 +51,18 @@ async function deleteItemById(url, id) {
   }
 }
 
+async function transferItem(url, id , newId) {
+  try {
+    const res = await fetch(`${url}/${id}/${newId}`,{
+      method: 'DELETE',
+    })
+    return res.status
+    
+  } catch (error) {
+    console.log(`error: ${error}`)
+  }
+}
+
 async function editItem(url, id, editItem) {
   try {
     const res = await fetch(`${url}/${id}`, {
@@ -70,4 +81,4 @@ async function editItem(url, id, editItem) {
   }
 }
 
-export { getItems, getItemById, addItem, deleteItemById, editItem}
+export { getItems, getItemById, addItem, deleteItemById, editItem , transferItem}

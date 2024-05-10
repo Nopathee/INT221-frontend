@@ -12,6 +12,7 @@ defineEmits([
   'deleteTask',
   'statusDetail',
 ])
+
 </script>
 
 <template>
