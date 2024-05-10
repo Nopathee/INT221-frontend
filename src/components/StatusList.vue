@@ -204,9 +204,6 @@ const transferStatus = async (id, newId) => {
   <Teleport to="#modal">
     <div v-if="editStatus">
         <StatusModal  @cancelTask="clearModal" @saveTask="saveTask">
-          
-        
-        
         </StatusModal>
       </div>
   </Teleport>
