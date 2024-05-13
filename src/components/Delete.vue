@@ -4,6 +4,8 @@ const props = defineProps({
 })
 
 defineEmits(['closeToast'])
+
+console.log(props.taskDelete)
 </script>
 
 <template>

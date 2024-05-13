@@ -1,7 +1,7 @@
 <script setup>
 import { defineProps, onMounted, ref } from 'vue'
 import router from '@/router'
-import { TaskManagement } from '../libs/TaskManagement.js'
+import Edit from './Edit.vue'
 import { StatusManagement } from '@/libs/StatusManagement'
 import {
   deleteItemById,
@@ -14,7 +14,8 @@ import {
 import DeleteStatus from './DeleteStatus.vue'
 import TransferDelete from './TransferDelete.vue'
 import StatusModal from './StatusModal.vue'
-
+import Succes from './Succes.vue'
+import Delete from './Delete.vue'
 defineProps({
   statuses: Array,
 })
@@ -23,6 +24,15 @@ defineEmits(['addStatus'])
 
 const statuses = ref(new StatusManagement())
 
+const insertStatus = ref('')
+
+const statusEdit = ref('')
+
+const deletedToast = ref(false)
+
+const successToast = ref(false)
+
+const editToast = ref(false)
 const status = ref({
   id: undefined,
   name: '',
@@ -141,7 +151,7 @@ const saveStatus = async (status) => {
       newStatus.name,
       newStatus.description
     )
-
+    insertStatus.value = status.name
     editModal.value = false
 
     status.value = {
@@ -149,21 +159,28 @@ const saveStatus = async (status) => {
       name: '',
       description: null,
     }
+    successToast.value = true
+
+setTimeout(() => {
+  successToast.value = false
+}, 3000)
   } else {
     const updatedStatus = await editItem(
       `${import.meta.env.VITE_API_ENDPOINT}/v2/statuses`,
       status.id,
       item
     )
-
+    statusEdit.value = status.name
     statuses.value.updateStatus(
       updatedStatus.id,
       updatedStatus.name,
       updatedStatus.description
     )
-
+    editToast.value = true
     editModal.value = false
-
+    setTimeout(() => {
+      editToast.value = false
+    }, 3000)
     status.value = {
       id: undefined,
       name: '',
@@ -224,10 +241,14 @@ const saveStatus = async (status) => {
               >
                 {{ status.name }}
               </td>
-
-              <td class="itbkk-status-description font-semibold text-white">
+               
+              <td v-if="status.description" class="itbkk-status-description font-semibold text-white">
                 {{ status.description }}
               </td>
+              <td v-else  class="itbkk-status-description font-semibold italic text-gray-500">
+                No description Provided
+              </td>
+
 
               <td class="text-center">
                 <button
@@ -251,7 +272,9 @@ const saveStatus = async (status) => {
       </div>
     </div>
   </div>
-
+  <Succes v-if="successToast" :insertStatus="insertStatus" @closeToast="successToast = false" />
+    <Delete v-if="deletedToast" :taskDelete="deleteTask.item.title" @closeToast="deletedToast = false"/>
+    <Edit v-if="editToast" :statusEdit="statusEdit" @closeToast="editToast = false" />
   <Teleport to="#modal">
     <div v-if="editModal">
       <StatusModal

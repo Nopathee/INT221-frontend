@@ -1,15 +1,17 @@
 <script setup>
 
 const props = defineProps({
-  taskInsert: String,
-  insertStatus:String,
+  taskEdit: String,
+  statusEdit:String,
 })
 
 defineEmits(['closeToast'])
+
+
 </script>
 
 <template>
-  <div v-if="taskInsert">
+  <div v-if="taskEdit">
     <div class="flex justify-center">
       <div
         class="w-2/3 bg-green-100 border-2 border-dashed border-green-500 rounded-lg h-20 relative"
@@ -31,12 +33,13 @@ defineEmits(['closeToast'])
         </div>
         <div class="m-2">
           <h2 class="text-lg text-green-500 font-bold">Success</h2>
-          <p class="text-green-800">Task {{ props.taskInsert }} has been added</p>
+          <p class="text-green-800">Task {{ props.taskEdit }} has been edited</p>
         </div>
       </div>
     </div>
   </div>
-  <div v-if="insertStatus">
+
+  <div v-if="statusEdit">
     <div class="flex justify-center">
       <div
         class="w-2/3 bg-green-100 border-2 border-dashed border-green-500 rounded-lg h-20 relative"
@@ -58,7 +61,7 @@ defineEmits(['closeToast'])
         </div>
         <div class="m-2">
           <h2 class="text-lg text-green-500 font-bold">Success</h2>
-          <p class="text-green-800">Status {{ props.insertStatus }} has been added</p>
+          <p class="text-green-800">Status {{ props.statusEdit }} has been edited</p>
         </div>
       </div>
     </div>

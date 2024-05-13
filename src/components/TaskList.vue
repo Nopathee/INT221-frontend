@@ -7,6 +7,7 @@ import TaskModal from './TaskModal.vue'
 import Succes from './Succes.vue'
 import Delete from './Delete.vue'
 import Error from './Error.vue'
+import Edit from './Edit.vue'
 import {
   getItems,
   getItemById,
@@ -29,11 +30,15 @@ const deletedToast = ref(false)
 
 const successToast = ref(false)
 
+const editToast = ref(false)
+
 const showModal = ref(false)
 
 const confirmDelete = ref(false)
 
 const taskInsert = ref('')
+
+const taskEdit = ref('')
 
 const errorToast = ref(false)
 
@@ -94,7 +99,7 @@ const saveTask = async (selectedTask) => {
       title: '',
       description: null,
       assignees: null,
-      status: '1',
+      status: '',
     }
     router.push('/task')
 
@@ -112,7 +117,7 @@ const saveTask = async (selectedTask) => {
         title: selectedTask.title,
         description: selectedTask.description,
         assignees: selectedTask.assignees,
-        status: selectedTask.status.id,
+        status: selectedTask.status,
       }
     )
     console.log(updatedTask)
@@ -123,9 +128,12 @@ const saveTask = async (selectedTask) => {
       updatedTask.assignees,
       updatedTask.status
     )
-
+    taskEdit.value = selectedTask.title
+    editToast.value = true
     showModal.value = false
-
+    setTimeout(() => {
+      editToast.value = false
+    }, 3000)
     task.value = {
       id: undefined,
       title: '',
@@ -231,6 +239,7 @@ const showEdit = async (id) => {
 
     <Succes v-if="successToast" :taskInsert="taskInsert" @closeToast="successToast = false" />
     <Delete v-if="deletedToast" :taskDelete="deleteTask.item.title" @closeToast="deletedToast = false"/>
+    <Edit v-if="editToast" :taskEdit="taskEdit" @closeToast="editToast = false" />
     <Table
       :tasks="allTask.getTasks()"
       @openModal="showInsert"

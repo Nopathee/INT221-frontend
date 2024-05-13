@@ -1,7 +1,11 @@
 <script setup>
-import { onMounted, ref } from 'vue'
+
+
+
+import {  ref } from 'vue'
 
 const props = defineProps({
+ 
   status: Object,
 
   statuses: Array,
@@ -16,6 +20,8 @@ console.log(allStatuses.value)
 const anotherStatus = allStatuses.value.filter(
   (status) => status.id !== props.status.item.id
 )
+ 
+ 
 
 const selectedId = ref('')
 
@@ -26,7 +32,7 @@ defineEmits(['deleteStatus', 'closeDeleteModal'])
 
 <template>
   <div class="fixed inset-0 items-center flex justify-center">
-    <div class="bg-white items-center drop-shadow-xl border rounded-lg">
+    <div class="bg-white items-center drop-shadow-xl border rounded-lg" >
       <div class="flex justify-center mt-6">
         <img src="../components/icon/remove.svg" alt="" />
       </div>

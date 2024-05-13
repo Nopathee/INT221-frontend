@@ -10,7 +10,7 @@ const props = defineProps({
       title: '',
       description: null,
       assignees: null,
-      status: '1',
+      status: '',
     },
   },
 })
@@ -96,7 +96,7 @@ defineEmits(['saveTask', 'cancelTask'])
                 >Status:</label
               >
               <select
-                v-model="props.task.status.id"
+                v-model="props.task.status"
                 class="itbkk-status bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500 itbkk-status"
               >
                 <option value="" disabled>Select Status</option>
@@ -113,7 +113,7 @@ defineEmits(['saveTask', 'cancelTask'])
         </form>
         <div class="flex justify-end">
           <button
-            @click="$emit('saveTask', props.task)"
+            @click="$emit('saveTask', props.task )"
             class="px-4 py-2 bg-green-500 text-white rounded-md mr-2 disabled:opacity-50 itbkk-button-confirm"
             :disabled="!props.task.title.trim()"
           >
