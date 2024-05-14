@@ -1,7 +1,7 @@
 <script setup>
-
 import { computed, onMounted, ref } from 'vue'
-
+import { StatusManagement } from '../libs/StatusManagement.js'
+import { getItems } from '@/libs/fetchUtils'
 
 const showTime = ref({
   timezone: '',
@@ -32,15 +32,25 @@ const formatterUpdatedOn = computed(() => {
   return updatedOn
 })
 
+const statuses = ref(new StatusManagement())
+
+onMounted(async () => {
+  const items = await getItems(
+    `${import.meta.env.VITE_API_ENDPOINT}/v2/statuses`
+  )
+  statuses.value.addStatuses(items)
+  console.log(statuses.value.getStatuses())
+})
 
 console.log(props.task)
+console.log(props.task.status.name)
 </script>
 
 <template>
   <div class="fixed inset-0 flex items-center justify-center">
     <div class="w-full flex justify-center p-10">
       <div class="bg-white shadow-lg w-3/4 flex flex-col p-2 gap-5 rounded-xl">
-        <div class="font-bold text-2xl ">
+        <div class="font-bold text-2xl">
           <h1 class="itbkk-title mt-3 ml-2">{{ props.task.title }}</h1>
         </div>
         <hr />
@@ -49,7 +59,7 @@ console.log(props.task)
             <p class="text-sm font-semibold">Description</p>
             <textarea
               class="textarea bg-slate-100 border-slate-300 h-72 w-full itbkk-description rounded-md"
-              readonly = "true"
+              readonly="true"
               :style="{
                 fontStyle: props.task.description ? 'normal' : 'italic',
               }"
@@ -63,10 +73,10 @@ console.log(props.task)
           </div>
           <div class="flex flex-col gap-3 w-1/3">
             <div class="ml-1 mr-2">
-              <p class="text-sm font-semibold ">Assignees</p>
+              <p class="text-sm font-semibold">Assignees</p>
               <textarea
                 class="textarea h-24 w-full itbkk-assignees rounded-md bg-slate-100 border-slate-300"
-                readonly = "true"
+                readonly="true"
                 :style="{
                   fontStyle: props.task.assignees ? 'normal' : 'italic',
                 }"
@@ -77,20 +87,23 @@ console.log(props.task)
               >
             </div>
             <div class="ml-1 mr-2">
-              <p class="text-sm ">Status</p>
+              <p class="text-sm">Status</p>
               <select
                 class="select select-bordered w-full max-w-xs itbkk-status disabled:border-slate-300 disabled:bg-slate-100 disabled:text-black"
-                disabled = "true"
+                disabled="true"
                 v-model="props.task.status.name"
               >
-                <option value="NO_STATUS">No Status</option>
-                <option value="TO_DO">To Do</option>
-                <option value="DOING">Doing</option>
-                <option value="DONE">Done</option>
+                <option
+                  v-for="status in statuses.getStatuses()"
+                  :key="status.id"
+                  :value="status.name"
+                >
+                  {{ status.name }}
+                </option>
               </select>
             </div>
             <div class="m-1 flex">
-              <p class="text-sm ">
+              <p class="text-sm">
                 TimeZone:
                 <label
                   class="itbkk-timezone bg-slate-100 p-1 px-10 mx-2 text-black rounded-lg"
@@ -100,7 +113,7 @@ console.log(props.task)
               </p>
             </div>
             <div class="m-1 flex">
-              <p class="text-sm ">
+              <p class="text-sm">
                 CreateOn:
                 <label
                   class="itbkk-created-on bg-slate-100 p-1 px-5 mx-2 text-black rounded-lg"
@@ -110,7 +123,7 @@ console.log(props.task)
               </p>
             </div>
             <div class="m-1 flex">
-              <p class="text-sm ">
+              <p class="text-sm">
                 UpdatedOn:
                 <label
                   class="itbkk-updated-on bg-slate-100 p-1 px-3 mx-2 text-black rounded-lg"
