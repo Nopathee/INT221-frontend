@@ -35,6 +35,7 @@ async function addItem(url, newItem) {
     return addedItem
   } catch (error) {
     console.log(`error: ${error}`)
+    
   }
 }
 

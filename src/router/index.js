@@ -42,7 +42,7 @@ const router = createRouter({
         to.params.item = item
       },
     },
-    { path: '/task/statuses', name: 'status', component: StatusList },
+    { path: '/statuses', name: 'status', component: StatusList },
   ],
 })
 

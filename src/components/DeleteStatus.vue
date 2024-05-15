@@ -1,4 +1,6 @@
 <script setup>
+
+
 const props = defineProps({
   status: Object,
 
@@ -42,6 +44,7 @@ defineEmits(['deleteStatus', 'closeDeleteModal'])
       </div>
     </div>
   </div>
+
 </template>
 
 <style scoped></style>

@@ -41,6 +41,8 @@ class StatusManagement {
   getStatuses() {
     return this.statuses
   }
+
+  
 }
 
 export { StatusManagement}

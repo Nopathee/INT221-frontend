@@ -44,17 +44,17 @@ defineEmits(['saveStatus', 'closeModal'])
   <div>
     <div>
       <div class="fixed inset-0 flex items-center justify-center z-50">
-        <div class="bg-white rounded-lg p-8 w-3/5 shadow-2xl dark:bg-gray-700">
+        <div class="bg-white rounded-lg p-8 w-3/5 shadow-2xl dark:bg-gray-700 itbkk-modal-status">
           <div
             class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600"
           >
-            <h2 class="text-lg font-semibold text-gray-900 dark:text-white">
-              {{ props.status.id ? 'Edit Task' : 'Add Task' }}
+            <h2 class="text-lg font-semibold text-gray-900 dark:text-white ">
+              {{ props.status.id ? 'Edit status' : 'Add status' }}
             </h2>
           </div>
           <form class="p-4 md:p-5">
             <div class="grid gap-4 mb-4">
-              <div class="col-span-2">
+              <div class="col-span-2 itbkk-status-name">
                 <label
                   for="taskTitle"
                   class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
@@ -69,7 +69,7 @@ defineEmits(['saveStatus', 'closeModal'])
                   class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500 itbkk-title"
                 />
               </div>
-              <div class="col-span-2">
+              <div class="col-span-2 itbkk-status-description">
                 <label
                   for="Description"
                   class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"

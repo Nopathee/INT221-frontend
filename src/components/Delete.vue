@@ -38,6 +38,7 @@ console.log(props.taskDelete)
       </div>
     </div>
   </div>
+  
 </template>
 
 <style scoped></style>

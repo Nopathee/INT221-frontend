@@ -74,11 +74,15 @@ const deleteStatus = async (id) => {
   if (task.length > 0) {
     statusToDelete.value = status
     transDelete.value = true
+  } else if (status.status === 404){
+    alert("This status can not be delete") , deleteModal.value = false 
   } else {
     statusToDelete.value = status
     deleteModal.value = true
+      }
   }
-}
+
+
 
 const deleteModal = ref(false)
 
@@ -93,7 +97,7 @@ const confirmDelete = async (id) => {
   if (status === 200) {
     statuses.value.removeStatus(id)
     deleteModal.value = false
-  }
+  } 
 }
 
 const transferStatus = async (id, newId) => {
@@ -124,12 +128,14 @@ const editStatus = async (id) => {
 }
 
 const addStatus = () => {
-  status.value = {
+  
+    status.value = {
     id: undefined,
     name: '',
     description: null,
   }
   editModal.value = true
+ 
 }
 
 const saveStatus = async (status) => {
@@ -138,7 +144,10 @@ const saveStatus = async (status) => {
     name: status.name,
     description: status.description,
   }
-  if (status.id === undefined) {
+ 
+
+
+   if (status.id === undefined) {
     const newStatus = await addItem(
       `${import.meta.env.VITE_API_ENDPOINT}/v2/statuses`,
       item
@@ -187,6 +196,8 @@ setTimeout(() => {
       description: null,
     }
   }
+
+
 }
 </script>
 
@@ -201,7 +212,7 @@ setTimeout(() => {
           <div class="flex items-center">
             <h1
               @click="back"
-              class="text-2xl font-bold text-blue-500 mr-2 hover:underline"
+              class="text-2xl font-bold text-blue-500 mr-2 hover:underline itbkk-button-home"
             >
               HOME
             </h1>
@@ -209,7 +220,7 @@ setTimeout(() => {
           Task Status</span>
           </div>
           <button
-            class="bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 px-4 border-b-4 border-blue-700 hover:border-blue-500 rounded"
+            class="bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 px-4 border-b-4 border-blue-700 hover:border-blue-500 rounded itbkk-button-add"
             @click="addStatus"
           >
             Add Status
@@ -246,7 +257,7 @@ setTimeout(() => {
                 {{ status.description }}
               </td>
               <td v-else  class="itbkk-status-description font-semibold italic text-gray-500">
-                No description Provided
+                No description provided
               </td>
 
 
