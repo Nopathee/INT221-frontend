@@ -1,11 +1,9 @@
 <script setup>
 
-
-
-import {  ref } from 'vue'
+import {  ref  } from 'vue'
 
 const props = defineProps({
- 
+  taskCount:Object,
   status: Object,
 
   statuses: Array,
@@ -15,15 +13,14 @@ console.log(props.status.item)
 
 const allStatuses = ref(props.statuses)
 
+const selectedId = ref('')
+
 console.log(allStatuses.value)
+
 
 const anotherStatus = allStatuses.value.filter(
   (status) => status.id !== props.status.item.id
 )
- 
- 
-
-const selectedId = ref('')
 
 console.log(anotherStatus)
 
@@ -40,7 +37,7 @@ defineEmits(['deleteStatus', 'closeDeleteModal'])
         Transfer a Status
       </h1>
       <h2 class="flex justify-center itbkk-message mx-6">
-        There is some task associated with the
+        There is {{ taskCount }} task associated with the
         <span class="font-semibold italic text-red-800">
           &nbsp;{{ props.status.item.name }}&nbsp;
         </span>

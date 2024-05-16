@@ -20,11 +20,14 @@ defineProps({
   statuses: Array,
 })
 
+
 defineEmits(['addStatus'])
 
 const statuses = ref(new StatusManagement())
 
 const insertStatus = ref('')
+
+const taskCount = ref(0)
 
 const statusEdit = ref('')
 
@@ -70,10 +73,12 @@ const deleteStatus = async (id) => {
     `${import.meta.env.VITE_API_ENDPOINT}/v2/tasks`
   )
   const task = allTask.filter((task) => task.status.id === status.item.id)
-
+  taskCount.value = task.length 
+  console.log(task.length)
   if (task.length > 0) {
     statusToDelete.value = status
     transDelete.value = true
+    
   } else if (status.status === 404){
     alert("This status can not be delete") , deleteModal.value = false 
   } else {
@@ -144,17 +149,12 @@ const saveStatus = async (status) => {
     name: status.name,
     description: status.description,
   }
- 
-
-
    if (status.id === undefined) {
     const newStatus = await addItem(
       `${import.meta.env.VITE_API_ENDPOINT}/v2/statuses`,
       item
     )
-
     console.log(newStatus)
-
     statuses.value.addStatus(
       newStatus.id,
       newStatus.name,
@@ -309,6 +309,7 @@ setTimeout(() => {
   <Teleport to="#modal">
     <div v-if="transDelete">
       <TransferDelete
+        :taskCount="taskCount"
         :status="statusToDelete"
         :statuses="statuses.getStatuses()"
         @deleteStatus="transferStatus"
