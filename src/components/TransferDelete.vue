@@ -5,7 +5,6 @@ import {  ref  } from 'vue'
 const props = defineProps({
   taskCount:Object,
   status: Object,
-
   statuses: Array,
 })
 

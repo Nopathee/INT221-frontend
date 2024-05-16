@@ -80,7 +80,7 @@ const deleteStatus = async (id) => {
     transDelete.value = true
     
   } else if (status.status === 404){
-    alert("This status can not be delete") , deleteModal.value = false 
+    alert("An error has occurred, the status does not exist.") , deleteModal.value = false , router.push('/task')
   } else {
     statusToDelete.value = status
     deleteModal.value = true
