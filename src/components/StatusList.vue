@@ -16,10 +16,10 @@ import TransferDelete from './TransferDelete.vue'
 import StatusModal from './StatusModal.vue'
 import Succes from './Succes.vue'
 import Delete from './Delete.vue'
+import Error from './Error.vue'
 defineProps({
   statuses: Array,
 })
-
 
 defineEmits(['addStatus'])
 
@@ -34,6 +34,10 @@ const statusEdit = ref('')
 const deletedToast = ref(false)
 
 const successToast = ref(false)
+
+const errorToast = ref(false)
+
+const deletedStatus = ref('')
 
 const editToast = ref(false)
 const status = ref({
@@ -73,21 +77,19 @@ const deleteStatus = async (id) => {
     `${import.meta.env.VITE_API_ENDPOINT}/v2/tasks`
   )
   const task = allTask.filter((task) => task.status.id === status.item.id)
-  taskCount.value = task.length 
+
+  deletedStatus.value = status.item.name
+
+  taskCount.value = task.length
   console.log(task.length)
   if (task.length > 0) {
     statusToDelete.value = status
     transDelete.value = true
-    
-  } else if (status.status === 404){
-    alert("An error has occurred, the status does not exist.") , deleteModal.value = false , router.push('/task')
   } else {
     statusToDelete.value = status
     deleteModal.value = true
-      }
   }
-
-
+}
 
 const deleteModal = ref(false)
 
@@ -102,7 +104,18 @@ const confirmDelete = async (id) => {
   if (status === 200) {
     statuses.value.removeStatus(id)
     deleteModal.value = false
-  } 
+    deletedToast.value = true
+    setTimeout(() => {
+      deletedToast.value = false
+    }, 3000)
+  } else {
+    statuses.value.removeStatus(id)
+    deleteModal.value = false
+    errorToast.value = true
+    setTimeout(() => {
+      errorToast.value = false
+    }, 3000)
+  }
 }
 
 const transferStatus = async (id, newId) => {
@@ -133,14 +146,12 @@ const editStatus = async (id) => {
 }
 
 const addStatus = () => {
-  
-    status.value = {
+  status.value = {
     id: undefined,
     name: '',
     description: null,
   }
   editModal.value = true
- 
 }
 
 const saveStatus = async (status) => {
@@ -149,30 +160,41 @@ const saveStatus = async (status) => {
     name: status.name,
     description: status.description,
   }
-   if (status.id === undefined) {
+  if (status.id === undefined) {
     const newStatus = await addItem(
       `${import.meta.env.VITE_API_ENDPOINT}/v2/statuses`,
       item
     )
     console.log(newStatus)
-    statuses.value.addStatus(
-      newStatus.id,
-      newStatus.name,
-      newStatus.description
-    )
-    insertStatus.value = status.name
-    editModal.value = false
+    console.log(newStatus.status)
 
-    status.value = {
-      id: undefined,
-      name: '',
-      description: null,
+    if (newStatus.status === 500) {
+      status.value = {
+        id: undefined,
+        name: '',
+        description: null,
+      }
+      editModal.value = false
+      return
+    } else {
+      statuses.value.addStatus(
+        newStatus.id,
+        newStatus.name,
+        newStatus.description
+      )
+      insertStatus.value = status.name
+      editModal.value = false
+
+      status.value = {
+        id: undefined,
+        name: '',
+        description: null,
+      }
+      successToast.value = true
+      setTimeout(() => {
+        successToast.value = false
+      }, 3000)
     }
-    successToast.value = true
-
-setTimeout(() => {
-  successToast.value = false
-}, 3000)
   } else {
     const updatedStatus = await editItem(
       `${import.meta.env.VITE_API_ENDPOINT}/v2/statuses`,
@@ -196,8 +218,6 @@ setTimeout(() => {
       description: null,
     }
   }
-
-
 }
 </script>
 
@@ -216,8 +236,7 @@ setTimeout(() => {
             >
               HOME
             </h1>
-            <span class="mr-2 font-semibold text-2xl px-2"> > 
-          Task Status</span>
+            <span class="mr-2 font-semibold text-2xl px-2"> > Task Status</span>
           </div>
           <button
             class="bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 px-4 border-b-4 border-blue-700 hover:border-blue-500 rounded itbkk-button-add"
@@ -252,14 +271,19 @@ setTimeout(() => {
               >
                 {{ status.name }}
               </td>
-               
-              <td v-if="status.description" class="itbkk-status-description font-semibold text-white">
+
+              <td
+                v-if="status.description"
+                class="itbkk-status-description font-semibold text-white"
+              >
                 {{ status.description }}
               </td>
-              <td v-else  class="itbkk-status-description font-semibold italic text-gray-500">
+              <td
+                v-else
+                class="itbkk-status-description font-semibold italic text-gray-500"
+              >
                 No description provided
               </td>
-
 
               <td class="text-center">
                 <button
@@ -283,9 +307,22 @@ setTimeout(() => {
       </div>
     </div>
   </div>
-  <Succes v-if="successToast" :insertStatus="insertStatus" @closeToast="successToast = false" />
-    <Delete v-if="deletedToast" :taskDelete="deleteTask.item.title" @closeToast="deletedToast = false"/>
-    <Edit v-if="editToast" :statusEdit="statusEdit" @closeToast="editToast = false" />
+  <Succes
+    v-if="successToast"
+    :insertStatus="insertStatus"
+    @closeToast="successToast = false"
+  />
+  <Delete
+    v-if="deletedToast"
+    :statusDelete="deletedStatus"
+    @closeToast="deletedToast = false"
+  />
+  <Error v-if="errorToast" :status="true" @closeToast="errorToast = false" />
+  <Edit
+    v-if="editToast"
+    :statusEdit="statusEdit"
+    @closeToast="editToast = false"
+  />
   <Teleport to="#modal">
     <div v-if="editModal">
       <StatusModal

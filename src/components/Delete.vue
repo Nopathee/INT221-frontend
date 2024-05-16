@@ -1,11 +1,16 @@
 <script setup>
 const props = defineProps({
   taskDelete: String,
+  statusDelete: String,
 })
+
+
 
 defineEmits(['closeToast'])
 
 console.log(props.taskDelete)
+
+console.log(props.statusDelete)
 </script>
 
 <template>
@@ -32,7 +37,7 @@ console.log(props.taskDelete)
         <div class="m-2">
           <h2 class="text-lg text-red-500 font-bold">Deleted</h2>
           <p class="text-red-800">
-            Task {{ props.taskDelete }} has been deleted
+            {{ props.taskDelete ? "Task" : "Status"}} {{ props.taskDelete ? props.taskDelete : props.statusDelete }} has been deleted
           </p>
         </div>
       </div>
