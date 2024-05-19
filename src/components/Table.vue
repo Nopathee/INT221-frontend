@@ -1,10 +1,10 @@
 <script setup>
-import { defineProps, ref } from 'vue'
+import { defineProps, ref, watch, onMounted } from 'vue'
 const props = defineProps({
   tasks: Array,
 })
 
-defineEmits([
+const emit = defineEmits([
   'openModal',
   'closeModal',
   'editTask',
@@ -16,9 +16,7 @@ defineEmits([
 ])
 
 const sortedTasks = ref([...props.tasks])
-const sortOrder = ref('default')
-
-console.log(sortedTasks.value)
+const sortOrder = ref('Default')
 
 const sortTasks = (order) => {
   sortOrder.value = order
@@ -29,7 +27,19 @@ const sortTasks = (order) => {
   } else {
     sortedTasks.value = [...props.tasks]
   }
+  emit('sortStatus', order)
 }
+
+// Watch for changes in the props.tasks to keep sortedTasks updated
+watch(() => props.tasks, (newTasks) => {
+  sortedTasks.value = [...newTasks]
+  sortTasks(sortOrder.value)
+})
+
+// Initial sort to show default order
+onMounted(() => {
+  sortTasks('Default')
+})
 </script>
 
 <template>
@@ -40,8 +50,8 @@ const sortTasks = (order) => {
           class="bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 px-4 border-b-4 border-blue-700 hover:border-blue-500 rounded-lg mb-4"
         >
           <router-link to="/statuses" @click="$emit('statusDetail')">
-            Manage Status</router-link
-          >
+            Manage Status
+          </router-link>
         </button>
       </div>
       <table class="w-full table table-lg rounded-lg overflow-hidden">
@@ -115,7 +125,7 @@ const sortTasks = (order) => {
             </td>
 
             <td
-              class="text-blue-800 hover:underline itbkk-title font-semibold transition-property: transition-property: transform;"
+              class="text-blue-800 hover:underline itbkk-title font-semibold transition-property: transform;"
               @click="$emit('showDetail', task.id)"
             >
               {{ task.title }}
