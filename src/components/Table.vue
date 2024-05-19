@@ -1,6 +1,6 @@
 <script setup>
 import { defineProps, ref } from 'vue'
-defineProps({
+const props = defineProps({
   tasks: Array,
 })
 
@@ -12,23 +12,38 @@ defineEmits([
   'deleteTask',
   'statusDetail',
   'toggleSort',
-  'sortStatus'
+  'sortStatus',
 ])
 
+const sortedTasks = ref([...props.tasks])
+const sortOrder = ref('default')
+
+console.log(sortedTasks.value)
+
+const sortTasks = (order) => {
+  sortOrder.value = order
+  if (order === 'A-Z') {
+    sortedTasks.value.sort((a, b) => a.status.name.localeCompare(b.status.name))
+  } else if (order === 'Z-A') {
+    sortedTasks.value.sort((a, b) => b.status.name.localeCompare(a.status.name))
+  } else {
+    sortedTasks.value = [...props.tasks]
+  }
+}
 </script>
 
 <template>
   <div class="w-full flex justify-center items-center">
     <div class="rounded-xl p-5">
-      <div class=" flex justify-end">
+      <div class="flex justify-end">
         <button
-        class="bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 px-4 border-b-4 border-blue-700 hover:border-blue-500 rounded-lg mb-4 "
-      >
-        <router-link to="/statuses" @click="$emit('statusDetail')">
-          Manage Status</router-link
+          class="bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 px-4 border-b-4 border-blue-700 hover:border-blue-500 rounded-lg mb-4"
         >
-      </button>
-    </div>
+          <router-link to="/statuses" @click="$emit('statusDetail')">
+            Manage Status</router-link
+          >
+        </button>
+      </div>
       <table class="w-full table table-lg rounded-lg overflow-hidden">
         <thead>
           <tr class="font-bold text-red-800 text-lg bg-pink-300">
@@ -42,18 +57,31 @@ defineEmits([
             </th>
             <th>Title</th>
             <th>Assignees</th>
-            <th class="flex items-center">Status &nbsp;&nbsp;<img
-              src="./icon/sort-az.png"
-              
-              @click="$emit('toggleSort', 'sortStatus')" 
-              class="itbkk-status-sort cursor-pointer"
-              alt="Sort Icon"
-            /> </th>
+            <th class="flex items-center">
+              Status &nbsp;
+              <div class="dropdown dropdown-bottom dropdown-end">
+                <div
+                  tabindex="0"
+                  role="button"
+                  class="btn btn-sm mt-1.5 btn-ghost"
+                >
+                  <img src="./icon/sortaz.svg" alt="sort" />
+                </div>
+                <ul
+                  tabindex="1"
+                  class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box"
+                >
+                  <li><a @click="sortTasks('Default')">Default</a></li>
+                  <li><a @click="sortTasks('A-Z')">A-Z</a></li>
+                  <li><a @click="sortTasks('Z-A')">Z-A</a></li>
+                </ul>
+              </div>
+            </th>
           </tr>
         </thead>
         <tbody>
           <tr
-            v-for="(task, index) in tasks"
+            v-for="(task, index) in sortedTasks"
             :key="index"
             class="bg-blue-300 itbkk-item"
           >
@@ -121,6 +149,7 @@ defineEmits([
 
 <style scoped>
 .itbkk-status-sort {
-  width: 24px; 
-  height: 20px; 
-}</style>
+  width: 24px;
+  height: 20px;
+}
+</style>

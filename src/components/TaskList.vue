@@ -231,43 +231,6 @@ const showEdit = async (id) => {
   router.push(`/task/${id}/edit`)
 }
 
-
-const sortOrder = ref('default')
-
-    const sortedTask = async () => {
-      const sort =  getItems(`${import.meta.env.VITE_API_ENDPOINT}/v2/tasks`) 
-
-      sort.sort((a, b) => {
-        const sortA = a.status.name.toLowerCase(),
-              sortB = b.statusname.toLowerCase()
-
-        if (sortA < sortB) {
-           sortOrder.value === 'ascending' ? -1 : 1
-        }
-        if (sortA > sortB) {
-          sortOrder.value === 'ascending' ? 1 : -1
-        }
-        return 0;
-      })
-
-      return sortDefault;
-    }
-    console.log(sortOrder.value)
-
-
-    const togglesortStatus = () => {
-      
-      if (sortOrder.value === 'default') {
-        sortOrder.value = 'ascending'
-        console.log(sortOrder.value)
-      } else if (sortOrder.value === 'ascending') {
-        sortOrder.value = 'descending'
-        console.log(sortOrder.value)
-      } else {
-        sortOrder.value = 'default'
-        console.log(sortOrder.value)
-      }
-    }
 </script>
 
 <template>
@@ -285,8 +248,6 @@ const sortOrder = ref('default')
       @showDetail="showDetail"
       @deleteTask="showDelete"
       @editTask="showEdit"
-      @toggleSort="togglesortStatus"
-      @sortStatus="sortedTask"
     />
 
     <Teleport to="#modal">
