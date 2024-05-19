@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted, ref , computed} from 'vue'
+import { onMounted, ref } from 'vue'
 import Table from './Table.vue'
 import TaskDetail from './TaskDetail.vue'
 import ConfirmDelete from './ConfirmDelete.vue'

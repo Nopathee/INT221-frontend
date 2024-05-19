@@ -2,6 +2,7 @@
 import { defineProps, ref, watch, onMounted } from 'vue'
 const props = defineProps({
   tasks: Array,
+
 })
 
 const emit = defineEmits([
@@ -14,8 +15,12 @@ const emit = defineEmits([
   'toggleSort',
   'sortStatus',
 ])
+const sortedTasks = ref([])
+onMounted(() => {
+  sortTasks('Default')
+  sortedTasks.value = props.tasks
+})
 
-const sortedTasks = ref([...props.tasks])
 const sortOrder = ref('Default')
 
 const sortTasks = (order) => {
@@ -37,9 +42,7 @@ watch(() => props.tasks, (newTasks) => {
 })
 
 // Initial sort to show default order
-onMounted(() => {
-  sortTasks('Default')
-})
+
 </script>
 
 <template>
@@ -69,11 +72,11 @@ onMounted(() => {
             <th>Assignees</th>
             <th class="flex items-center">
               Status &nbsp;
-              <div class="dropdown dropdown-bottom dropdown-end">
+              <div class="dropdown dropdown-bottom dropdown-end itbkk-status-sort">
                 <div
                   tabindex="0"
                   role="button"
-                  class="btn btn-sm mt-1.5 btn-ghost"
+                  class="btn btn-sm mt-1.5 btn-ghost "
                 >
                   <img src="./icon/sortaz.svg" alt="sort" />
                 </div>
@@ -158,8 +161,5 @@ onMounted(() => {
 </template>
 
 <style scoped>
-.itbkk-status-sort {
-  width: 24px;
-  height: 20px;
-}
+
 </style>
