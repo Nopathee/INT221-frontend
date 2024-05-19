@@ -11,7 +11,8 @@ defineEmits([
   'showDetail',
   'deleteTask',
   'statusDetail',
-  'toggleSort'
+  'toggleSort',
+  'sortStatus'
 ])
 
 </script>
@@ -44,7 +45,7 @@ defineEmits([
             <th class="flex items-center">Status &nbsp;&nbsp;<img
               src="./icon/sort-az.png"
               
-              @click="$emit('toggleSort')" 
+              @click="$emit('toggleSort', 'sortStatus')" 
               class="itbkk-status-sort cursor-pointer"
               alt="Sort Icon"
             /> </th>
