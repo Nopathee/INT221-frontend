@@ -2,7 +2,6 @@
 import { defineProps, ref, watch, onMounted } from 'vue'
 const props = defineProps({
   tasks: Array,
-
 })
 
 const emit = defineEmits([
@@ -35,13 +34,6 @@ const sortTasks = (order) => {
   emit('sortStatus', order)
 }
 
-// Watch for changes in the props.tasks to keep sortedTasks updated
-watch(() => props.tasks, (newTasks) => {
-  sortedTasks.value = [...newTasks]
-  sortTasks(sortOrder.value)
-})
-
-// Initial sort to show default order
 
 </script>
 
@@ -72,11 +64,13 @@ watch(() => props.tasks, (newTasks) => {
             <th>Assignees</th>
             <th class="flex items-center">
               Status &nbsp;
-              <div class="dropdown dropdown-bottom dropdown-end itbkk-status-sort">
+              <div
+                class="dropdown dropdown-bottom dropdown-end itbkk-status-sort"
+              >
                 <div
                   tabindex="0"
                   role="button"
-                  class="btn btn-sm mt-1.5 btn-ghost "
+                  class="btn btn-sm mt-1.5 btn-ghost"
                 >
                   <img src="./icon/sortaz.svg" alt="sort" />
                 </div>
@@ -160,6 +154,4 @@ watch(() => props.tasks, (newTasks) => {
   </div>
 </template>
 
-<style scoped>
-
-</style>
+<style scoped></style>
