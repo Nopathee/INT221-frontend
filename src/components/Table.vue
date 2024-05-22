@@ -1,10 +1,10 @@
 <script setup>
-import { defineProps, ref, watch, onMounted } from 'vue';
+import { defineProps, ref, watch, onMounted } from 'vue'
 
 const props = defineProps({
   tasks: Array,
   statuses: Array,
-});
+})
 
 const emit = defineEmits([
   'openModal',
@@ -13,84 +13,88 @@ const emit = defineEmits([
   'showDetail',
   'deleteTask',
   'statusDetail',
-]);
+])
 
-const sortedTasks = ref([]);
-const originalTasks = ref([]);
-const sortOrder = ref('Default');
+const sortedTasks = ref([])
+const originalTasks = ref([])
+const sortOrder = ref('Default')
 
-console.log('props.tasks', props.tasks);
+console.log('props.tasks', props.tasks)
 
 onMounted(() => {
   originalTasks.value = props.tasks
-  filterAndSortTasks();
-  console.log('sortedTasks', sortedTasks.value);
-});
+  filterAndSortTasks()
+  console.log('sortedTasks', sortedTasks.value)
+})
 
-const selectedStatusIds = ref([]);
+const selectedStatusIds = ref([])
 
 watch(
-   () => props.tasks,
+  () => props.tasks,
   (newTasks) => {
-    originalTasks.value = newTasks;
-    filterAndSortTasks();
+    originalTasks.value = newTasks
+    filterAndSortTasks()
   }
-);
+)
+
+watch(selectedStatusIds, () => {
+  filterAndSortTasks();
+});
 
 const filterAndSortTasks = () => {
-  let filteredTasks = [...originalTasks.value];
+  let filteredTasks = [...originalTasks.value]
 
   if (selectedStatusIds.value.length > 0) {
     filteredTasks = filteredTasks.filter((task) =>
       selectedStatusIds.value.includes(task.status.id)
-    );
+    )
   }
 
   if (sortOrder.value === 'A-Z') {
-    filteredTasks.sort((a, b) => a.status.name.localeCompare(b.status.name));
+    filteredTasks.sort((a, b) => a.status.name.localeCompare(b.status.name))
   } else if (sortOrder.value === 'Z-A') {
-    filteredTasks.sort((a, b) => b.status.name.localeCompare(a.status.name));
-  }else {
-    filteredTasks.sort((a, b) => a.id - b.id);
+    filteredTasks.sort((a, b) => b.status.name.localeCompare(a.status.name))
+  } else {
+    filteredTasks.sort((a, b) => a.id - b.id)
   }
 
-  sortedTasks.value = filteredTasks;
-};
+  sortedTasks.value = filteredTasks
+}
 
 const toggleSortOrder = () => {
   if (sortOrder.value === 'Default') {
-    sortOrder.value = 'A-Z';
+    sortOrder.value = 'A-Z'
   } else if (sortOrder.value === 'A-Z') {
-    sortOrder.value = 'Z-A';
+    sortOrder.value = 'Z-A'
   } else if (sortOrder.value === 'Z-A') {
-    sortOrder.value = 'Default';
+    sortOrder.value = 'Default'
   }
-  filterAndSortTasks();
-};
+  filterAndSortTasks()
+}
 
-const selectedStatusNames = ref([]);
+const selectedStatusNames = ref([])
 
 const updateSelectedStatusNames = (statusId) => {
-  const status = props.statuses.find((s) => s.id === statusId);
+  const status = props.statuses.find((s) => s.id === statusId)
   if (status) {
     if (!selectedStatusNames.value.includes(status)) {
-      selectedStatusNames.value.push(status);
+      selectedStatusNames.value.push(status)
     } else {
       selectedStatusNames.value = selectedStatusNames.value.filter(
         (name) => name.name !== status.name
-      );
+      )
     }
   }
-};
+}
 
 const removeSelectedStatus = (statusId) => {
   selectedStatusNames.value = selectedStatusNames.value.filter(
     (status) => status.id !== statusId
-  );
+  )
   selectedStatusIds.value = selectedStatusIds.value.filter(
     (id) => id !== statusId
-  );
-  filterAndSortTasks();
+  )
+  filterAndSortTasks()
 }
 </script>
 
@@ -118,10 +122,7 @@ const removeSelectedStatus = (statusId) => {
                 :id="status.id"
                 :value="status.id"
                 v-model="selectedStatusIds"
-                @change="
-                  $emit('selectedStatusChanged', selectedStatusIds),
-                    updateSelectedStatusNames(status.id)
-                "
+                @change="updateSelectedStatusNames(status.id)"
               />
               <label :for="status.id" class="ml-2 font-semibold">{{
                 status.name
@@ -146,9 +147,10 @@ const removeSelectedStatus = (statusId) => {
           <button
             class="btn btn-sm btn-error btn-outline itbkk-filter-clear"
             @click="
-              selectedStatusIds = [];
-              selectedStatusNames = [];
-              filterAndSortTasks();"
+              selectedStatusIds = [],
+              selectedStatusNames = [],
+              filterAndSortTasks()
+            "
           >
             Clear All
           </button>
@@ -216,7 +218,9 @@ const removeSelectedStatus = (statusId) => {
         </thead>
         <tbody>
           <tr
-            v-for="(task, index) in sortedTasks.length > 0 ? sortedTasks : props.tasks"
+            v-for="(task, index) in sortedTasks.length > 0
+              ? sortedTasks
+              : props.tasks"
             :key="index"
             class="bg-blue-300 itbkk-item"
           >
