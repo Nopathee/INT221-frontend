@@ -272,7 +272,7 @@ const saveStatus = async (status) => {
             <tr class="font-bold text-red-800 text-lg bg-pink-300">
               <th></th>
               <th>Name</th>
-              <th>Desciption</th>
+              <th>Description</th>
               <th class="text-center">Action</th>
             </tr>
           </thead>
