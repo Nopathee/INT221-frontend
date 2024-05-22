@@ -1,5 +1,5 @@
 <script setup>
-import { defineProps, ref, watch, onMounted } from 'vue'
+import { defineProps, ref, computed, onMounted } from 'vue'
 const props = defineProps({
   tasks: Array,
 })
@@ -12,29 +12,52 @@ const emit = defineEmits([
   'deleteTask',
   'statusDetail',
   'toggleSort',
-  'sortStatus',
 ])
 const sortedTasks = ref([])
+const originalTasks = ref([])
 onMounted(() => {
   sortTasks('Default')
+  originalTasks.value = props.tasks
   sortedTasks.value = props.tasks
+  console.log(props.tasks)
 })
 
 const sortOrder = ref('Default')
 
 const sortTasks = (order) => {
   sortOrder.value = order
-  if (order === 'A-Z') {
-    sortedTasks.value.sort((a, b) => a.status.name.localeCompare(b.status.name))
+  if (order === 'Default') {
+    sortedTasks.value = [...originalTasks.value]
+  } else if (order === 'A-Z') {
+    sortedTasks.value = [...originalTasks.value].sort((a, b) =>
+      a.status.name.localeCompare(b.status.name)
+    )
   } else if (order === 'Z-A') {
-    sortedTasks.value.sort((a, b) => b.status.name.localeCompare(a.status.name))
-  } else {
-    sortedTasks.value = [...props.tasks]
+    sortedTasks.value = [...originalTasks.value].sort((a, b) =>
+      b.status.name.localeCompare(a.status.name)
+    )
   }
-  emit('sortStatus', order)
 }
 
+const toggleSortOrder = () => {
+  if (sortOrder.value === 'Default') {
+    sortTasks('A-Z')
+  } else if (sortOrder.value === 'A-Z') {
+    sortTasks('Z-A')
+  } else if (sortOrder.value === 'Z-A') {
+    sortTasks('Default')
+  }
+}
 
+const sortIcon = computed(() => {
+  if (sortOrder.value === 'A-Z') {
+    return 'src/components/icon/sortaz.svg'
+  } else if (sortOrder.value === 'Z-A') {
+    return 'src/components/icon/sortza.svg'
+  } else {
+    return 'src/components/icon/sort.svg'
+  }
+})
 </script>
 
 <template>
@@ -64,25 +87,12 @@ const sortTasks = (order) => {
             <th>Assignees</th>
             <th class="flex items-center">
               Status &nbsp;
-              <div
-                class="dropdown dropdown-bottom dropdown-end itbkk-status-sort"
+              <button
+                @click="toggleSortOrder"
+                class="btn btn-sm btn-ghost itbkk-status-sort"
               >
-                <div
-                  tabindex="0"
-                  role="button"
-                  class="btn btn-sm mt-1.5 btn-ghost"
-                >
-                  <img src="./icon/sortaz.svg" alt="sort" />
-                </div>
-                <ul
-                  tabindex="1"
-                  class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box"
-                >
-                  <li><a @click="sortTasks('Default')">Default</a></li>
-                  <li><a @click="sortTasks('A-Z')">A-Z</a></li>
-                  <li><a @click="sortTasks('Z-A')">Z-A</a></li>
-                </ul>
-              </div>
+                <img :src="sortIcon" />
+              </button>
             </th>
           </tr>
         </thead>
