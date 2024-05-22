@@ -54,7 +54,12 @@ const task = ref({
   title: '',
   description: null,
   assignees: null,
-  status: '1',
+  status: {
+    id: '1',
+    name: 'No Status',
+    description: 'A status hos not been assigned',
+    color: '#ffffff',
+  },
 })
 
 const clearModal = (flagModal) => {
@@ -63,7 +68,12 @@ const clearModal = (flagModal) => {
     title: '',
     description: null,
     assignees: null,
-    status: '1',
+    status: {
+    id: '1',
+    name: 'No Status',
+    description: 'A status hos not been assigned',
+    color: '#ffffff',
+  },
   }
   showModal.value = flagModal
   router.push('/task')
@@ -109,7 +119,12 @@ const saveTask = async (selectedTask) => {
       title: '',
       description: null,
       assignees: null,
-      status: '',
+      status: {
+    id: '1',
+    name: 'No Status',
+    description: 'A status hos not been assigned',
+    color: '#ffffff',
+  },
     }
     router.push('/task')
 
@@ -145,7 +160,12 @@ const saveTask = async (selectedTask) => {
       title: '',
       description: null,
       assignees: null,
-      status: '1',
+      status: {
+    id: '1',
+    name: 'No Status',
+    description: 'A status hos not been assigned',
+    color: '#ffffff',
+  },
     }
 
     router.push('/task')
@@ -157,7 +177,12 @@ const taskDetail = ref({
   title: '',
   description: null,
   assignees: null,
-  status: '1',
+  status: {
+    id: '1',
+    name: 'No Status',
+    description: 'A status hos not been assigned',
+    color: '#ffffff',
+  },
   createdOn: '',
   updatedOn: '',
 })
