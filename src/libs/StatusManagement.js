@@ -5,15 +5,16 @@ class StatusManagement {
 
   addStatuses(newStatuses) {
     newStatuses.forEach((newStatus) =>
-      this.addStatus(newStatus.id, newStatus.name, newStatus.description, newStatus.createdOn, newStatus.updatedOn)
+      this.addStatus(newStatus.id, newStatus.name, newStatus.description,newStatus.color, newStatus.createdOn, newStatus.updatedOn)
     )
   }
 
-  addStatus(id, name, description,createdOn , updatedOn) {
+  addStatus(id, name, description,color,createdOn , updatedOn) {
     this.statuses.push({
       id: id,
       name: name,
       description: description,
+      color: color,
       createdOn: createdOn,
       updatedOn: updatedOn,
     })

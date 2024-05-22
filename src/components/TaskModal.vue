@@ -13,16 +13,7 @@ const props = defineProps({
       status: '',
     },
   },
-})
-
-const statuses = ref(new StatusManagement())
-
-onMounted(async () => {
-  const items = await getItems(
-    `${import.meta.env.VITE_API_ENDPOINT}/v2/statuses`
-  )
-  statuses.value.addStatuses(items)
-  console.log(statuses.value.getStatuses())
+  statuses: Array,
 })
 
 console.log(props.task)
@@ -101,7 +92,7 @@ defineEmits(['saveTask', 'cancelTask'])
               >
                 <option value="" disabled>Select Status</option>
                 <option
-                  v-for="status in statuses.getStatuses()"
+                  v-for="status in props.statuses"
                   :key="status.id"
                   :value="status.id"
                 >

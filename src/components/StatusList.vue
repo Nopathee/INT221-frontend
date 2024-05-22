@@ -44,6 +44,7 @@ const status = ref({
   id: undefined,
   name: '',
   description: null,
+  color: null,
 })
 
 onMounted(async () => {
@@ -62,6 +63,7 @@ const statusToDelete = ref({
   id: undefined,
   name: '',
   description: null,
+  color: null,
 })
 
 const transDelete = ref(false)
@@ -150,6 +152,7 @@ const addStatus = () => {
     id: undefined,
     name: '',
     description: null,
+    color: null,
   }
   editModal.value = true
 }
@@ -159,6 +162,7 @@ const saveStatus = async (status) => {
   const item = {
     name: status.name,
     description: status.description,
+    color: status.color,
   }
   if (status.id === undefined) {
     const newStatus = await addItem(
@@ -173,6 +177,7 @@ const saveStatus = async (status) => {
         id: undefined,
         name: '',
         description: null,
+        color: null,
       }
       editModal.value = false
       return
@@ -180,7 +185,8 @@ const saveStatus = async (status) => {
       statuses.value.addStatus(
         newStatus.id,
         newStatus.name,
-        newStatus.description
+        newStatus.description,
+        newStatus.color
       )
       insertStatus.value = status.name
       editModal.value = false
@@ -189,6 +195,7 @@ const saveStatus = async (status) => {
         id: undefined,
         name: '',
         description: null,
+        color: null,
       }
       successToast.value = true
       setTimeout(() => {
@@ -202,10 +209,12 @@ const saveStatus = async (status) => {
       item
     )
     statusEdit.value = status.name
+    console.log(updatedStatus)
     statuses.value.updateStatus(
       updatedStatus.id,
       updatedStatus.name,
-      updatedStatus.description
+      updatedStatus.description,
+      updatedStatus.color
     )
     editToast.value = true
     editModal.value = false
@@ -216,6 +225,7 @@ const saveStatus = async (status) => {
       id: undefined,
       name: '',
       description: null,
+      color: null,
     }
   }
 }
@@ -289,14 +299,14 @@ const saveStatus = async (status) => {
                 <button
                   @click="editStatus(status.id)"
                   class="btn btn-sm bg-slate-200 text-black itbkk-button-edit mr-2"
-                  v-if="index !== 0"
+                  v-if="status.name !== 'No Status' && status.name !== 'Done' "
                 >
                   Edit
                 </button>
                 <button
                   @click="deleteStatus(status.id)"
                   class="btn btn-sm btn-error itbkk-button-delete ml-2"
-                  v-if="index !== 0"
+                  v-if="status.name !== 'No Status' && status.name !== 'Done'"
                 >
                   Delete
                 </button>

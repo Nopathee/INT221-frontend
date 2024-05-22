@@ -31,10 +31,6 @@ const getTimezone = () => {
   showTime.value.timezone = Intl.DateTimeFormat().resolvedOptions().timeZone
 }
 
-
-
-
-
 console.log(props.status)
 
 defineEmits(['saveStatus', 'closeModal'])
@@ -44,11 +40,13 @@ defineEmits(['saveStatus', 'closeModal'])
   <div>
     <div>
       <div class="fixed inset-0 flex items-center justify-center z-50">
-        <div class="bg-white rounded-lg p-8 w-3/5 shadow-2xl dark:bg-gray-700 itbkk-modal-status">
+        <div
+          class="bg-white rounded-lg p-8 w-3/5 shadow-2xl dark:bg-gray-700 itbkk-modal-status"
+        >
           <div
             class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600"
           >
-            <h2 class="text-lg font-semibold text-gray-900 dark:text-white ">
+            <h2 class="text-lg font-semibold text-gray-900 dark:text-white">
               {{ props.status.id ? 'Edit status' : 'Add status' }}
             </h2>
           </div>
@@ -60,14 +58,20 @@ defineEmits(['saveStatus', 'closeModal'])
                   class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                   >Name</label
                 >
-
-                <input
-                  id="taskTitle"
-                  v-model.trim="props.status.name"
-                  type="text"
-                  maxlength="100"
-                  class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500 itbkk-title"
-                />
+                <div class="flex gap-2">
+                  <input
+                    id="taskTitle"
+                    v-model.trim="props.status.name"
+                    type="text"
+                    maxlength="100"
+                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500 itbkk-title"
+                  />
+                  <input
+                    type="color"
+                    v-model="props.status.color"
+                    class="h-10"
+                  />
+                </div>
               </div>
               <div class="col-span-2 itbkk-status-description">
                 <label

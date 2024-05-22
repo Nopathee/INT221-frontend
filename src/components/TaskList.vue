@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted, ref } from 'vue'
+import { onMounted, ref, computed } from 'vue'
 import Table from './Table.vue'
 import TaskDetail from './TaskDetail.vue'
 import ConfirmDelete from './ConfirmDelete.vue'
@@ -17,15 +17,11 @@ import {
 } from '@/libs/fetchUtils.js'
 import { TaskManagement } from '../libs/TaskManagement.js'
 import router from '@/router'
+import { StatusManagement } from '@/libs/StatusManagement'
 
 console.log(`${import.meta.env.VITE_API_ENDPOINT}/v2/tasks`)
 const allTask = ref(new TaskManagement())
-
-onMounted(async () => {
-  const items = await getItems(`${import.meta.env.VITE_API_ENDPOINT}/v2/tasks`)
-  allTask.value.addDtoTasks(items)
-  console.log(allTask.value.getTasks())
-})
+const allStatuses = ref(new StatusManagement())
 
 const deletedToast = ref(false)
 
@@ -42,6 +38,16 @@ const taskInsert = ref('')
 const taskEdit = ref('')
 
 const errorToast = ref(false)
+
+onMounted(async () => {
+  const items = await getItems(`${import.meta.env.VITE_API_ENDPOINT}/v2/tasks`)
+  const status = await getItems(
+    `${import.meta.env.VITE_API_ENDPOINT}/v2/statuses`
+  )
+  allStatuses.value.addStatuses(status)
+  allTask.value.addDtoTasks(items)
+  console.log(allTask.value.getTasks())
+})
 
 const task = ref({
   id: undefined,
@@ -167,9 +173,9 @@ const showDetail = async (id) => {
     id
   )
   console.log(detail.status)
-    
-    taskDetail.value = await detail.item
-    showModalDetail.value = true
+
+  taskDetail.value = await detail.item
+  showModalDetail.value = true
 }
 
 const deleteTask = ref('')
@@ -220,7 +226,6 @@ const confDelete = async (id) => {
 }
 
 const showEdit = async (id) => {
-  
   const detail = await getItemById(
     `${import.meta.env.VITE_API_ENDPOINT}/v2/tasks`,
     id
@@ -231,28 +236,62 @@ const showEdit = async (id) => {
   router.push(`/task/${id}/edit`)
 }
 
+const filteredTasks = ref(allTask.value.getTasks())
+console.log(filteredTasks.value)
+
+const filterTask = (selectedStatusIds) => {
+  console.log(selectedStatusIds)
+  filteredTasks.value = allTask.value
+    .getTasks()
+    .filter((task) => selectedStatusIds.includes(task.status.id))
+  console.log(filteredTasks.value)
+}
+
+const computedTasks = computed(() => {
+  console.log(filteredTasks.value)
+  return filteredTasks.value
+})
 </script>
 
 <template>
-  <div>
+  <div class="w-full">
     <h1 class="text-center text-2xl bg-clip-content p-3 font-extrabold mt-5">
       IT-Bangmod Kradan Kanban SSI-3
     </h1>
+    <Succes
+      v-if="successToast"
+      :taskInsert="taskInsert"
+      @closeToast="successToast = false"
+    />
+    <Delete
+      v-if="deletedToast"
+      :taskDelete="deleteTask.item.title"
+      @closeToast="deletedToast = false"
+    />
+    <Edit
+      v-if="editToast"
+      :taskEdit="taskEdit"
+      @closeToast="editToast = false"
+    />
 
-    <Succes v-if="successToast" :taskInsert="taskInsert" @closeToast="successToast = false" />
-    <Delete v-if="deletedToast" :taskDelete="deleteTask.item.title" @closeToast="deletedToast = false"/>
-    <Edit v-if="editToast" :taskEdit="taskEdit" @closeToast="editToast = false" />
     <Table
-      :tasks="allTask.getTasks()"
+      :tasks="computedTasks"
+      :statuses="allStatuses.getStatuses()"
       @openModal="showInsert"
       @showDetail="showDetail"
       @deleteTask="showDelete"
       @editTask="showEdit"
+      @selectedStatusChanged="filterTask"
     />
 
     <Teleport to="#modal">
       <div v-if="showModal">
-        <TaskModal @cancelTask="clearModal" @saveTask="saveTask" :task="task" />
+        <TaskModal
+          @cancelTask="clearModal"
+          @saveTask="saveTask"
+          :task="task"
+          :statuses="allStatuses.getStatuses()"
+        />
       </div>
     </Teleport>
     <Teleport to="#modal">
@@ -270,7 +309,11 @@ const showEdit = async (id) => {
         <TaskDetail @close="closeDetail" :task="taskDetail" />
       </div>
     </Teleport>
-    <Error v-if="errorToast" :errorTask="deleteTask.item.title" @closeToast="errorToast = false"/>
+    <Error
+      v-if="errorToast"
+      :errorTask="deleteTask.item.title"
+      @closeToast="errorToast = false"
+    />
   </div>
 </template>
 
