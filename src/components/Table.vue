@@ -109,7 +109,7 @@ const removeSelectedStatus = (statusId) => {
             Filter Statuses
           </summary>
           <ul
-            class="p-2 shadow menu dropdown-content z-[1] bg-base-100 rounded-box w-52"
+            class="p-2 shadow menu dropdown-content z-[1] bg-base-100 rounded-box w-52 itbkk-status-choice"
           >
             <span
               v-for="status in props.statuses"
