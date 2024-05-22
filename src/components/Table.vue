@@ -98,7 +98,6 @@ const removeSelectedStatus = (statusId) => {
     (id) => id !== statusId
   )
 }
-
 </script>
 
 <template>
@@ -145,25 +144,45 @@ const removeSelectedStatus = (statusId) => {
           </router-link>
         </button>
       </div>
-      <template v-for="(statusName,index) in selectedStatusNames" :key="index">
-        <div class="badge m-2 itbkk-filter-item" :style="{backgroundColor: statusName.color}">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            class="inline-block w-4 h-4 stroke-current itbkk-filter-item-clear"
-            @click="removeSelectedStatus(statusName.id)"
+      <div v-if="selectedStatusNames.length > 0">
+        <div class="font-semibold text-lg">Selected Statuses:</div>
+      </div>
+      <div class="flex gap-2">
+        <div v-if="selectedStatusNames.length > 0">
+          <button
+            class="btn btn-sm btn-error btn-outline itbkk-filter-clear"
+            @click=";(selectedStatusIds = []), (selectedStatusNames = [])"
           >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M6 18L18 6M6 6l12 12"
-            ></path>
-          </svg>
-          {{ statusName.name }}
+            Clear All
+          </button>
+          <div class="w-1/2 h-1 bg-gray-400 my-2"></div>
         </div>
-      </template>
+        <template
+          v-for="(statusName, index) in selectedStatusNames"
+          :key="index"
+        >
+          <div
+            class="badge m-2 itbkk-filter-item"
+            :style="{ backgroundColor: statusName.color }"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              class="inline-block w-4 h-4 stroke-current itbkk-filter-item-clear"
+              @click="removeSelectedStatus(statusName.id)"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M6 18L18 6M6 6l12 12"
+              ></path>
+            </svg>
+            {{ statusName.name }}
+          </div>
+        </template>
+      </div>
       <table class="w-full table table-lg rounded-lg overflow-hidden">
         <thead>
           <tr class="font-bold text-red-800 text-lg bg-pink-300">
@@ -249,7 +268,7 @@ const removeSelectedStatus = (statusId) => {
             </td>
             <td>
               <button
-                class="badge itbkk-status  font-semibold "
+                class="badge itbkk-status font-semibold"
                 :style="{ backgroundColor: task.status.color }"
               >
                 {{ task.status.name }}
