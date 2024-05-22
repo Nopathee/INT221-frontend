@@ -103,7 +103,7 @@ const confirmDelete = async (id) => {
 
   console.log(status)
 
-  if (status === 200) {
+  if (status === 204) {
     statuses.value.removeStatus(id)
     deleteModal.value = false
     deletedToast.value = true
@@ -131,6 +131,17 @@ const transferStatus = async (id, newId) => {
   if (status === 200) {
     statuses.value.removeStatus(id)
     transDelete.value = false
+    deletedToast.value = true
+    setTimeout(() => {
+      deletedToast.value = false
+    }, 3000)
+  }else{
+    statuses.value.removeStatus(id)
+    deleteModal.value = false
+    errorToast.value = true
+    setTimeout(() => {
+      errorToast.value = false
+    }, 3000)
   }
 }
 

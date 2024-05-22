@@ -76,15 +76,18 @@ const showInsert = (flagModal) => {
 
 const saveTask = async (selectedTask) => {
   console.log(selectedTask)
+  const item = {
+    id: selectedTask.id,
+    title: selectedTask.title,
+    description: selectedTask.description,
+    assignees: selectedTask.assignees,
+    status: selectedTask.status.id,
+  }
+  console.log(item)
   if (selectedTask.id === undefined) {
     const newTask = await addItem(
       `${import.meta.env.VITE_API_ENDPOINT}/v2/tasks`,
-      {
-        title: selectedTask.title,
-        description: selectedTask.description,
-        assignees: selectedTask.assignees,
-        status: selectedTask.status,
-      }
+      item
     )
 
     taskInsert.value = selectedTask.title
@@ -120,13 +123,9 @@ const saveTask = async (selectedTask) => {
     const updatedTask = await editItem(
       `${import.meta.env.VITE_API_ENDPOINT}/v2/tasks`,
       selectedTask.id,
-      {
-        title: selectedTask.title,
-        description: selectedTask.description,
-        assignees: selectedTask.assignees,
-        status: selectedTask.status,
-      }
+      item
     )
+    taskEdit.value = selectedTask.title
     console.log(updatedTask)
     allTask.value.updateTask(
       updatedTask.id,
@@ -135,7 +134,7 @@ const saveTask = async (selectedTask) => {
       updatedTask.assignees,
       updatedTask.status
     )
-    taskEdit.value = selectedTask.title
+    console.log(allTask.value.getTasks())
     editToast.value = true
     showModal.value = false
     setTimeout(() => {
@@ -235,22 +234,6 @@ const showEdit = async (id) => {
   showModal.value = true
   router.push(`/task/${id}/edit`)
 }
-
-const filteredTasks = ref(allTask.value.getTasks())
-console.log(filteredTasks.value)
-
-const filterTask = (selectedStatusIds) => {
-  console.log(selectedStatusIds)
-  filteredTasks.value = allTask.value
-    .getTasks()
-    .filter((task) => selectedStatusIds.includes(task.status.id))
-  console.log(filteredTasks.value)
-}
-
-const computedTasks = computed(() => {
-  console.log(filteredTasks.value)
-  return filteredTasks.value
-})
 </script>
 
 <template>
@@ -275,13 +258,12 @@ const computedTasks = computed(() => {
     />
 
     <Table
-      :tasks="computedTasks"
+      :tasks="allTask.getTasks()"
       :statuses="allStatuses.getStatuses()"
       @openModal="showInsert"
       @showDetail="showDetail"
       @deleteTask="showDelete"
       @editTask="showEdit"
-      @selectedStatusChanged="filterTask"
     />
 
     <Teleport to="#modal">
