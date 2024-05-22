@@ -38,8 +38,8 @@ watch(
 )
 
 watch(selectedStatusIds, () => {
-  filterAndSortTasks();
-});
+  filterAndSortTasks()
+})
 
 const filterAndSortTasks = () => {
   let filteredTasks = [...originalTasks.value]
@@ -100,7 +100,7 @@ const removeSelectedStatus = (statusId) => {
 
 <template>
   <div class="w-full flex justify-center items-center">
-    <div class="rounded-xl p-5 w-2/3">
+    <div class="rounded-xl p-5 w-5/6">
       <div class="flex justify-end gap-2">
         <details class="dropdown itbkk-tatus-filter">
           <summary
@@ -147,9 +147,9 @@ const removeSelectedStatus = (statusId) => {
           <button
             class="btn btn-sm btn-error btn-outline itbkk-filter-clear"
             @click="
-              selectedStatusIds = [],
-              selectedStatusNames = [],
-              filterAndSortTasks()
+              ;(selectedStatusIds = []),
+                (selectedStatusNames = []),
+                filterAndSortTasks()
             "
           >
             Clear All
@@ -194,25 +194,27 @@ const removeSelectedStatus = (statusId) => {
               />
             </th>
             <th class="w-5/12">Title</th>
-            <th class="w-4/12">Assignees</th>
-            <th class="w-2/12 flex">
-              Status &nbsp;
-              <button
-                @click="toggleSortOrder"
-                class="btn btn-sm btn-ghost itbkk-status-sort"
-              >
-                <img
-                  v-if="sortOrder === 'A-Z'"
-                  src="./icon/sortaz.svg"
-                  alt="sort Default"
-                />
-                <img
-                  v-else-if="sortOrder === 'Z-A'"
-                  src="./icon/sortza.svg"
-                  alt="sort A-Z"
-                />
-                <img v-else src="./icon/sort.svg" alt="sort Z-A" />
-              </button>
+            <th class="w-3/12">Assignees</th>
+            <th class="justify-end w-1/12">
+              <div class="flex">
+                Status &nbsp;
+                <button
+                  @click="toggleSortOrder"
+                  class="btn btn-sm btn-ghost itbkk-status-sort"
+                >
+                  <img
+                    v-if="sortOrder === 'A-Z'"
+                    src="./icon/sortaz.svg"
+                    alt="sort Default"
+                  />
+                  <img
+                    v-else-if="sortOrder === 'Z-A'"
+                    src="./icon/sortza.svg"
+                    alt="sort A-Z"
+                  />
+                  <img v-else src="./icon/sort.svg" alt="sort Z-A" />
+                </button>
+              </div>
             </th>
           </tr>
         </thead>
