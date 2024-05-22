@@ -102,7 +102,7 @@ const removeSelectedStatus = (statusId) => {
   <div class="w-full flex justify-center items-center">
     <div class="rounded-xl p-5 w-5/6">
       <div class="flex justify-end gap-2">
-        <details class="dropdown itbkk-tatus-filter">
+        <details class="dropdown itbkk-status-filter">
           <summary
             class="bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 px-4 border-b-4 border-blue-700 hover:border-blue-500 rounded-lg mb-4 itbkk-filter-item"
           >
