@@ -91,7 +91,9 @@ const sortIcon = computed(() => {
                 @click="toggleSortOrder"
                 class="btn btn-sm btn-ghost itbkk-status-sort"
               >
-                <img :src="sortIcon" />
+                <img v-if="sortOrder === 'A-Z'" src="./icon/sortaz.svg" alt="sort Default">
+                <img v-else-if="sortOrder === 'Z-A'" src="./icon/sortza.svg" alt="sort A-Z">
+                <img v-else src="./icon/sort.svg" alt="sort Z-A">
               </button>
             </th>
           </tr>
