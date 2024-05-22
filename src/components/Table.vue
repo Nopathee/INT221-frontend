@@ -105,7 +105,7 @@ const removeSelectedStatus = (statusId) => {
   <div class="w-full flex justify-center items-center">
     <div class="rounded-xl p-5 w-2/3">
       <div class="flex justify-end gap-2">
-        <details class="dropdown">
+        <details class="dropdown itbkk-tatus-filter">
           <summary
             class="bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 px-4 border-b-4 border-blue-700 hover:border-blue-500 rounded-lg mb-4"
           >
@@ -138,7 +138,7 @@ const removeSelectedStatus = (statusId) => {
         </details>
 
         <button
-          class="bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 px-4 border-b-4 border-blue-700 hover:border-blue-500 rounded-lg mb-4"
+          class="bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 px-4 border-b-4 border-blue-700 hover:border-blue-500 rounded-lg mb-4 itbkk-manage-status"
         >
           <router-link to="/statuses" @click="$emit('statusDetail')">
             Manage Status
@@ -146,12 +146,12 @@ const removeSelectedStatus = (statusId) => {
         </button>
       </div>
       <template v-for="(statusName,index) in selectedStatusNames" :key="index">
-        <div class="badge m-2" :style="{backgroundColor: statusName.color}">
+        <div class="badge m-2 itbkk-filter-item" :style="{backgroundColor: statusName.color}">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
             viewBox="0 0 24 24"
-            class="inline-block w-4 h-4 stroke-current"
+            class="inline-block w-4 h-4 stroke-current itbkk-filter-item-clear"
             @click="removeSelectedStatus(statusName.id)"
           >
             <path
