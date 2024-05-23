@@ -288,7 +288,7 @@ const saveStatus = async (status) => {
               </td>
 
               <td
-                class="text-blue-800 hover:underline itbkk-status-name font-semibold transition-property: transition-property: transform; itbkk-status-name"
+                class="text-blue-800 hover:underline itbkk-status-name font-semibold transition-property: transition-property: transform;"
               >
                 {{ status.name }}
               </td>

@@ -57,7 +57,7 @@ const task = ref({
   status: {
     id: '1',
     name: 'No Status',
-    description: 'A status hos not been assigned',
+    description: null,
     color: '#ffffff',
   },
 })
@@ -71,7 +71,7 @@ const clearModal = (flagModal) => {
     status: {
     id: '1',
     name: 'No Status',
-    description: 'A status hos not been assigned',
+    description: null,
     color: '#ffffff',
   },
   }
@@ -122,7 +122,7 @@ const saveTask = async (selectedTask) => {
       status: {
     id: '1',
     name: 'No Status',
-    description: 'A status hos not been assigned',
+    description: null,
     color: '#ffffff',
   },
     }
@@ -163,7 +163,7 @@ const saveTask = async (selectedTask) => {
       status: {
     id: '1',
     name: 'No Status',
-    description: 'A status hos not been assigned',
+    description: null,
     color: '#ffffff',
   },
     }
@@ -180,7 +180,7 @@ const taskDetail = ref({
   status: {
     id: '1',
     name: 'No Status',
-    description: 'A status hos not been assigned',
+    description: null,
     color: '#ffffff',
   },
   createdOn: '',
