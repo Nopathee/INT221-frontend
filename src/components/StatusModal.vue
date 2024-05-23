@@ -7,10 +7,12 @@ const props = defineProps({
       id: undefined,
       name: '',
       description: null,
-      color: '#ffffff'
+      color: '#ffffff',
     }),
   },
 })
+
+const originalName = ref(props.status.name)
 
 onMounted(() => {
   getTimezone()
@@ -31,6 +33,10 @@ const formatterUpdatedOn = computed(() => {
 const getTimezone = () => {
   showTime.value.timezone = Intl.DateTimeFormat().resolvedOptions().timeZone
 }
+
+const isSaveDisabled = computed(() => {
+  return !props.status.name || props.status.name === originalName.value
+})
 
 console.log(props.status)
 
@@ -53,13 +59,13 @@ defineEmits(['saveStatus', 'closeModal'])
           </div>
           <form class="p-4 md:p-5">
             <div class="grid gap-4 mb-4">
-              <div class="col-span-2 ">
+              <div class="col-span-2">
                 <label
                   for="taskTitle"
                   class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                   >Name</label
                 >
-                <div class="flex gap-2 ">
+                <div class="flex gap-2">
                   <input
                     id="taskTitle"
                     v-model.trim="props.status.name"
@@ -113,7 +119,7 @@ defineEmits(['saveStatus', 'closeModal'])
             <button
               @click="$emit('saveStatus', props.status)"
               class="px-4 py-2 bg-green-500 text-white rounded-md mr-2 disabled:opacity-50 itbkk-button-confirm"
-              :disabled="!props.status.name"
+              :disabled="isSaveDisabled"
             >
               Save
             </button>
