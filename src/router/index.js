@@ -50,7 +50,7 @@ const router = createRouter({
       props: true,
       async beforeEnter(to) {
         const id = to.params.id
-        const url = `${import.meta.env.VITE_API_ENDPOINT}/v2/tasks`
+        const url = `${import.meta.env.VITE_API_ENDPOINT}/v2/statuses`
         const { item, status } = await getItemById(url, id)
         if (status === 404) {
           alert('Status not found')
