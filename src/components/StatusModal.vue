@@ -7,6 +7,7 @@ const props = defineProps({
       id: undefined,
       name: '',
       description: null,
+      color: '#ffffff'
     }),
   },
 })

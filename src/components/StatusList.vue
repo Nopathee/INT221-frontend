@@ -44,7 +44,7 @@ const status = ref({
   id: undefined,
   name: '',
   description: null,
-  color: null,
+  color: '#ffffff',
 })
 
 onMounted(async () => {
@@ -163,7 +163,7 @@ const addStatus = () => {
     id: undefined,
     name: '',
     description: null,
-    color: null,
+    color: '#ffffff',
   }
   editModal.value = true
 }
@@ -188,7 +188,7 @@ const saveStatus = async (status) => {
         id: undefined,
         name: '',
         description: null,
-        color: null,
+        color: '#ffffff',
       }
       editModal.value = false
       return
@@ -206,7 +206,7 @@ const saveStatus = async (status) => {
         id: undefined,
         name: '',
         description: null,
-        color: null,
+        color: '#ffffff',
       }
       successToast.value = true
       setTimeout(() => {
@@ -236,7 +236,7 @@ const saveStatus = async (status) => {
       id: undefined,
       name: '',
       description: null,
-      color: null,
+      color: '#ffffff',
     }
   }
 }
