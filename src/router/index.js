@@ -14,7 +14,7 @@ const router = createRouter({
       name: 'taskDetail',
       component: Task,
       props: true,
-      async beforeEnter(to, from) {
+      async beforeEnter(to) {
         const id = to.params.id
         const url = `${import.meta.env.VITE_API_ENDPOINT}/v2/tasks`
         const { item, status } = await getItemById(url, id)
@@ -31,7 +31,7 @@ const router = createRouter({
       name: 'taskEdit',
       component: Task,
       props: true,
-      async beforeEnter(to, from) {
+      async beforeEnter(to) {
         const id = to.params.id
         const url = `${import.meta.env.VITE_API_ENDPOINT}/v2/tasks`
         const { item, status } = await getItemById(url, id)
@@ -43,6 +43,22 @@ const router = createRouter({
       },
     },
     { path: '/statuses', name: 'status', component: StatusList },
+    {
+      path: '/statuses/:id/edit',
+      name: 'statusEdit',
+      component: StatusList,
+      props: true,
+      async beforeEnter(to) {
+        const id = to.params.id
+        const url = `${import.meta.env.VITE_API_ENDPOINT}/v2/tasks`
+        const { item, status } = await getItemById(url, id)
+        if (status === 404) {
+          alert('Status not found')
+          return { name: 'status' }
+        }
+        to.params.item = item
+      },
+    },
   ],
 })
 

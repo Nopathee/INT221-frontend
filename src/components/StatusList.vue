@@ -303,7 +303,7 @@ const saveStatus = async (status) => {
                 v-else
                 class="itbkk-status-description font-semibold italic text-gray-500"
               >
-                No description provided
+                No description is provided
               </td>
 
               <td class="text-center">

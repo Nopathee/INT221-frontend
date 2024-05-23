@@ -24,7 +24,7 @@ defineEmits(['saveTask', 'cancelTask'])
 <template>
   <div>
     <div class="fixed inset-0 flex items-center justify-center z-50">
-      <div class="bg-white rounded-lg p-8 max-w-md shadow-2xl dark:bg-gray-700">
+      <div class="bg-white rounded-lg p-8 max-w-md shadow-2xl dark:bg-gray-700 itbkk-modal-task">
         <div
           class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600"
         >
