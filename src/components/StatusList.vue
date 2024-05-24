@@ -19,6 +19,8 @@ import Delete from './Delete.vue'
 import Error from './Error.vue'
 defineProps({
   statuses: Array,
+  id: String,
+  item: Object,
 })
 
 defineEmits(['addStatus'])
@@ -56,7 +58,7 @@ onMounted(async () => {
 })
 
 const back = () => {
-  router.go(-1)
+  router.push('/task')
 }
 
 const statusToDelete = ref({
@@ -78,8 +80,9 @@ const deleteStatus = async (id) => {
   const allTask = await getItems(
     `${import.meta.env.VITE_API_ENDPOINT}/v2/tasks`
   )
+  console.log(allTask)
   const task = allTask.filter((task) => task.status.id === status.item.id)
-
+  console.log(task)
   deletedStatus.value = status.item.name
 
   taskCount.value = task.length
@@ -114,8 +117,10 @@ const confirmDelete = async (id) => {
     statuses.value.removeStatus(id)
     deleteModal.value = false
     errorToast.value = true
+
     setTimeout(() => {
       errorToast.value = false
+      errorDelete.value = false
     }, 3000)
   }
 }
@@ -128,14 +133,14 @@ const transferStatus = async (id, newId) => {
   )
 
   console.log(status)
-  if (status === 200) {
+  if (status === 204) {
     statuses.value.removeStatus(id)
     transDelete.value = false
     deletedToast.value = true
     setTimeout(() => {
       deletedToast.value = false
     }, 3000)
-  }else{
+  } else {
     statuses.value.removeStatus(id)
     deleteModal.value = false
     errorToast.value = true
@@ -152,9 +157,9 @@ const editStatus = async (id) => {
     `${import.meta.env.VITE_API_ENDPOINT}/v2/statuses`,
     id
   )
-
+  router.push(`/status/${id}/edit`)
   status.value = await item.item
-  console.log(status)
+  console.log(status.value)
   editModal.value = true
 }
 
@@ -208,6 +213,9 @@ const saveStatus = async (status) => {
         description: null,
         color: '#ffffff',
       }
+
+      router.push('/status')
+
       successToast.value = true
       setTimeout(() => {
         successToast.value = false
@@ -238,7 +246,21 @@ const saveStatus = async (status) => {
       description: null,
       color: '#ffffff',
     }
+
+    router.push('/status')
   }
+}
+
+const closeEditModal = () => {
+  editModal.value = false
+  router.push('/status')
+}
+
+const notFound = ref(false)
+
+const showErrorToast = (value) => {
+  errorToast.value = true
+  notFound.value = value
 }
 </script>
 
@@ -310,7 +332,7 @@ const saveStatus = async (status) => {
                 <button
                   @click="editStatus(status.id)"
                   class="btn btn-sm bg-slate-200 text-black itbkk-button-edit mr-2"
-                  v-if="status.name !== 'No Status' && status.name !== 'Done' "
+                  v-if="status.name !== 'No Status' && status.name !== 'Done'"
                 >
                   Edit
                 </button>
@@ -338,7 +360,12 @@ const saveStatus = async (status) => {
     :statusDelete="deletedStatus"
     @closeToast="deletedToast = false"
   />
-  <Error v-if="errorToast" :status="true" @closeToast="errorToast = false" />
+  <Error
+    v-if="errorToast"
+    :notFound="notFound"
+    :status="true"
+    @closeToast="errorToast = false"
+  />
   <Edit
     v-if="editToast"
     :statusEdit="statusEdit"
@@ -348,7 +375,7 @@ const saveStatus = async (status) => {
     <div v-if="editModal">
       <StatusModal
         :status="status"
-        @closeModal="editModal = false"
+        @closeModal="closeEditModal"
         @saveStatus="saveStatus"
       />
     </div>

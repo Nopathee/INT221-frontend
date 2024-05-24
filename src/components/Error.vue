@@ -1,6 +1,7 @@
 <script setup>
 const props = defineProps({
   status: Boolean,
+  notFound: Boolean,
 })
 
 defineEmits(['closeToast'])
@@ -29,7 +30,15 @@ defineEmits(['closeToast'])
         </div>
         <div class="m-2">
           <h2 class="text-lg text-orange-500 font-bold">Error</h2>
-          <p class="text-orange-800">An error occurred deleting the {{props.status ? "status" : "task"}}</p>
+          <p class="text-orange-800">
+            {{
+              props.notFound
+                ? 'An error has occurred, the status does not exist'
+                : `An error occurred deleting the ${
+                    props.status ? 'status' : 'task'
+                  }`
+            }}
+          </p>
         </div>
       </div>
     </div>

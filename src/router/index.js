@@ -42,26 +42,10 @@ const router = createRouter({
         to.params.item = item
       },
     },
-    { path: '/statuses', name: 'status', component: StatusList },
+    { path: '/status', name: 'status', component: StatusList },
     {
-      path: '/statuses/:id/edit',
+      path: '/status/:id/edit',
       name: 'statusEdit',
-      component: StatusList,
-      props: true,
-      async beforeEnter(to) {
-        const id = to.params.id
-        const url = `${import.meta.env.VITE_API_ENDPOINT}/v2/statuses`
-        const { item, status } = await getItemById(url, id)
-        if (status === 404) {
-          alert('An error has occurred, the status does not exist')
-          return { name: 'status' }
-        }
-        to.params.item = item
-      },
-    },
-    {
-      path: '/statuses/:id',
-      name: 'statusList',
       component: StatusList,
       props: true,
       async beforeEnter(to) {

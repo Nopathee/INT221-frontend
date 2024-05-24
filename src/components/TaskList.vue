@@ -69,11 +69,11 @@ const clearModal = (flagModal) => {
     description: null,
     assignees: null,
     status: {
-    id: '1',
-    name: 'No Status',
-    description: 'A status hos not been assigned',
-    color: '#ffffff',
-  },
+      id: '1',
+      name: 'No Status',
+      description: 'A status hos not been assigned',
+      color: '#ffffff',
+    },
   }
   showModal.value = flagModal
   router.push('/task')
@@ -99,7 +99,7 @@ const saveTask = async (selectedTask) => {
       `${import.meta.env.VITE_API_ENDPOINT}/v2/tasks`,
       item
     )
-
+    console.log(newTask)
     taskInsert.value = selectedTask.title
 
     console.log(newTask)
@@ -120,11 +120,11 @@ const saveTask = async (selectedTask) => {
       description: null,
       assignees: null,
       status: {
-    id: '1',
-    name: 'No Status',
-    description: 'A status hos not been assigned',
-    color: '#ffffff',
-  },
+        id: '1',
+        name: 'No Status',
+        description: 'A status hos not been assigned',
+        color: '#ffffff',
+      },
     }
     router.push('/task')
 
@@ -161,11 +161,11 @@ const saveTask = async (selectedTask) => {
       description: null,
       assignees: null,
       status: {
-    id: '1',
-    name: 'No Status',
-    description: 'A status hos not been assigned',
-    color: '#ffffff',
-  },
+        id: '1',
+        name: 'No Status',
+        description: 'A status hos not been assigned',
+        color: '#ffffff',
+      },
     }
 
     router.push('/task')
@@ -242,6 +242,7 @@ const confDelete = async (id) => {
     confirmDelete.value = false
   } else {
     errorToast.value = true
+
     setTimeout(() => {
       errorToast.value = false
     }, 3000)
@@ -316,11 +317,7 @@ const showEdit = async (id) => {
         <TaskDetail @close="closeDetail" :task="taskDetail" />
       </div>
     </Teleport>
-    <Error
-      v-if="errorToast"
-      :errorTask="deleteTask.item.title"
-      @closeToast="errorToast = false"
-    />
+    <Error v-if="errorToast" @closeToast="errorToast = false" />
   </div>
 </template>
 

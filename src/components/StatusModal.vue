@@ -12,7 +12,6 @@ const props = defineProps({
   },
 })
 
-const originalName = ref(props.status.name)
 
 onMounted(() => {
   getTimezone()
@@ -34,8 +33,15 @@ const getTimezone = () => {
   showTime.value.timezone = Intl.DateTimeFormat().resolvedOptions().timeZone
 }
 
+const OriginalStatus = ref({
+  id: props.status.id,
+  name: props.status.name,
+  description: props.status.description,
+  color: props.status.color,
+})
+
 const isSaveDisabled = computed(() => {
-  return !props.status.name || props.status.name === originalName.value
+  return !props.status.name || props.status.name === OriginalStatus.value.name && props.status.description === OriginalStatus.value.description && props.status.color === OriginalStatus.value.color
 })
 
 console.log(props.status)
