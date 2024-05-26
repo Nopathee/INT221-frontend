@@ -2,8 +2,6 @@ import { createRouter, createWebHistory } from 'vue-router'
 import Task from '../views/Task.vue'
 import { getItemById } from '@/libs/fetchUtils.js'
 import StatusList from '@/components/StatusList.vue'
-import { createApp , h } from 'vue';
-import Error from '@/components/Error.vue';
 const history = createWebHistory(import.meta.env.BASE_URL)
 
 const router = createRouter({
@@ -55,26 +53,8 @@ const router = createRouter({
         const url = `${import.meta.env.VITE_API_ENDPOINT}/v2/statuses`
         const { item, status } = await getItemById(url, id)
         if (status === 404) {
-          const divEle = document.createElement('div')
-          document.body.appendChild(divEle)
-          const app = createApp({
-            render() {
-              return h(Error, {
-                status: true,
-                notFound: true,
-                onCloseToast: () => {
-                  app.unmount()
-                  document.body.removeChild(divEle)
-                },
-              })
-            },
-          })
-          app.mount(divEle)
-          setTimeout(() => {
-            app.unmount();
-            document.body.removeChild(divEle);
-          }, 3000);
-          return { name: 'status' }
+          to.params.notFound = true
+          return
         }
         to.params.item = item
       },

@@ -1,6 +1,6 @@
 <script setup>
-import { defineProps, onMounted, ref } from 'vue'
-import router from '@/router'
+import { defineProps, onMounted, ref, watch } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 import Edit from './Edit.vue'
 import { StatusManagement } from '@/libs/StatusManagement'
 import {
@@ -17,13 +17,16 @@ import StatusModal from './StatusModal.vue'
 import Succes from './Succes.vue'
 import Delete from './Delete.vue'
 import Error from './Error.vue'
-defineProps({
+const props = defineProps({
   statuses: Array,
   id: String,
   item: Object,
+  notFound: Boolean,
 })
 
 defineEmits(['addStatus'])
+
+const router = useRouter()
 
 const statuses = ref(new StatusManagement())
 
@@ -41,6 +44,8 @@ const errorToast = ref(false)
 
 const deletedStatus = ref('')
 
+const statusNotFound = ref(false)
+
 const editToast = ref(false)
 const status = ref({
   id: undefined,
@@ -56,6 +61,8 @@ onMounted(async () => {
   statuses.value.addStatuses(items)
   console.log(statuses.value.getStatuses())
 })
+
+console.log(props.notFound)
 
 const back = () => {
   router.push('/task')
@@ -158,6 +165,16 @@ const editStatus = async (id) => {
     id
   )
   router.push(`/status/${id}/edit`)
+  console.log(item.status)
+  if (item.status === 404) {
+    notFound.value = true
+    errorToast.value = true
+    setTimeout(() => {
+      errorToast.value = false
+      notFound.value = false
+    }, 3000)
+    router.push('/status')
+  }
   status.value = await item.item
   console.log(status.value)
   editModal.value = true
@@ -256,11 +273,16 @@ const closeEditModal = () => {
   router.push('/status')
 }
 
-const notFound = ref(false)
+console.log(props.notFound)
 
-const showErrorToast = (value) => {
+if (props.notFound) {
+  statusNotFound.value = true
   errorToast.value = true
-  notFound.value = value
+  setTimeout(() => {
+    errorToast.value = false
+    notFound.value = false
+  }, 3000)
+  router.push('/status')
 }
 </script>
 
@@ -362,7 +384,7 @@ const showErrorToast = (value) => {
   />
   <Error
     v-if="errorToast"
-    :notFound="notFound"
+    :notFound="statusNotFound"
     :status="true"
     @closeToast="errorToast = false"
   />
