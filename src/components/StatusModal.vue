@@ -12,7 +12,6 @@ const props = defineProps({
   },
 })
 
-
 onMounted(() => {
   getTimezone()
 })
@@ -41,7 +40,12 @@ const OriginalStatus = ref({
 })
 
 const isSaveDisabled = computed(() => {
-  return !props.status.name || props.status.name === OriginalStatus.value.name && props.status.description === OriginalStatus.value.description && props.status.color === OriginalStatus.value.color
+  return (
+    !props.status.name ||
+    (props.status.name === OriginalStatus.value.name &&
+      props.status.description === OriginalStatus.value.description &&
+      props.status.color === OriginalStatus.value.color)
+  )
 })
 
 console.log(props.status)

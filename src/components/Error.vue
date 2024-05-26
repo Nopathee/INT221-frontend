@@ -30,7 +30,7 @@ defineEmits(['closeToast'])
         </div>
         <div class="m-2">
           <h2 class="text-lg text-orange-500 font-bold">Error</h2>
-          <p class="text-orange-800">
+          <p class="text-orange-800 itbkk-message">
             {{
               props.notFound
                 ? 'An error has occurred, the status does not exist'
