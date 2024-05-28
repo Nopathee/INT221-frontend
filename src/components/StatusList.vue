@@ -113,7 +113,7 @@ const confirmDelete = async (id) => {
 
   console.log(status)
 
-  if (status === 204) {
+  if (status === 200) {
     statuses.value.removeStatus(id)
     deleteModal.value = false
     deletedToast.value = true
@@ -140,7 +140,7 @@ const transferStatus = async (id, newId) => {
   )
 
   console.log(status)
-  if (status === 204) {
+  if (status === 200) {
     statuses.value.removeStatus(id)
     transDelete.value = false
     deletedToast.value = true
