@@ -19,12 +19,9 @@ const sortedTasks = ref([])
 const originalTasks = ref([])
 const sortOrder = ref('Default')
 
-console.log('props.tasks', props.tasks)
-
 onMounted(() => {
   originalTasks.value = props.tasks
   filterAndSortTasks()
-  console.log('sortedTasks', sortedTasks.value)
 })
 
 const selectedStatusIds = ref([])

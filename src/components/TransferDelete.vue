@@ -8,20 +8,17 @@ const props = defineProps({
   statuses: Array,
 })
 
-console.log(props.status.item)
 
 const allStatuses = ref(props.statuses)
 
 const selectedId = ref('')
 
-console.log(allStatuses.value)
 
 
 const anotherStatus = allStatuses.value.filter(
   (status) => status.id !== props.status.item.id
 )
 
-console.log(anotherStatus)
 
 defineEmits(['deleteStatus', 'closeDeleteModal'])
 </script>

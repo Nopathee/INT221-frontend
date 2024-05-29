@@ -7,7 +7,6 @@ const props = defineProps({
 })
 
 
-console.log(props.status.item)
 
 defineEmits(['deleteStatus', 'closeDeleteModal'])
 </script>

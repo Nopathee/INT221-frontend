@@ -48,7 +48,6 @@ const isSaveDisabled = computed(() => {
   )
 })
 
-console.log(props.status)
 
 defineEmits(['saveStatus', 'closeModal'])
 </script>

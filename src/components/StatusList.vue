@@ -59,10 +59,7 @@ onMounted(async () => {
     `${import.meta.env.VITE_API_ENDPOINT}/v2/statuses`
   )
   statuses.value.addStatuses(items)
-  console.log(statuses.value.getStatuses())
 })
-
-console.log(props.notFound)
 
 const back = () => {
   router.push('/task')
@@ -78,7 +75,6 @@ const statusToDelete = ref({
 const transDelete = ref(false)
 
 const deleteStatus = async (id) => {
-  console.log(id)
 
   const status = await getItemById(
     `${import.meta.env.VITE_API_ENDPOINT}/v2/statuses`,
@@ -87,13 +83,10 @@ const deleteStatus = async (id) => {
   const allTask = await getItems(
     `${import.meta.env.VITE_API_ENDPOINT}/v2/tasks`
   )
-  console.log(allTask)
   const task = allTask.filter((task) => task.status.id === status.item.id)
-  console.log(task)
   deletedStatus.value = status.item.name
 
   taskCount.value = task.length
-  console.log(task.length)
   if (task.length > 0) {
     statusToDelete.value = status
     transDelete.value = true
@@ -111,7 +104,6 @@ const confirmDelete = async (id) => {
     id
   )
 
-  console.log(status)
 
   if (status === 200) {
     statuses.value.removeStatus(id)
@@ -139,7 +131,6 @@ const transferStatus = async (id, newId) => {
     newId
   )
 
-  console.log(status)
   if (status === 200) {
     statuses.value.removeStatus(id)
     transDelete.value = false
@@ -165,7 +156,6 @@ const editStatus = async (id) => {
     id
   )
   router.push(`/status/${id}/edit`)
-  console.log(item.status)
   if (item.status === 404) {
     notFound.value = true
     errorToast.value = true
@@ -176,7 +166,6 @@ const editStatus = async (id) => {
     router.push('/status')
   }
   status.value = await item.item
-  console.log(status.value)
   editModal.value = true
 }
 
@@ -191,7 +180,6 @@ const addStatus = () => {
 }
 
 const saveStatus = async (status) => {
-  console.log(status)
   const item = {
     name: status.name,
     description: status.description,
@@ -202,8 +190,6 @@ const saveStatus = async (status) => {
       `${import.meta.env.VITE_API_ENDPOINT}/v2/statuses`,
       item
     )
-    console.log(newStatus)
-    console.log(newStatus.status)
 
     if (newStatus.status === 500) {
       status.value = {
@@ -245,7 +231,6 @@ const saveStatus = async (status) => {
       item
     )
     statusEdit.value = status.name
-    console.log(updatedStatus)
     statuses.value.updateStatus(
       updatedStatus.id,
       updatedStatus.name,
@@ -272,8 +257,6 @@ const closeEditModal = () => {
   editModal.value = false
   router.push('/status')
 }
-
-console.log(props.notFound)
 
 if (props.notFound) {
   statusNotFound.value = true

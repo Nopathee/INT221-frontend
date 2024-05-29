@@ -19,7 +19,6 @@ import { TaskManagement } from '../libs/TaskManagement.js'
 import router from '@/router'
 import { StatusManagement } from '@/libs/StatusManagement'
 
-console.log(`${import.meta.env.VITE_API_ENDPOINT}/v2/tasks`)
 const allTask = ref(new TaskManagement())
 const allStatuses = ref(new StatusManagement())
 
@@ -46,7 +45,6 @@ onMounted(async () => {
   )
   allStatuses.value.addStatuses(status)
   allTask.value.addDtoTasks(items)
-  console.log(allTask.value.getTasks())
 })
 
 const task = ref({
@@ -85,7 +83,6 @@ const showInsert = (flagModal) => {
 }
 
 const saveTask = async (selectedTask) => {
-  console.log(selectedTask)
   const item = {
     id: selectedTask.id,
     title: selectedTask.title,
@@ -93,17 +90,13 @@ const saveTask = async (selectedTask) => {
     assignees: selectedTask.assignees,
     status: selectedTask.status.id,
   }
-  console.log(item)
   if (selectedTask.id === undefined) {
     const newTask = await addItem(
       `${import.meta.env.VITE_API_ENDPOINT}/v2/tasks`,
       item
     )
-    console.log(newTask)
     taskInsert.value = selectedTask.title
 
-    console.log(newTask)
-    console.log(newTask.status.toString())
     allTask.value.addNewTask(
       newTask.id,
       newTask.title,
@@ -134,14 +127,14 @@ const saveTask = async (selectedTask) => {
       successToast.value = false
     }, 3000)
   } else {
-    console.log(selectedTask)
+
     const updatedTask = await editItem(
       `${import.meta.env.VITE_API_ENDPOINT}/v2/tasks`,
       selectedTask.id,
       item
     )
     taskEdit.value = selectedTask.title
-    console.log(updatedTask)
+
     allTask.value.updateTask(
       updatedTask.id,
       updatedTask.title,
@@ -149,7 +142,6 @@ const saveTask = async (selectedTask) => {
       updatedTask.assignees,
       updatedTask.status
     )
-    console.log(allTask.value.getTasks())
     editToast.value = true
     showModal.value = false
     setTimeout(() => {
@@ -190,13 +182,13 @@ const taskDetail = ref({
 const showModalDetail = ref(false)
 
 const showDetail = async (id) => {
-  console.log(id)
+
   router.push(`/task/${id}`)
   const detail = await getItemById(
     `${import.meta.env.VITE_API_ENDPOINT}/v2/tasks`,
     id
   )
-  console.log(detail.status)
+
 
   taskDetail.value = await detail.item
   showModalDetail.value = true
@@ -214,8 +206,8 @@ const showDelete = async (id, index) => {
   deleteTask.value = task
   deleteIndex.value = await index
   confirmDelete.value = true
-  console.log(deleteTask.value)
-  console.log(deleteIndex.value)
+
+
 }
 
 const closeDelete = () => {
@@ -255,7 +247,6 @@ const showEdit = async (id) => {
     `${import.meta.env.VITE_API_ENDPOINT}/v2/tasks`,
     id
   )
-  console.log(detail.item)
   task.value = await detail.item
   showModal.value = true
   router.push(`/task/${id}/edit`)

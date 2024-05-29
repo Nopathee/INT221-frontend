@@ -16,7 +16,6 @@ const props = defineProps({
   statuses: Array,
 })
 
-console.log(props.task)
 
 defineEmits(['saveTask', 'cancelTask'])
 </script>

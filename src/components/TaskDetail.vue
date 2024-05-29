@@ -39,11 +39,8 @@ onMounted(async () => {
     `${import.meta.env.VITE_API_ENDPOINT}/v2/statuses`
   )
   statuses.value.addStatuses(items)
-  console.log(statuses.value.getStatuses())
 })
 
-console.log(props.task)
-console.log(props.task.status.name)
 </script>
 
 <template>

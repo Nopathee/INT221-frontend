@@ -9,8 +9,6 @@ const props = defineProps({
   index: Number,
 })
 
-console.log(props.task.item.title)
-console.log(props.task.item.id)
 
 </script>
 

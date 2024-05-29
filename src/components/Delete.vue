@@ -8,9 +8,6 @@ const props = defineProps({
 
 defineEmits(['closeToast'])
 
-console.log(props.taskDelete)
-
-console.log(props.statusDelete)
 </script>
 
 <template>
