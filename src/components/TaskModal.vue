@@ -1,7 +1,5 @@
 <script setup>
-import { onMounted, ref } from 'vue'
-import { StatusManagement } from '../libs/StatusManagement.js'
-import { getItems } from '@/libs/fetchUtils'
+import { ref , computed} from 'vue'
 const props = defineProps({
   task: {
     type: Object,
@@ -16,6 +14,23 @@ const props = defineProps({
   statuses: Array,
 })
 
+const originalTasks = ref({
+  id: props.task.id,
+  title: props.task.title,
+  description: props.task.description,
+  assignees: props.task.assignees,
+  status: props.task.status,
+})
+
+const isSaveDisabled = computed(() => {
+  return (
+    !props.task.title.trim() ||
+    (props.task.title === originalTasks.value.title &&
+      props.task.description === originalTasks.value.description &&
+      props.task.assignees === originalTasks.value.assignees &&
+      props.task.status === originalTasks.value.status)
+  )
+})
 
 defineEmits(['saveTask', 'cancelTask'])
 </script>
@@ -23,7 +38,9 @@ defineEmits(['saveTask', 'cancelTask'])
 <template>
   <div>
     <div class="fixed inset-0 flex items-center justify-center z-50">
-      <div class="bg-white rounded-lg p-8 max-w-md shadow-2xl dark:bg-gray-700 itbkk-modal-task">
+      <div
+        class="bg-white rounded-lg p-8 max-w-md shadow-2xl dark:bg-gray-700 itbkk-modal-task"
+      >
         <div
           class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600"
         >
@@ -103,9 +120,9 @@ defineEmits(['saveTask', 'cancelTask'])
         </form>
         <div class="flex justify-end">
           <button
-            @click="$emit('saveTask', props.task )"
+            @click="$emit('saveTask', props.task)"
             class="px-4 py-2 bg-green-500 text-white rounded-md mr-2 disabled:opacity-50 itbkk-button-confirm"
-            :disabled="!props.task.title.trim()"
+            :disabled="isSaveDisabled"
           >
             Save
           </button>
