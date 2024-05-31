@@ -20,6 +20,8 @@ onMounted(() => {
   getTimezone()
 })
 
+console.log(props.task)
+
 const formatterCreateOn = computed(() => {
   if (!props.task || !props.task.createdOn) return ''
   const createdOn = new Date(props.task.createdOn).toLocaleString('en-GB')
