@@ -380,6 +380,7 @@ if (props.notFound) {
     <div v-if="editModal">
       <StatusModal
         :status="status"
+        :allStatuses="statuses.getStatuses()"
         @closeModal="closeEditModal"
         @saveStatus="saveStatus"
       />

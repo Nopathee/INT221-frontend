@@ -10,6 +10,7 @@ const props = defineProps({
       color: '#ffffff',
     }),
   },
+  allStatuses: Array
 })
 
 onMounted(() => {
@@ -40,14 +41,23 @@ const OriginalStatus = ref({
 })
 
 const isSaveDisabled = computed(() => {
-  return (
-    !props.status.name ||
-    (props.status.name === OriginalStatus.value.name &&
-      props.status.description === OriginalStatus.value.description &&
-      props.status.color === OriginalStatus.value.color)
-  )
-})
+  const currentName = props.status.name?.trim().toLowerCase()
 
+  const isSameAsOriginal = 
+    !currentName ||
+    (currentName === OriginalStatus.value.name?.trim().toLowerCase() &&
+     props.status.description?.trim() === OriginalStatus.value.description?.trim() &&
+     props.status.color === OriginalStatus.value.color) ||
+    currentName.length > 50 ||
+    (props.status.description?.length ?? 0) > 200;
+
+  const isDuplicateName = props.allStatuses.some(
+    (status) => status.id !== props.status.id &&
+                status.name.trim().toLowerCase() === currentName
+  )
+
+  return isSameAsOriginal || isDuplicateName
+})
 
 defineEmits(['saveStatus', 'closeModal'])
 </script>
@@ -70,22 +80,21 @@ defineEmits(['saveStatus', 'closeModal'])
             <div class="grid gap-4 mb-4">
               <div class="col-span-2">
                 <label
-                  for="taskTitle"
+                  for="statusName"
                   class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                   >Name</label
                 >
                 <div class="flex gap-2">
                   <input
-                    id="taskTitle"
+                    id="statusName"
                     v-model.trim="props.status.name"
                     type="text"
-                    maxlength="100"
                     class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500 itbkk-status-name"
                   />
                   <input
                     type="color"
                     v-model="props.status.color"
-                    class="h-10"
+                    class="h-10 border rounded-lg border-gray-300"
                   />
                 </div>
               </div>
@@ -97,10 +106,9 @@ defineEmits(['saveStatus', 'closeModal'])
                 >
 
                 <textarea
-                  id="taskDescription"
+                  id="statusDescription"
                   v-model.trim="props.status.description"
                   type="text"
-                  maxlength="500"
                   class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full h-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500 itbkk-description"
                 >
                 </textarea>
