@@ -13,6 +13,7 @@ const emit = defineEmits([
   'showDetail',
   'deleteTask',
   'statusDetail',
+  'limitModal'
 ])
 
 const sortedTasks = ref([])
@@ -96,6 +97,9 @@ const removeSelectedStatus = (statusId) => {
 </script>
 
 <template>
+  <section calss="flex flex-col sm-items-center max-w-full h-auto">
+
+ 
   <div class="w-full flex justify-center items-center">
     <div class="rounded-xl p-5 w-5/6">
       <div class="flex justify-end gap-2">
@@ -134,6 +138,12 @@ const removeSelectedStatus = (statusId) => {
           <router-link to="/status" @click="$emit('statusDetail')">
             Manage Status
           </router-link>
+        </button>
+
+        <button
+          class="bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 px-4 border-b-4 border-blue-700 hover:border-blue-500 rounded-lg mb-4 itbkk-manage-status"
+          @click="$emit('limitModal' , true)">
+              Limit tasks
         </button>
       </div>
       <div v-if="selectedStatusNames.length > 0">
@@ -279,6 +289,7 @@ const removeSelectedStatus = (statusId) => {
       </table>
     </div>
   </div>
+</section>
 </template>
 
 <style scoped></style>

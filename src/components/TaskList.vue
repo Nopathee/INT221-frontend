@@ -8,6 +8,7 @@ import Succes from './Succes.vue'
 import Delete from './Delete.vue'
 import Error from './Error.vue'
 import Edit from './Edit.vue'
+import Limit from './Limit.vue'
 import {
   getItems,
   getItemById,
@@ -30,6 +31,8 @@ const editToast = ref(false)
 
 const showModal = ref(false)
 
+const limitModal = ref(false)
+
 const confirmDelete = ref(false)
 
 const taskInsert = ref('')
@@ -46,6 +49,19 @@ onMounted(async () => {
   allStatuses.value.addStatuses(status)
   allTask.value.addDtoTasks(items)
 })
+
+
+const saveLimit = (limitNumber) => {
+  limitModal.value = false
+  router.push('/task')
+  console.log(limitNumber)
+}
+
+const cancelLimit = () => {
+  limitModal.value = false
+  router.push('/task')
+  
+}
 
 const task = ref({
   id: undefined,
@@ -80,6 +96,11 @@ const clearModal = (flagModal) => {
 const showInsert = (flagModal) => {
   showModal.value = flagModal
   router.push('/task/add')
+}
+
+const showmodalLimit = (flagModal) => {
+  limitModal.value = flagModal
+  router.push('/task/limit')
 }
 
 const saveTask = async (selectedTask) => {
@@ -254,7 +275,7 @@ const showEdit = async (id) => {
 </script>
 
 <template>
-  <div class="w-full">
+
     <h1 class="text-center text-2xl bg-clip-content p-3 font-extrabold mt-5">
       IT-Bangmod Kradan Kanban SSI-3
     </h1>
@@ -274,6 +295,8 @@ const showEdit = async (id) => {
       @closeToast="editToast = false"
     />
 
+   
+
     <Table
       :tasks="allTask.getTasks()"
       :statuses="allStatuses.getStatuses()"
@@ -281,6 +304,7 @@ const showEdit = async (id) => {
       @showDetail="showDetail"
       @deleteTask="showDelete"
       @editTask="showEdit"
+      @limitModal="showmodalLimit"
     />
 
     <Teleport to="#modal">
@@ -293,6 +317,18 @@ const showEdit = async (id) => {
         />
       </div>
     </Teleport>
+
+    <Teleport to="#modal">
+      <div v-if="limitModal">
+        <Limit
+          @cancelLimit="cancelLimit"
+          @saveLimit="saveLimit"
+          :task="task"
+          :statuses="allStatuses.getStatuses()"
+        />
+      </div>
+    </Teleport>
+
     <Teleport to="#modal">
       <div v-if="confirmDelete">
         <ConfirmDelete
@@ -309,7 +345,7 @@ const showEdit = async (id) => {
       </div>
     </Teleport>
     <Error v-if="errorToast" @closeToast="errorToast = false" />
-  </div>
+
 </template>
 
 <style scoped></style>
