@@ -9,14 +9,14 @@ const props = defineProps({
   tasks: Array,
   statuses: Array,
 })
-const limit = (limitNumber) => {
- if(limitStatus === true){
-  confirmModal.value = true
+// const limit = (limitNumber) => {
+//  if(limitStatus === true){
+//   confirmModal.value = true
 
- }
+//  }
 
 
-}
+// }
 const isLimitDisabled = ref(false)
 
 const limitNumber = ref(0)
@@ -27,7 +27,7 @@ const limitNumber = ref(0)
     <div>
     <div class="fixed inset-0 flex items-center justify-center z-50">
       <div
-        class="bg-white rounded-lg p-8 max-w-md shadow-2xl dark:bg-gray-700 itbkk-modal-task"
+        class="bg-white rounded-lg p-8 max-w-md shadow-2xl dark:bg-gray-700"
       >
         <div
           class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600"
@@ -50,14 +50,14 @@ const limitNumber = ref(0)
           
           <button
             @click="$emit('saveLimit', limitNumber)"
-            class="px-4 py-2 bg-green-500 text-white rounded-md mr-2 disabled:opacity-50 itbkk-button-confirm"
+            class="px-4 py-2 bg-green-500 text-white rounded-md mr-2 disabled:opacity-50"
             
           >
             Save
           </button>
           <button
             @click="$emit('cancelLimit')"
-            class="px-4 py-2 bg-red-500 text-white rounded-md itbkk-button-cancel"
+            class="px-4 py-2 bg-red-500 text-white rounded-md"
           >
             Cancel
           </button>
