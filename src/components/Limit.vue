@@ -38,7 +38,7 @@ const limitNumber = ref(0)
         </div>
         <div class="flex"> 
             <h1>The user can enable/disable a maximum limit of 10 tasks except "No status" and "Done"</h1>
-            <input @click="isLimitDisabled = !isLimitDisabled , limitStatus = !limitStatus , $emit('confirmToast')" type="checkbox" class="toggle" /> 
+            <input @click="isLimitDisabled = !isLimitDisabled , limitStatus = !limitStatus " type="checkbox" class="toggle" /> 
 
         </div>
         <div class="flex justify-between p-4" v-show="isLimitDisabled"> 
