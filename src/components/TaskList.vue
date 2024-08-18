@@ -53,8 +53,10 @@ onMounted(async () => {
 
 const saveLimit = (limitNumber) => {
   limitModal.value = false
+  successToast.value = true
   router.push('/task')
   console.log(limitNumber)
+  console.log(successToast.value)
 }
 
 const cancelLimit = () => {
@@ -276,9 +278,7 @@ const showEdit = async (id) => {
 
 <template>
 
-    <h1 class="text-center text-2xl bg-clip-content p-3 font-extrabold mt-5">
-      IT-Bangmod Kradan Kanban SSI-3
-    </h1>
+  
     <Succes
       v-if="successToast"
       :taskInsert="taskInsert"
@@ -323,8 +323,8 @@ const showEdit = async (id) => {
         <Limit
           @cancelLimit="cancelLimit"
           @saveLimit="saveLimit"
-          :task="task"
-          :statuses="allStatuses.getStatuses()"
+          :limitNumber="limitNumber"
+         
         />
       </div>
     </Teleport>

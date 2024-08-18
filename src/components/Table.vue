@@ -97,12 +97,21 @@ const removeSelectedStatus = (statusId) => {
 </script>
 
 <template>
-  <section calss="flex flex-col sm-items-center max-w-full h-auto">
-
+  <section class="flex flex-col sm-items-center max-w-full h-auto">
+    <nav class="bg-white border-gray-200 dark:bg-gray-900">
+  <div class="w-full flex flex-wrap items-center justify-between mx-auto p-4">
+      <h1 class="text-center text-2xl bg-clip-content p-3 font-extrabold mt-5">
+      IT-Bangmod Kradan Kanban SSI-3
+    </h1>
  
-  <div class="w-full flex justify-center items-center">
-    <div class="rounded-xl p-5 w-5/6">
-      <div class="flex justify-end gap-2">
+  <div class="items-center justify-between hidden w-full md:flex md:w-auto md:order-1 pt-7">
+    <ul class="flex flex-col font-medium md:p-0 mt-4 border border-gray-100 rounded-lg bg-gray-50 md:space-x-8  md:flex-row md:mt-0 md:border-0 md:bg-white dark:bg-gray-800 md:dark:bg-gray-900 dark:border-gray-700">
+      <li>
+      <button class="inline-flex items-center font-medium justify-center px-4 py-2 text-xl text-gray-900 dark:text-white rounded-lg cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 dark:hover:text-white">
+        Username
+      </button>
+      </li>
+      <li>
         <details class="dropdown itbkk-status-filter">
           <summary
             class="bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 px-4 border-b-4 border-blue-700 hover:border-blue-500 rounded-lg mb-4 itbkk-filter-item"
@@ -131,7 +140,8 @@ const removeSelectedStatus = (statusId) => {
             </span>
           </ul>
         </details>
-
+      </li>
+      <li>
         <button
           class="bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 px-4 border-b-4 border-blue-700 hover:border-blue-500 rounded-lg mb-4 itbkk-manage-status"
         >
@@ -139,13 +149,25 @@ const removeSelectedStatus = (statusId) => {
             Manage Status
           </router-link>
         </button>
-
+      </li>
+      <li>
         <button
           class="bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 px-4 border-b-4 border-blue-700 hover:border-blue-500 rounded-lg mb-4 itbkk-manage-status"
           @click="$emit('limitModal' , true)">
               Limit tasks
         </button>
-      </div>
+      </li>
+    </ul>
+  </div>
+  
+
+
+  </div>
+</nav>
+
+  <div class="w-full flex justify-center items-center">
+    <div class="rounded-xl p-5 w-5/6">
+      
       <div v-if="selectedStatusNames.length > 0">
         <div class="font-semibold text-lg">Selected Statuses:</div>
       </div>
