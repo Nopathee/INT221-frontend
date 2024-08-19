@@ -1,12 +1,5 @@
 <script setup>
-const emit = defineEmits([
-  'taskDetail',
-  
-])
-const props = defineProps({
-  userName: String,
-  passWord: String,
-})
+
 
 </script>
  
@@ -23,7 +16,7 @@ const props = defineProps({
                 for="username"
                 class="block mb-2 text-lg font-medium text-gray-900 dark:text-white itbkk-username" 
                 >Username</label> 
-              <input type="text" class="rounded-lg w-full h-10 text-base pl-2" required="">
+              <input type="text" id="username" class="rounded-lg w-full h-10 text-base pl-2" required="">
               <label
                 for="password"
                 class="block mb-2 text-lg font-medium text-gray-900 dark:text-white itbkk-password"
@@ -32,7 +25,8 @@ const props = defineProps({
               <input type="password" id="password" class="rounded-lg w-full h-10 text-base pl-2 disabled:opacity-50 disabled:pointer-events-none" required="">
             </div>
               <div class="pt-6">
-                <button type="submit" class="w-full  text-gray-900 dark:text-white bg-slate-900 hover:bg-red-600 font-medium rounded-lg text-sm px-5 py-6  text-center itbkk-button-signin"><RouterLink to="/task" @click="$emit='taskDetail'" >Sign in</RouterLink></button>
+                <button type="submit" id="loggin" class="w-full  text-gray-900 dark:text-white bg-slate-900 hover:bg-red-600 font-medium rounded-lg text-sm px-5 py-6  text-center itbkk-button-signin">
+                  <RouterLink to="/task" >Sign in</RouterLink></button>
               </div>
                   
                   

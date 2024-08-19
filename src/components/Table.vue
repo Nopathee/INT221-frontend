@@ -107,12 +107,24 @@ const removeSelectedStatus = (statusId) => {
   <div class="items-center justify-between hidden w-full md:flex md:w-auto md:order-1 pt-7">
     <ul class="flex flex-col font-medium md:p-0 mt-4 border border-gray-100 rounded-lg bg-gray-50 md:space-x-8  md:flex-row md:mt-0 md:border-0 md:bg-white dark:bg-gray-800 md:dark:bg-gray-900 dark:border-gray-700">
       <li>
-      <button class="inline-flex items-center font-medium justify-center px-4 py-2 text-xl text-gray-900 dark:text-white rounded-lg cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 dark:hover:text-white">
-        Username
-      </button>
+        <details class="dropdown">
+          <summary class="inline-flex items-center font-medium justify-center px-4 py-2 text-xl text-gray-900 dark:text-white rounded-lg cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 dark:hover:text-white">
+            userName
+          </summary>
+          <ul class="p-2 shadow menu dropdown-content z-[1] bg-red-600 rounded-box w-full text-center my-2 text-black">
+            <li>
+              <button>
+                logout
+              </button>
+              
+            </li>
+          </ul>
+       
+      </details>
+      
       </li>
       <li>
-        <details class="dropdown itbkk-status-filter">
+        <details class="dropdown itbkk-status-filter ">
           <summary
             class="bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 px-4 border-b-4 border-blue-700 hover:border-blue-500 rounded-lg mb-4 itbkk-filter-item"
           >
@@ -214,12 +226,12 @@ const removeSelectedStatus = (statusId) => {
       <table class="w-full table table-lg rounded-lg overflow-hidden">
         <thead>
           <tr class="font-bold text-red-800 text-lg bg-pink-300">
-            <th class="w-1/12">
+            <th class="w-1/12 fixed ">
               <img
                 src="./icon/InsertBtn.svg"
                 alt="Add Task"
                 @click="$emit('openModal', true)"
-                class="cursor-pointer itbkk-button-add"
+                class="cursor-pointer itbkk-button-add "
               />
             </th>
             <th class="w-5/12">Title</th>
@@ -255,9 +267,9 @@ const removeSelectedStatus = (statusId) => {
             :key="index"
             class="bg-blue-300 itbkk-item"
           >
-            <td class="text-white text-center font-semibold flex">
+            <td class="text-white text-center font-semibold flex fixed">
               {{ index + 1 }}
-              <div class="dropdown dropdown-right dropdown-end">
+              <div class="dropdown dropdown-right dropdown-end tra">
                 <div tabindex="0" role="button" class="itbkk-button-action">
                   <img src="./icon/Threebtn.svg" />
                 </div>
@@ -267,7 +279,7 @@ const removeSelectedStatus = (statusId) => {
                   <li>
                     <button
                       @click="$emit('editTask', task.id)"
-                      class="text-black itbkk-button-edit"
+                      class="text-black dark:text-white itbkk-button-edit"
                     >
                       Edit
                     </button>
