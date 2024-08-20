@@ -4,6 +4,7 @@ import { computed, ref } from 'vue';
 
 const username = ref('')
 const password = ref('')
+const error = ref(false)
 
 const isLoginDisabled = computed(() => {
     return username.value.length === 0 || password.value.length === 0
@@ -23,6 +24,10 @@ const handlerLogin = async () => {
   if(res === 200){
     console.log(`login success`)
   } else{
+    error.value = true
+    setTimeout(() => {
+      error.value = false
+    },3000)
     console.log(`login fail`)
   }
 }
@@ -36,7 +41,29 @@ const handlerLogin = async () => {
  
 <template>
     <section class="bg-gray-50 dark:bg-gray-900">
+
   <div class="flex flex-col items-center justify-center p-8 mx-auto md:h-screen lg:py-0">
+    <div v-if="error" class="flex flex-col m-5 bg-red-100 border border-red-400 text-red-700 px-4 rounded relative" role="alert">
+      <div class="absolute right-0 m-1">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            height="24px"
+            viewBox="0 0 24 24"
+            width="24px"
+            class="fill-red-500 cursor-pointer"
+            @click="$emit(error = false)"
+          >
+            <path d="M0 0h24v24H0z" fill="none" />
+            <path
+              d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"
+            />
+          </svg>
+        </div>
+          <strong class="font-bold pt-3">Error</strong>
+
+          
+          <span class="block sm:inline pb-3">Username or Password is incorrect.</span>
+    </div>
       <div class="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
           <div class="p-6 space-y-4 md:space-y-6 sm:p-8">
               <p class="text-2xl font-bold  text-gray-900  dark:text-white text-center">
@@ -72,7 +99,7 @@ const handlerLogin = async () => {
                   
               </form>
               <div class="pt-6">
-                <button :disabled="isLoginDisabled" @click="handlerLogin" class="w-full disabled:opacity-50 bg-green-600 text-gray-900 dark:text-white   font-medium rounded-lg text-sm px-5 py-6  text-center itbkk-button-signin">
+                <button :disabled="isLoginDisabled" @click="handlerLogin" class="w-full disabled:opacity-50 bg-green-600 text-white font-bold dark:text-white rounded-lg text-sm px-5 py-6  text-center itbkk-button-signin">
                  Sign in </button>
               </div>
           </div>
