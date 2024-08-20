@@ -9,7 +9,7 @@ const router = createRouter({
   history,
   routes: [
     { path: '/task', name: 'task', component: Task },
-    { path: '/', name: 'home', redirect: '/task' },
+    { path: '/', name: 'home', redirect: '/login' },
     {
       path: '/task/:id',
       name: 'taskDetail',
