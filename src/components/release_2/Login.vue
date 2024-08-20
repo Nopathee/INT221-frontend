@@ -72,7 +72,7 @@ const handlerLogin = async () => {
                   
               </form>
               <div class="pt-6">
-                <button :disabled="isLoginDisabled" @click="handlerLogin" class="w-full disabled:opacity-50 bg-red-600 text-gray-900 dark:text-white   font-medium rounded-lg text-sm px-5 py-6  text-center itbkk-button-signin">
+                <button :disabled="isLoginDisabled" @click="handlerLogin" class="w-full disabled:opacity-50 bg-green-600 text-gray-900 dark:text-white   font-medium rounded-lg text-sm px-5 py-6  text-center itbkk-button-signin">
                  Sign in </button>
               </div>
           </div>
