@@ -19,6 +19,29 @@ async function getItemById(url, id) {
   }
 }
 
+async function  login(url , user) {
+  try {
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(user),
+    });
+
+    if (response.ok) {
+      const result = await response.json();
+      console.log('Login successful:', result);
+    } else {
+      console.error('Login failed');
+    }
+  } catch (error) {
+    console.error('Error during login:', error);
+    
+  }
+}
+
+
 
 async function addItem(url, newItem) {
   try {
@@ -82,4 +105,4 @@ async function editItem(url, id, editItem) {
   }
 }
 
-export { getItems, getItemById, addItem, deleteItemById, editItem , transferItem}
+export { getItems, getItemById, addItem, deleteItemById, editItem , transferItem ,login}

@@ -114,7 +114,7 @@ const removeSelectedStatus = (statusId) => {
           <ul class="p-2 shadow menu dropdown-content z-[1] bg-red-600 rounded-box w-full text-center my-2 text-black">
             <li>
               <button>
-                logout
+              <router-link to="/login">logout</router-link>
               </button>
               
             </li>
