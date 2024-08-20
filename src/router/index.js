@@ -2,7 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import Task from '../views/Task.vue'
 import { getItemById } from '@/libs/fetchUtils.js'
 import StatusList from '@/components/StatusList.vue'
-import Login from '../components/Login.vue'
+import Login from '../components/release_2/Login.vue'
 const history = createWebHistory(import.meta.env.BASE_URL)
 
 const router = createRouter({
