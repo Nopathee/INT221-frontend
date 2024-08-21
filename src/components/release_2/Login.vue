@@ -9,7 +9,7 @@ const password = ref('')
 const error = ref(false)
 console.log(username.value)
 const isLoginDisabled = computed(() => {
-    return username.value.length === 0 || password.value.length === 0
+    return username.value === '' || password.value === ''
     
 })
 console.log(username.value)
@@ -74,20 +74,20 @@ const handlerLogin = async () => {
           <form class="md:p-1">
             <label
               for="username"
-              class="block mb-2 text-lg font-medium text-gray-900 dark:text-white itbkk-username"
+              class="block mb-2 text-lg font-medium text-gray-900 dark:text-white"
             >Username
           </label>
             <input
               type="text"
               id="username"
               v-model="username"
-              class="rounded-lg w-full h-10 text-base pl-2 border"
+              class="rounded-lg w-full h-10 text-base pl-2 border itbkk-username"
               maxlength="50"
               required
             >
             <label
               for="password"
-              class="block mb-2 text-lg font-medium text-gray-900 dark:text-white itbkk-password"
+              class="block mb-2 text-lg font-medium text-gray-900 dark:text-white "
             >Password
           </label>
             <div class="relative">
@@ -95,14 +95,19 @@ const handlerLogin = async () => {
                 type="password"
                 id="password"
                 v-model="password"
-                class="rounded-lg w-full h-10 text-base pl-2 border"
+                class="rounded-lg w-full h-10 text-base pl-2 border itbkk-password"
                 maxlength="14"
                 required
               >
             </div>
           </form>
           <div class="pt-6">
-            <button :disabled="isLoginDisabled" @click="handlerLogin" class="w-full disabled:opacity-50 bg-green-600 text-white font-bold dark:text-white rounded-lg text-sm px-5 py-6 text-center itbkk-button-signin">
+            <button
+              :disabled="isLoginDisabled"
+              @click="handlerLogin"
+              class="w-full disabled:opacity-50 bg-green-600 text-white font-bold dark:text-white rounded-lg text-sm px-5 py-6 text-center itbkk-button-signin"
+              :class="{'disabled' : isLoginDisabled}"
+            >
               Sign in
             </button>
           </div>
