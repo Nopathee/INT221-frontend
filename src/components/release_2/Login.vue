@@ -1,22 +1,25 @@
 <script setup>
 import { login } from '@/libs/fetchUtils_release2';
+
 import { computed, ref } from 'vue';
 import { useRouter } from 'vue-router'; 
 
 const username = ref('')
 const password = ref('')
 const error = ref(false)
-
+console.log(username.value)
 const isLoginDisabled = computed(() => {
     return username.value.length === 0 || password.value.length === 0
+    
 })
-
+console.log(username.value)
+console.log(!password.value)
 const router = useRouter(); 
 
 const handlerLogin = async () => {
   const user = {
     username: username.value,
-    password: password.value
+    password: password.value   
   }
 
   console.log(user)
@@ -30,7 +33,7 @@ const handlerLogin = async () => {
     localStorage.setItem('accessToken', data.token) 
     localStorage.setItem('fullname', data.fullname) 
     console.log(`login success`)
-    router.push('/home') 
+    router.push('/task') 
   } else {
     error.value = true
     setTimeout(() => {
@@ -61,7 +64,7 @@ const handlerLogin = async () => {
           </svg>
         </div>
         <strong class="font-bold pt-3">Error</strong>
-        <span class="block sm:inline pb-3">Username or Password is incorrect.</span>
+        <span class="block sm:inline pb-3 itbkk-message">Username or Password is incorrect.</span>
       </div>
       <div class="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
         <div class="p-6 space-y-4 md:space-y-6 sm:p-8">
@@ -72,25 +75,29 @@ const handlerLogin = async () => {
             <label
               for="username"
               class="block mb-2 text-lg font-medium text-gray-900 dark:text-white itbkk-username"
-            >Username</label>
+            >Username
+          </label>
             <input
               type="text"
               id="username"
               v-model="username"
               class="rounded-lg w-full h-10 text-base pl-2 border"
               maxlength="50"
+              required
             >
             <label
               for="password"
               class="block mb-2 text-lg font-medium text-gray-900 dark:text-white itbkk-password"
-            >Password</label>
+            >Password
+          </label>
             <div class="relative">
               <input
                 type="password"
                 id="password"
                 v-model="password"
-                class="rounded-lg w-full h-10 text-base pl-2 disabled:opacity-50 disabled:pointer-events-none border"
+                class="rounded-lg w-full h-10 text-base pl-2 border"
                 maxlength="14"
+                required
               >
             </div>
           </form>
