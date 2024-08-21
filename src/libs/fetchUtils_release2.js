@@ -10,11 +10,17 @@ async function login(url, user) {
     console.log(JSON.stringify(user))
     console.log(response)
 
-    const loginStatus = response.status
-    return loginStatus
+    const data = await response.json() 
+
+    return {
+      status: response.status, 
+      token: data.token, 
+      fullname: data.fullname 
+    }
   } catch (error) {
     console.error('Error during login:', error)
+    return { status: 500, error: 'Internal Server Error' } 
   }
 }
 
-export {login}
+export { login }
