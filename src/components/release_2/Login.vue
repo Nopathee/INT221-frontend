@@ -1,6 +1,7 @@
 <script setup>
- import { login } from '@/libs/fetchUtils_release2';
+import { login } from '@/libs/fetchUtils_release2';
 import { computed, ref } from 'vue';
+import { useRouter } from 'vue-router'; 
 
 const username = ref('')
 const password = ref('')
@@ -9,6 +10,8 @@ const error = ref(false)
 const isLoginDisabled = computed(() => {
     return username.value.length === 0 || password.value.length === 0
 })
+
+const router = useRouter(); 
 
 const handlerLogin = async () => {
   const user = {
@@ -19,39 +22,37 @@ const handlerLogin = async () => {
   console.log(user)
 
   const url = `${import.meta.env.VITE_API_ENDPOINT}/login/user`
-  const res = await login(url,user)
+  const res = await login(url, user)
   console.log(res)
-  if(res === 200){
+
+  if (res && res.status === 200) {
+    const data = await res.json() 
+    localStorage.setItem('accessToken', data.token) 
+    localStorage.setItem('fullname', data.fullname) 
     console.log(`login success`)
-  } else{
+    router.push('/home') 
+  } else {
     error.value = true
     setTimeout(() => {
       error.value = false
-    },3000)
+    }, 3000)
     console.log(`login fail`)
   }
 }
-
-  
- 
-
-
-
 </script>
- 
-<template>
-    <section class="bg-gray-50 dark:bg-gray-900">
 
-  <div class="flex flex-col items-center justify-center p-8 mx-auto md:h-screen lg:py-0">
-    <div v-if="error" class="flex flex-col m-5 bg-red-100 border border-red-400 text-red-700 px-4 rounded relative" role="alert">
-      <div class="absolute right-0 m-1">
+<template>
+  <section class="bg-gray-50 dark:bg-gray-900">
+    <div class="flex flex-col items-center justify-center p-8 mx-auto md:h-screen lg:py-0">
+      <div v-if="error" class="flex flex-col m-5 bg-red-100 border border-red-400 text-red-700 px-4 rounded relative" role="alert">
+        <div class="absolute right-0 m-1">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             height="24px"
             viewBox="0 0 24 24"
             width="24px"
             class="fill-red-500 cursor-pointer"
-            @click="$emit(error = false)"
+            @click="$emit('close-error')"
           >
             <path d="M0 0h24v24H0z" fill="none" />
             <path
@@ -59,57 +60,50 @@ const handlerLogin = async () => {
             />
           </svg>
         </div>
-          <strong class="font-bold pt-3">Error</strong>
-
-          
-          <span class="block sm:inline pb-3">Username or Password is incorrect.</span>
-    </div>
+        <strong class="font-bold pt-3">Error</strong>
+        <span class="block sm:inline pb-3">Username or Password is incorrect.</span>
+      </div>
       <div class="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
-          <div class="p-6 space-y-4 md:space-y-6 sm:p-8">
-              <p class="text-2xl font-bold  text-gray-900  dark:text-white text-center">
-                Login
-              </p>
-              <form  class="md:p-1">
-                <label
-                for="username"
-                class="block mb-2 text-lg font-medium text-gray-900 dark:text-white itbkk-username" 
-                >Username</label> 
-              <input 
-                type="text" 
-                id="username"
-                v-model="username"
-                class="rounded-lg w-full h-10 text-base pl-2 border"
-                maxlength="50"
-                >
-              <label
-                for="password"
-                class="block mb-2 text-lg font-medium text-gray-900 dark:text-white itbkk-password "
-                >Password</label>
-                <div class="relative">
-              <input 
-              type="password" 
-              id="password"
-              v-model="password"
-              class="rounded-lg w-full h-10 text-base pl-2 disabled:opacity-50 disabled:pointer-events-none border" 
-              maxlength="14"
+        <div class="p-6 space-y-4 md:space-y-6 sm:p-8">
+          <p class="text-2xl font-bold text-gray-900 dark:text-white text-center">
+            Login
+          </p>
+          <form class="md:p-1">
+            <label
+              for="username"
+              class="block mb-2 text-lg font-medium text-gray-900 dark:text-white itbkk-username"
+            >Username</label>
+            <input
+              type="text"
+              id="username"
+              v-model="username"
+              class="rounded-lg w-full h-10 text-base pl-2 border"
+              maxlength="50"
+            >
+            <label
+              for="password"
+              class="block mb-2 text-lg font-medium text-gray-900 dark:text-white itbkk-password"
+            >Password</label>
+            <div class="relative">
+              <input
+                type="password"
+                id="password"
+                v-model="password"
+                class="rounded-lg w-full h-10 text-base pl-2 disabled:opacity-50 disabled:pointer-events-none border"
+                maxlength="14"
               >
             </div>
-              
-                  
-                  
-              </form>
-              <div class="pt-6">
-                <button :disabled="isLoginDisabled" @click="handlerLogin" class="w-full disabled:opacity-50 bg-green-600 text-white font-bold dark:text-white rounded-lg text-sm px-5 py-6  text-center itbkk-button-signin">
-                 Sign in </button>
-              </div>
+          </form>
+          <div class="pt-6">
+            <button :disabled="isLoginDisabled" @click="handlerLogin" class="w-full disabled:opacity-50 bg-green-600 text-white font-bold dark:text-white rounded-lg text-sm px-5 py-6 text-center itbkk-button-signin">
+              Sign in
+            </button>
           </div>
+        </div>
       </div>
-  </div>
-</section>
-
-
+    </div>
+  </section>
 </template>
- 
-<style scoped>
 
+<style scoped>
 </style>
