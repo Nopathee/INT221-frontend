@@ -1,25 +1,24 @@
 <script setup>
-import { login } from '@/libs/fetchUtils_release2';
+import { login } from '@/libs/fetchUtils_release2'
 
-import { computed, ref } from 'vue';
-import { useRouter } from 'vue-router'; 
+import { computed, ref } from 'vue'
+import { useRouter } from 'vue-router'
 
 const username = ref('')
 const password = ref('')
 const error = ref(false)
 console.log(username.value)
 const isLoginDisabled = computed(() => {
-    return username.value.length === 0 || password.value.length === 0
-    
+  return username.value.length === 0 || password.value.length === 0
 })
 console.log(username.value)
 console.log(!password.value)
-const router = useRouter(); 
+const router = useRouter()
 
 const handlerLogin = async () => {
   const user = {
     username: username.value,
-    password: password.value   
+    password: password.value,
   }
 
   console.log(user)
@@ -29,11 +28,11 @@ const handlerLogin = async () => {
   console.log(res)
 
   if (res && res.status === 200) {
-    const data = await res.json() 
-    localStorage.setItem('accessToken', data.token) 
-    localStorage.setItem('fullname', data.fullname) 
+    const data = await res.json()
+    localStorage.setItem('accessToken', data.token)
+    localStorage.setItem('fullname', data.fullname)
     console.log(`login success`)
-    router.push('/task') 
+    router.push('/task')
   } else {
     error.value = true
     setTimeout(() => {
@@ -46,8 +45,14 @@ const handlerLogin = async () => {
 
 <template>
   <section class="bg-gray-50 dark:bg-gray-900">
-    <div class="flex flex-col items-center justify-center p-8 mx-auto md:h-screen lg:py-0">
-      <div v-if="error" class="flex flex-col m-5 bg-red-100 border border-red-400 text-red-700 px-4 rounded relative" role="alert">
+    <div
+      class="flex flex-col items-center justify-center p-8 mx-auto md:h-screen lg:py-0"
+    >
+      <div
+        v-if="error"
+        class="flex flex-col m-5 bg-red-100 border border-red-400 text-red-700 px-4 rounded relative"
+        role="alert"
+      >
         <div class="absolute right-0 m-1">
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -64,45 +69,56 @@ const handlerLogin = async () => {
           </svg>
         </div>
         <strong class="font-bold pt-3">Error</strong>
-        <span class="block sm:inline pb-3 itbkk-message">Username or Password is incorrect.</span>
+        <span class="block sm:inline pb-3 itbkk-message"
+          >Username or Password is incorrect.</span
+        >
       </div>
-      <div class="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
+      <div
+        class="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700"
+      >
         <div class="p-6 space-y-4 md:space-y-6 sm:p-8">
-          <p class="text-2xl font-bold text-gray-900 dark:text-white text-center">
+          <p
+            class="text-2xl font-bold text-gray-900 dark:text-white text-center"
+          >
             Login
           </p>
           <form class="md:p-1">
             <label
               for="username"
-              class="block mb-2 text-lg font-medium text-gray-900 dark:text-white itbkk-username"
-            >Username
-          </label>
+              class="block mb-2 text-lg font-medium text-gray-900 dark:text-white"
+              >Username
+            </label>
             <input
               type="text"
               id="username"
               v-model="username"
-              class="rounded-lg w-full h-10 text-base pl-2 border"
+              class="rounded-lg w-full h-10 text-base pl-2 border itbkk-username"
               maxlength="50"
               required
-            >
+            />
             <label
               for="password"
-              class="block mb-2 text-lg font-medium text-gray-900 dark:text-white itbkk-password"
-            >Password
-          </label>
+              class="block mb-2 text-lg font-medium text-gray-900 dark:text-white"
+              >Password
+            </label>
             <div class="relative">
               <input
                 type="password"
                 id="password"
                 v-model="password"
-                class="rounded-lg w-full h-10 text-base pl-2 border"
+                class="rounded-lg w-full h-10 text-base pl-2 border itbkk-password"
                 maxlength="14"
                 required
-              >
+              />
             </div>
           </form>
           <div class="pt-6">
-            <button :disabled="isLoginDisabled" @click="handlerLogin" class="w-full disabled:opacity-50 bg-green-600 text-white font-bold dark:text-white rounded-lg text-sm px-5 py-6 text-center itbkk-button-signin">
+            <button
+              :disabled="isLoginDisabled"
+              @click="handlerLogin"
+              class="w-full disabled:opacity-50 bg-green-600 text-white font-bold dark:text-white rounded-lg text-sm px-5 py-6 text-center itbkk-button-signin"
+              :class="{'disabled' : isLoginDisabled}"
+            >
               Sign in
             </button>
           </div>
@@ -112,5 +128,4 @@ const handlerLogin = async () => {
   </section>
 </template>
 
-<style scoped>
-</style>
+<style scoped></style>
