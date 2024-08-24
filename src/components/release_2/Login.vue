@@ -4,32 +4,33 @@ import { login } from '@/libs/fetchUtils_release2'
 import { computed, ref } from 'vue'
 import { useRouter } from 'vue-router'
 
-const username = ref('')
+const userName = ref('')
 const password = ref('')
 const error = ref(false)
-console.log(username.value)
+console.log(userName.value)
 const isLoginDisabled = computed(() => {
-  return username.value.length === 0 || password.value.length === 0
+  return userName.value.length === 0 || password.value.length === 0
 })
-console.log(username.value)
+console.log(userName.value)
 console.log(!password.value)
 const router = useRouter()
 
 const handlerLogin = async () => {
   const user = {
-    username: username.value,
-    password: password.value,
+    userName :userName.value,
+    password : password.value
   }
 
   console.log(user)
 
-  const url = `${import.meta.env.VITE_API_ENDPOINT}/login/user`
+  const url = `${import.meta.env.VITE_API_ENDPOINT}/login`
   const res = await login(url, user)
   console.log(res)
 
   if (res && res.status === 200) {
     localStorage.setItem('accessToken', res.token);
     localStorage.setItem('fullname', res.fullname);
+    console.log(res)
     console.log(`login success`);
     router.push('/task');
   } else {
@@ -90,7 +91,7 @@ const handlerLogin = async () => {
             <input
               type="text"
               id="username"
-              v-model="username"
+              v-model="userName"
               class="rounded-lg w-full h-10 text-base pl-2 border itbkk-username"
               maxlength="50"
               required

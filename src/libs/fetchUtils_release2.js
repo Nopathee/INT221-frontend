@@ -7,21 +7,15 @@ async function login(url, user) {
       },
       body: JSON.stringify(user),
     })
-
     console.log(JSON.stringify(user))
     console.log(response)
 
-    
-    let data = null
-    if (response.ok) {
-      const text = await response.text() 
-      data = text ? JSON.parse(text) : {} 
-    }
+    const data = await response.json()
+    console.log(data)
 
     return {
       status: response.status,
-      token: data?.token,
-      fullname: data?.fullname,
+      token: data.access_token
     }
   } catch (error) {
     console.error('Error during login:', error)

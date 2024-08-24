@@ -226,7 +226,7 @@ const removeSelectedStatus = (statusId) => {
       <table class="w-full table table-lg rounded-lg overflow-hidden">
         <thead>
           <tr class="font-bold text-red-800 text-lg bg-pink-300">
-            <th class="w-1/12 fixed ">
+            <th class="w-1/12 ">
               <img
                 src="./icon/InsertBtn.svg"
                 alt="Add Task"
@@ -267,7 +267,7 @@ const removeSelectedStatus = (statusId) => {
             :key="index"
             class="bg-blue-300 itbkk-item"
           >
-            <td class="text-white text-center font-semibold flex fixed">
+            <td class="text-white text-center font-semibold flex">
               {{ index + 1 }}
               <div class="dropdown dropdown-right dropdown-end tra">
                 <div tabindex="0" role="button" class="itbkk-button-action">
