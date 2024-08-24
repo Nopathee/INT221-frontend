@@ -7,19 +7,25 @@ async function login(url, user) {
       },
       body: JSON.stringify(user),
     })
+
     console.log(JSON.stringify(user))
     console.log(response)
 
-    const data = await response.json() 
+    
+    let data = null
+    if (response.ok) {
+      const text = await response.text() 
+      data = text ? JSON.parse(text) : {} 
+    }
 
     return {
-      status: response.status, 
-      token: data.token, 
-      fullname: data.fullname 
+      status: response.status,
+      token: data?.token,
+      fullname: data?.fullname,
     }
   } catch (error) {
     console.error('Error during login:', error)
-    return { status: 500, error: 'Internal Server Error' } 
+    return { status: 500, error: 'Internal Server Error' }
   }
 }
 
