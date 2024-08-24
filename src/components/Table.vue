@@ -1,6 +1,7 @@
 <script setup>
 import { defineProps, ref, watch, onMounted } from 'vue'
 
+
 const props = defineProps({
   tasks: Array,
   statuses: Array,
@@ -15,6 +16,17 @@ const emit = defineEmits([
   'statusDetail',
   'limitModal'
 ])
+
+const fullName = ref('')
+
+onMounted(() => {
+  const storedFullName = localStorage.getItem('fullname'); // Retrieve the full name from local storage
+  if (storedFullName) {
+    fullName.value = storedFullName;
+    console.log(storedFullName)
+    console.log(fullName.value) // Set the reactive variable
+  }
+})
 
 const sortedTasks = ref([])
 const originalTasks = ref([])
@@ -108,12 +120,12 @@ const removeSelectedStatus = (statusId) => {
     <ul class="flex flex-col font-medium md:p-0 mt-4 border border-gray-100 rounded-lg bg-gray-50 md:space-x-8  md:flex-row md:mt-0 md:border-0 md:bg-white dark:bg-gray-800 md:dark:bg-gray-900 dark:border-gray-700">
       <li>
         <details class="dropdown">
-          <summary class="inline-flex items-center font-medium justify-center px-4 py-2 text-xl text-gray-900 dark:text-white rounded-lg cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 dark:hover:text-white">
-            userName
+          <summary v-if="fullName" class="inline-flex items-center font-medium justify-center px-4 py-2 text-xl text-gray-900 dark:text-white rounded-lg cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 dark:hover:text-white itbkk-fullname">
+          {{ fullName }}
           </summary>
           <ul class="p-2 shadow menu dropdown-content z-[1] bg-red-600 rounded-box w-full text-center my-2 text-black">
             <li>
-              <button>
+              <button class="flex justify-center">
               <router-link to="/login">logout</router-link>
               </button>
               

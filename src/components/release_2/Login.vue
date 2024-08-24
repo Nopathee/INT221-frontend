@@ -1,11 +1,12 @@
 <script setup>
 import { login } from '@/libs/fetchUtils_release2'
-
 import { computed, ref } from 'vue'
 import { useRouter } from 'vue-router'
-
+import { jwtDecode } from 'jwt-decode';
 const userName = ref('')
 const password = ref('')
+const fullName = ref('')
+
 const error = ref(false)
 console.log(userName.value)
 const isLoginDisabled = computed(() => {
@@ -26,12 +27,16 @@ const handlerLogin = async () => {
   const url = `${import.meta.env.VITE_API_ENDPOINT}/login`
   const res = await login(url, user)
   console.log(res)
-
+  const token =  `"${res.token}"`
+  const decoded = jwtDecode(token)
+  fullName.value = decoded.name
   if (res && res.status === 200) {
-    localStorage.setItem('accessToken', res.token);
-    localStorage.setItem('fullname', res.fullname);
-    console.log(res)
-    console.log(`login success`);
+    localStorage.setItem('accessToken', res.token)
+    localStorage.setItem('fullname',fullName.value)
+    console.log(res.token)
+    console.log(`"${res.token}"`)
+    console.log(`login success`)
+   console.log(fullName.value)
     router.push('/task');
   } else {
     error.value = true
