@@ -28,11 +28,10 @@ const handlerLogin = async () => {
   console.log(res)
 
   if (res && res.status === 200) {
-    const data = await res.json()
-    localStorage.setItem('accessToken', data.token)
-    localStorage.setItem('fullname', data.fullname)
-    console.log(`login success`)
-    router.push('/task')
+    localStorage.setItem('accessToken', res.token);
+    localStorage.setItem('fullname', res.fullname);
+    console.log(`login success`);
+    router.push('/task');
   } else {
     error.value = true
     setTimeout(() => {
