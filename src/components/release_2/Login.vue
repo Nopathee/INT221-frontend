@@ -6,14 +6,11 @@ import { jwtDecode } from 'jwt-decode';
 const userName = ref('')
 const password = ref('')
 const fullName = ref('')
-
 const error = ref(false)
-console.log(userName.value)
 const isLoginDisabled = computed(() => {
   return userName.value.length === 0 || password.value.length === 0
 })
-console.log(userName.value)
-console.log(!password.value)
+
 const router = useRouter()
 
 const handlerLogin = async () => {
@@ -27,16 +24,16 @@ const handlerLogin = async () => {
   const url = `${import.meta.env.VITE_API_ENDPOINT}/login`
   const res = await login(url, user)
   console.log(res)
-  const token =  `"${res.token}"`
-  const decoded = jwtDecode(token)
-  fullName.value = decoded.name
-  if (res && res.status === 200) {
+  
+  if (res.status === 200) {
+    const token =  `"${res.token}"`
+    const decoded = jwtDecode(token)
+    fullName.value = decoded.name
     localStorage.setItem('accessToken', res.token)
     localStorage.setItem('fullname',fullName.value)
-    console.log(res.token)
     console.log(`"${res.token}"`)
     console.log(`login success`)
-   console.log(fullName.value)
+    console.log(fullName.value)
     router.push('/task');
   } else {
     error.value = true
