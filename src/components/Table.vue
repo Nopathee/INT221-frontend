@@ -1,6 +1,7 @@
 <script setup>
 import { defineProps, ref, watch, onMounted } from 'vue'
-
+import { jwtDecode } from 'jwt-decode';
+import router from '@/router';
 
 const props = defineProps({
   tasks: Array,
@@ -20,13 +21,23 @@ const emit = defineEmits([
 const fullName = ref('')
 
 onMounted(() => {
-  const storedFullName = localStorage.getItem('fullname'); // Retrieve the full name from local storage
-  if (storedFullName) {
-    fullName.value = storedFullName;
-    console.log(storedFullName)
-    console.log(fullName.value) // Set the reactive variable
-  }
+  decoded()
 })
+
+const decoded = () => {
+  const token = localStorage.getItem('accessToken')
+  if (token) {
+    const decoded = jwtDecode(token)
+    fullName.value = decoded.name
+    console.log(fullName.value)
+  }
+}
+
+
+const logout = () => {
+  localStorage.removeItem('accessToken')
+  router.push('/login')
+}
 
 const sortedTasks = ref([])
 const originalTasks = ref([])
@@ -125,8 +136,8 @@ const removeSelectedStatus = (statusId) => {
           </summary>
           <ul class="p-2 shadow menu dropdown-content z-[1] bg-red-600 rounded-box w-full text-center my-2 text-black">
             <li>
-              <button class="flex justify-center">
-              <router-link to="/login">logout</router-link>
+              <button @click="logout" class="flex justify-center">
+              logout
               </button>
               
             </li>

@@ -2,10 +2,9 @@
 import { login } from '@/libs/fetchUtils_release2'
 import { computed, ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { jwtDecode } from 'jwt-decode';
+
 const userName = ref('')
 const password = ref('')
-const fullName = ref('')
 const error = ref(false)
 const isLoginDisabled = computed(() => {
   return userName.value.length === 0 || password.value.length === 0
@@ -26,14 +25,9 @@ const handlerLogin = async () => {
   console.log(res)
   
   if (res.status === 200) {
-    const token =  `"${res.token}"`
-    const decoded = jwtDecode(token)
-    fullName.value = decoded.name
     localStorage.setItem('accessToken', res.token)
-    localStorage.setItem('fullname',fullName.value)
     console.log(`"${res.token}"`)
     console.log(`login success`)
-    console.log(fullName.value)
     router.push('/task');
   } else {
     error.value = true
@@ -43,6 +37,8 @@ const handlerLogin = async () => {
     console.log(`login fail`)
   }
 }
+
+
 </script>
 
 <template>
