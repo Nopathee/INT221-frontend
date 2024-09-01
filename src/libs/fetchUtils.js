@@ -1,6 +1,6 @@
+import router from "@/router";
 async function getItems(url) {
   const token = localStorage.getItem('accessToken')
-
   try {
     const data = await fetch(url,{
       method: "GET",
@@ -8,8 +8,16 @@ async function getItems(url) {
         'Authorization': `Bearer ${token}`
       }
     })
-    const items = await data.json()
-    return items
+    if(data.status === 200){
+      const items = await data.json()
+      console.log('Task data:', items);
+      return items
+    } else if (data.status === 401) {
+      localStorage.removeItem('accessToken');
+      router.push('/login');
+    } else {
+      console.error(`Error: Received status code ${data.status}`);
+    }
   } catch (error) {
     console.log(`error: ${error}`)
   }

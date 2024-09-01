@@ -65,31 +65,5 @@ const router = createRouter({
   ],
 })
 
-// import { jwtDecode } from 'jwt-decode'
-// router.beforeEach((to, from, next) => {
-//   const token = localStorage.getItem('token')
-//   if (to.path !== '/login'){
-//     if (token) {
-//       try {
-//         const decoded = jwtDecode(token);
-//         if (decoded.exp * 1000 > Date.now()) {
-//           router.push('/task'); // Token is valid, proceed to the route
-//         } else {
-//           localStorage.removeItem('token'); // Token expired, reset state
-//           next('/login'); // Redirect to login
-//         }
-//       } catch (error) {
-//         localStorage.removeItem('token'); // Invalid token, reset state
-//         next('/login'); // Redirect to login
-//       }
-//     } else {
-//       next('/login'); // No token, redirect to login
-//     }
-//   } else {
-//     next(); // Continue to the login route
-//   }
-// });
-
-
 
 export default router
