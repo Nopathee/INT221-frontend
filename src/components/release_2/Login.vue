@@ -26,6 +26,7 @@ const handlerLogin = async () => {
   
   if (res.status === 200) {
     localStorage.setItem('accessToken', res.token)
+    console.log(localStorage.getItem('accessToken'))
     console.log(`"${res.token}"`)
     console.log(`login success`)
     router.push('/task');

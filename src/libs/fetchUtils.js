@@ -1,6 +1,13 @@
 async function getItems(url) {
+  const token = localStorage.getItem('accessToken')
+
   try {
-    const data = await fetch(url)
+    const data = await fetch(url,{
+      method: "GET",
+      headers:{
+        'Authorization': `Bearer ${token}`
+      }
+    })
     const items = await data.json()
     return items
   } catch (error) {
@@ -8,8 +15,14 @@ async function getItems(url) {
   }
 }
 async function getItemById(url, id) {
+  const token = localStorage.getItem('accessToken')
   try {
-    const data = await fetch(`${url}/${id}`)
+    const data = await fetch(`${url}/${id}`,{
+      method: "GET",
+      headers:{
+        Authorization: `Bearer ${token}`
+      }
+    })
     const item = await data.json()
     console.log(`item: ${item}`)
     return {item:item , status: data.status}

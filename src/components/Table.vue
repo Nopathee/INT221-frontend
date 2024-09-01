@@ -1,6 +1,6 @@
 <script setup>
 import { defineProps, ref, watch, onMounted } from 'vue'
-import { jwtDecode } from 'jwt-decode';
+import { jwtDecode } from "jwt-decode";
 import router from '@/router';
 
 const props = defineProps({
