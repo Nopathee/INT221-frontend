@@ -44,9 +44,9 @@ const taskEdit = ref('')
 const errorToast = ref(false)
 
 onMounted(async () => {
-  const items = await getItems(`${import.meta.env.VITE_API_ENDPOINT}/v3/boards/${id}/tasks`)
+  const items = await getItems(`${import.meta.env.VITE_API_ENDPOINT}/v2/tasks`)
   const status = await getItems(
-    `${import.meta.env.VITE_API_ENDPOINT}/v3/boards/${id}/statuses`
+    `${import.meta.env.VITE_API_ENDPOINT}/v2/statuses`
   )
   allStatuses.value.addStatuses(status)
   allTask.value.addDtoTasks(items)
@@ -56,14 +56,14 @@ onMounted(async () => {
 const saveLimit = (limitNumber) => {
   limitModal.value = false
   successToast.value = true
-  router.push(`/board/${id}`)
+  router.push('/task')
   console.log(limitNumber)
   console.log(successToast.value)
 }
 
 const cancelLimit = () => {
   limitModal.value = false
-  router.push(`/board/${id}`)
+  router.push('/task')
   
 }
 
@@ -94,17 +94,17 @@ const clearModal = (flagModal) => {
     },
   }
   showModal.value = flagModal
-  router.push(`/board/:id`)
+  router.push('/task')
 }
 
 const showInsert = (flagModal) => {
   showModal.value = flagModal
-  router.push(`/board/${id}/task/add`)
+  router.push('/task/add')
 }
 
 const showmodalLimit = (flagModal) => {
   limitModal.value = flagModal
-  router.push(`/board/${id}/task/limit`)
+  router.push('/task/limit')
 }
 
 
@@ -119,7 +119,7 @@ const saveTask = async (selectedTask) => {
   }
   if (selectedTask.id === undefined) {
     const newTask = await addItem(
-      `${import.meta.env.VITE_API_ENDPOINT}/v3/boards/${id}/tasks`,
+      `${import.meta.env.VITE_API_ENDPOINT}/v2/tasks`,
       item
     )
     taskInsert.value = selectedTask.title
@@ -146,7 +146,7 @@ const saveTask = async (selectedTask) => {
         color: '#ffffff',
       },
     }
-    router.push(`/board/${id}`)
+    router.push('/task')
 
     successToast.value = true
 
@@ -156,7 +156,7 @@ const saveTask = async (selectedTask) => {
   } else {
 
     const updatedTask = await editItem(
-      `${import.meta.env.VITE_API_ENDPOINT}/v3/boards/${id}/tasks`,
+      `${import.meta.env.VITE_API_ENDPOINT}/v2/tasks`,
       selectedTask.id,
       item
     )
@@ -187,7 +187,7 @@ const saveTask = async (selectedTask) => {
       },
     }
 
-    router.push(`/board/${id}`)
+    router.push('/task')
   }
 }
 
@@ -210,9 +210,9 @@ const showModalDetail = ref(false)
 
 const showDetail = async (id) => {
 
-  router.push(`/board/${id}`)
+  router.push(`/task/${id}`)
   const detail = await getItemById(
-    `${import.meta.env.VITE_API_ENDPOINT}/v3/boards/${id}/tasks`,
+    `${import.meta.env.VITE_API_ENDPOINT}/v2/tasks`,
     id
   )
 
@@ -226,7 +226,7 @@ const deleteIndex = ref('')
 
 const showDelete = async (id, index) => {
   const task = await getItemById(
-    `${import.meta.env.VITE_API_ENDPOINT}/v3/boards/${id}/tasks`,
+    `${import.meta.env.VITE_API_ENDPOINT}/v2/tasks`,
     id
   )
 
@@ -248,7 +248,7 @@ const closeDetail = () => {
 
 const confDelete = async (id) => {
   const status = await deleteItemById(
-    `${import.meta.env.VITE_API_ENDPOINT}/v3/boards/${id}/tasks`,
+    `${import.meta.env.VITE_API_ENDPOINT}/v2/tasks`,
     id
   )
 
@@ -271,12 +271,12 @@ const confDelete = async (id) => {
 
 const showEdit = async (id) => {
   const detail = await getItemById(
-    `${import.meta.env.VITE_API_ENDPOINT}/v3/boards/${id}/tasks`,
+    `${import.meta.env.VITE_API_ENDPOINT}/v2/tasks`,
     id
   )
   task.value = await detail.item
   showModal.value = true
-  router.push(`/board/${id}/task/${id}/edit`)
+  router.push(`/task/${id}/edit`)
 }
 </script>
 

@@ -9,7 +9,7 @@ const history = createWebHistory(import.meta.env.BASE_URL)
 const router = createRouter({
   history,
   routes: [
-    { path: '/board/:id', name: 'board', component: Task },
+    { path: '/task', name: 'task', component: Task },
     { path: '/', name: 'home', redirect: '/login' },
     {
       path: '/task/:id',
