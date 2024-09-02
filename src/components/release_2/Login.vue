@@ -26,7 +26,7 @@ const handlerLogin = async () => {
     console.log(localStorage.getItem('accessToken'))
     console.log(`"${res.token}"`)
     console.log(`login success`)
-    router.push('/task');
+    router.push('/board');
   } else {
     error.value = true
     setTimeout(() => {

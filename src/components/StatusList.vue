@@ -62,7 +62,7 @@ onMounted(async () => {
 })
 
 const back = () => {
-  router.push('/task')
+  router.go(-1)
 }
 
 const statusToDelete = ref({

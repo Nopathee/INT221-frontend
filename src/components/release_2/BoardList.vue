@@ -1,15 +1,14 @@
 <script setup>
 import { onMounted, ref, computed } from 'vue'
-import Table from './Table.vue'
-import TaskDetail from './TaskDetail.vue'
-import ConfirmDelete from './ConfirmDelete.vue'
-import TaskModal from './TaskModal.vue'
-import Succes from './Succes.vue'
-import Delete from './Delete.vue'
-import Error from './Error.vue'
-import Edit from './Edit.vue'
-import Limit from './Limit.vue'
-import EmptyBoard from './release_2/EmptyBoard.vue'
+import TaskDetail from '../TaskDetail.vue'
+import ConfirmDelete from '../ConfirmDelete.vue'
+import TaskModal from '../TaskModal.vue'
+import Succes from '../Succes.vue'
+import Delete from '../Delete.vue'
+import Error from '../Error.vue'
+import Edit from '../Edit.vue'
+import Limit from '../Limit.vue'
+import EmptyBoard from './EmptyBoard.vue'
 import {
   getItems,
   getItemById,
@@ -18,7 +17,7 @@ import {
   editItem,
 
 } from '@/libs/fetchUtils.js'
-import { TaskManagement } from '../libs/TaskManagement.js'
+import { TaskManagement } from '@/libs/TaskManagement'
 import router from '@/router'
 import { StatusManagement } from '@/libs/StatusManagement'
 
@@ -57,14 +56,14 @@ onMounted(async () => {
 const saveLimit = (limitNumber) => {
   limitModal.value = false
   successToast.value = true
-  router.push('/task')
+  router.push('/board')
   console.log(limitNumber)
   console.log(successToast.value)
 }
 
 const cancelLimit = () => {
   limitModal.value = false
-  router.push('/task')
+  router.push('/board')
   
 }
 
@@ -95,12 +94,12 @@ const clearModal = (flagModal) => {
     },
   }
   showModal.value = flagModal
-  router.push('/task')
+  router.push('/board')
 }
 
 const showInsert = (flagModal) => {
   showModal.value = flagModal
-  router.push('/task/add')
+  router.push('/board/add')
 }
 
 
@@ -304,7 +303,7 @@ const showEdit = async (id) => {
     
    
 
-    <Table
+    <EmptyBoard
       :tasks="allTask.getTasks()"
       :statuses="allStatuses.getStatuses()"
       @openModal="showInsert"
@@ -314,6 +313,7 @@ const showEdit = async (id) => {
       @limitModal="showmodalLimit"
     />
 
+   
 
 
     <Teleport to="#modal">
