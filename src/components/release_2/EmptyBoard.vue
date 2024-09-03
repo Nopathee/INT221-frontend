@@ -32,7 +32,7 @@ const decoded = () => {
     console.log(fullName.value)
   }
 }
-
+const name = localStorage.getItem('boardName')
 const logout = () => {
   localStorage.removeItem('accessToken')
   router.push('/login')
@@ -170,7 +170,6 @@ const removeSelectedStatus = (statusId) => {
         </div>
       </div>
     </nav>
-
     <div class="w-full flex justify-center items-center">
       <div class="rounded-xl p-5 w-5/6">
         <div v-if="selectedStatusNames.length > 0">
@@ -192,6 +191,9 @@ const removeSelectedStatus = (statusId) => {
             </div>
           </template>
         </div>
+        <div class="text-3xl flex justify-center p-8">
+          <h1>{{ name }}</h1>
+          </div>
         <table class="w-full table table-lg rounded-lg overflow-hidden">
           <thead>
             <tr class="font-bold text-red-800 text-lg bg-pink-300">
@@ -244,5 +246,5 @@ const removeSelectedStatus = (statusId) => {
 </template>
 
 <style scoped>
-/* Add your scoped styles here */
+
 </style>

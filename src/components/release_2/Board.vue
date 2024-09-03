@@ -39,7 +39,9 @@ const boardName = ref('')
 const newBoard = () => {
     showBoard.value = true
     addBoardModal.value = false
-    router.push(`/board/${id}`)
+    router.push(`/board`)
+    console.log(boardName.value)
+    localStorage.setItem('boardName', boardName.value)
 }
 </script>
  
@@ -91,13 +93,8 @@ const newBoard = () => {
 
 <div v-if="showBoard">
     <BoardList></BoardList>
-
 </div>
    
-
- 
-
-
 </template>
  
 <style scoped>
