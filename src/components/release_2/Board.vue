@@ -3,21 +3,36 @@ import { ref , onMounted } from 'vue';
 import { jwtDecode } from 'jwt-decode';
 import router from '@/router';
 import BoardList from './BoardList.vue';
+import { login, getUserBoard } from '@/libs/fetchUtils_release2'
+
+
 const fullName = ref('')
 const addBoardModal = ref(false)
 const showBoard = ref(false)
-onMounted(() => {
-  decoded()
+onMounted(async () => {
+  const token = localStorage.getItem('accessToken');
+  if (token) {
+    const decoded = jwtDecode(token);
+    fullName.value = decoded.name;
+    console.log(fullName.value);
+
+    try {
+      const board = await getUserBoard(decoded.oid);
+      console.log(board)
+      if (board) {
+        router.push(`/board/${board.id}`);
+      } else {
+        showBoard.value = false;
+      }
+    } catch (error) {
+      console.error('Error fetching user board:', error);
+      showBoard.value = true; // Show the option to create a new board
+    }
+  } else {
+    router.push('/login');
+  }
 })
 
-const decoded = () => {
-  const token = localStorage.getItem('accessToken')
-  if (token) {
-    const decoded = jwtDecode(token)
-    fullName.value = decoded.name
-    console.log(fullName.value)
-  }
-}
 
 const logout = () => {
   localStorage.removeItem('accessToken')

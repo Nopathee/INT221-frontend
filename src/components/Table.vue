@@ -30,6 +30,8 @@ const decoded = () => {
     const decoded = jwtDecode(token)
     fullName.value = decoded.name
     console.log(fullName.value)
+  } else {
+    router.push(`/login`)
   }
 }
 

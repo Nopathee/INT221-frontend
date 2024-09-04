@@ -23,4 +23,33 @@ async function login(url, user) {
   }
 }
 
-export { login }
+async function getUserBoard(url, token) {
+  try {
+    const response = await fetch(url, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+    })
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`)
+    }
+
+    const data = await response.json()
+    console.log('Fetched user board:', data)
+
+    return {
+      status: response.status,
+      board: data,
+    }
+  } catch (error) {
+    console.error('Error fetching user board:', error)
+    return { status: 500, error: 'Internal Server Error' }
+  }
+}
+
+export { login, getUserBoard }
+
+
