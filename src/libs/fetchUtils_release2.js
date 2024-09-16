@@ -68,8 +68,8 @@ async function createNewBoard(url , token , boardName) {
       body: JSON.stringify({ name: boardName }), 
     })
 
-
-    if (!response.ok) {
+      console.log(token)
+    if (response.status !== 201) {
       throw new Error(`HTTP error! status: ${response.status}`)
     }
 

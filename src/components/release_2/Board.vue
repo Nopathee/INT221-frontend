@@ -43,29 +43,23 @@ const boardName = ref('')
 
 const createBoard = async () => {
   const token = localStorage.getItem('accessToken');
-  boardName.value = ''
   try {
-    const response = await createNewBoard(`${import.meta.env.VITE_API_ENDPOINT}/v3/boards`, token , boardName)
+    console.log(boardName.value)
+    const response = await createNewBoard(`${import.meta.env.VITE_API_ENDPOINT}/v3/boards`, token , boardName.value)
     if (response.status === 201) {
       const newBoard =  response.board
       console.log(newBoard)
       if(newBoard){
-        router.push(`/board/${newBoard.id}`);
+        router.push(`/board/${newBoard.boardId}`);
       }
-
-      
     } else if (response.status === 401) {
       router.push('/login'); 
-    } else {
-      error.value = 'There is a problem. Please try again later.';
-    }
+    } 
   } catch (err) {
     console.error('Error creating board:', err);
-    error.value = 'There is a problem. Please try again later.';
+ 
   }
-
   closeModal();
-
 };
 
 </script>

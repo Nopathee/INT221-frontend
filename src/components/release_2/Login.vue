@@ -21,7 +21,7 @@ const handlerLogin = async () => {
   const url = `${import.meta.env.VITE_API_ENDPOINT}/login`
   const res = await login(url, user)
   const token = res.token
-  console.log(res)
+  console.log(res.token)
   if (res.status === 200) {
     localStorage.setItem('accessToken',token)
     console.log(localStorage.getItem('accessToken'))

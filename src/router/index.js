@@ -4,6 +4,7 @@ import { getItemById } from '@/libs/fetchUtils.js'
 import StatusList from '@/components/StatusList.vue'
 import Login from '../components/release_2/Login.vue'
 import Board from '@/components/release_2/Board.vue'
+import EmptyBoard from '@/components/release_2/EmptyBoard.vue'
 
 
 
@@ -67,7 +68,7 @@ const router = createRouter({
     { path: '/login', name: 'login', component: Login },
     { path: '/board', name: 'board', component: Board },
     { path: '/board/add', name: 'boardAdd', component: Board },
-    { path: '/board/:id', name: 'boardOwn', component: Board },
+    { path: '/board/:id', name: 'boardOwn', component: EmptyBoard },
   ],
 })
 
