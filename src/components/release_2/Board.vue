@@ -2,36 +2,26 @@
 import { ref , onMounted } from 'vue';
 import { jwtDecode } from 'jwt-decode';
 import router from '@/router';
-import BoardList from './BoardList.vue';
-import { login, getUserBoard } from '@/libs/fetchUtils_release2'
-
+import { getUserBoard , createNewBoard } from '@/libs/fetchUtils_release2'
 
 const fullName = ref('')
 const addBoardModal = ref(false)
 const showBoard = ref(false)
+
 onMounted(async () => {
   const token = localStorage.getItem('accessToken');
   if (token) {
     const decoded = jwtDecode(token);
     fullName.value = decoded.name;
+    boardName.value = `${fullName.value}'s personal board`
     console.log(fullName.value);
 
-    try {
-      const board = await getUserBoard(decoded.oid);
-      console.log(board)
-      if (board) {
-        router.push(`/board/${board.id}`);
-      } else {
-        showBoard.value = false;
-      }
-    } catch (error) {
-      console.error('Error fetching user board:', error);
-      showBoard.value = true; // Show the option to create a new board
-    }
   } else {
     router.push('/login');
   }
 })
+
+
 
 
 const logout = () => {
@@ -41,7 +31,6 @@ const logout = () => {
 
 const addBoard = () => {
     addBoardModal.value = true
-
 }
 
 const closeModal = () => {
@@ -51,13 +40,34 @@ const closeModal = () => {
 
 const boardName = ref('')
 
-const newBoard = () => {
-    showBoard.value = true
-    addBoardModal.value = false
-    router.push(`/board`)
-    console.log(boardName.value)
-    localStorage.setItem('boardName', boardName.value)
-}
+
+const createBoard = async () => {
+  const token = localStorage.getItem('accessToken');
+  boardName.value = ''
+  try {
+    const response = await createNewBoard(`${import.meta.env.VITE_API_ENDPOINT}/v3/boards`, token , boardName)
+    if (response.status === 201) {
+      const newBoard =  response.board
+      console.log(newBoard)
+      if(newBoard){
+        router.push(`/board/${newBoard.id}`);
+      }
+
+      
+    } else if (response.status === 401) {
+      router.push('/login'); 
+    } else {
+      error.value = 'There is a problem. Please try again later.';
+    }
+  } catch (err) {
+    console.error('Error creating board:', err);
+    error.value = 'There is a problem. Please try again later.';
+  }
+
+  closeModal();
+
+};
+
 </script>
  
 <template>
@@ -98,17 +108,17 @@ const newBoard = () => {
     type="text" 
     class="bg-white border w-full text-black"
     maxlength="120"
-    v-model="boardName">
+    v-model="boardName"
+    
+    >
     <div class="modal-action">
-        <button @click="newBoard" class="btn bg-green-500 text-black itbkk-button-ok" >Submit</button>
+        <button @click="createBoard" class="btn bg-green-500 text-black itbkk-button-ok" >Submit</button>
         <button @click="closeModal" class="btn bg-slate-800 text-white itbkk-cancel">Close</button>
     </div>
   </div>
 </div>
 
-<div v-if="showBoard">
-    <BoardList></BoardList>
-</div>
+
    
 </template>
  

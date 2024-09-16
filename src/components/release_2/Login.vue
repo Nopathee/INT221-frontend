@@ -20,13 +20,37 @@ const handlerLogin = async () => {
   console.log(user)
   const url = `${import.meta.env.VITE_API_ENDPOINT}/login`
   const res = await login(url, user)
+  const token = res.token
   console.log(res)
   if (res.status === 200) {
-    localStorage.setItem('accessToken', res.token)
+    localStorage.setItem('accessToken',token)
     console.log(localStorage.getItem('accessToken'))
-    console.log(`"${res.token}"`)
+    console.log(`"${token}"`)
     console.log(`login success`)
-    router.push('/board');
+    try {
+      const response = await fetch(`${import.meta.env.VITE_API_ENDPOINT}/v3/boards` , {
+        headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    });
+
+    const data = await response.json()
+    
+    if(data && data.length > 0){
+      const userBoard = data[0]
+      router.push(`/board/${userBoard.id}`);
+    } else {
+      router.push('/board')
+    }
+
+  
+    } catch (error) {
+    console.error("Error fetching boards:", error);
+  
+    }
+
+    
   } else {
     error.value = true
     setTimeout(() => {
