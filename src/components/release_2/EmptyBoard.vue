@@ -20,10 +20,6 @@ const emit = defineEmits([
 
 const fullName = ref('')
 
-onMounted(() => {
-  decoded()
-})
-
 const decoded = () => {
   const token = localStorage.getItem('accessToken')
   if (token) {
@@ -42,12 +38,20 @@ const sortedTasks = ref([])
 const originalTasks = ref([])
 const sortOrder = ref('Default')
 
-onMounted(() => {
+onMounted(async () => {
   if (props.tasks) {
     originalTasks.value = props.tasks
   }
   filterAndSortTasks()
+  decoded()
+  const items = await getItems(`${import.meta.env.VITE_API_ENDPOINT}/v3/boards/${}/tasks`)
+  const status = await getItems(
+    `${import.meta.env.VITE_API_ENDPOINT}/v2/statuses`
+  )
+  allStatuses.value.addStatuses(status)
+  allTask.value.addDtoTasks(items)
 })
+
 
 const selectedStatusIds = ref([])
 
@@ -208,6 +212,9 @@ const removeSelectedStatus = (statusId) => {
       </div>
     </nav>
     <div class="w-full flex justify-center items-center">
+      <div class="flex justify-center text-5xl">
+        <h1>{{ name }}</h1>
+        </div>
       <div class="rounded-xl p-5 w-5/6">
         <div v-if="selectedStatusNames.length > 0">
           <div class="font-semibold text-lg">Selected Statuses:</div>

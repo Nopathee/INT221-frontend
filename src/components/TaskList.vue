@@ -9,7 +9,7 @@ import Delete from './Delete.vue'
 import Error from './Error.vue'
 import Edit from './Edit.vue'
 import Limit from './Limit.vue'
-import EmptyBoard from './release_2/EmptyBoard.vue'
+
 import {
   getItems,
   getItemById,
@@ -21,6 +21,7 @@ import {
 import { TaskManagement } from '../libs/TaskManagement.js'
 import router from '@/router'
 import { StatusManagement } from '@/libs/StatusManagement'
+import EmptyBoard from './release_2/EmptyBoard.vue'
 
 
 const allTask = ref(new TaskManagement())
@@ -302,7 +303,7 @@ const showEdit = async (id) => {
     />
 
     
-   
+    
 
     <Table
       :tasks="allTask.getTasks()"
