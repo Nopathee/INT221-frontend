@@ -2,10 +2,15 @@
 import { defineProps, ref, watch, onMounted } from 'vue'
 import { jwtDecode } from 'jwt-decode'
 import router from '@/router'
+import { getItems } from '@/libs/fetchUtils'
 
 const props = defineProps({
   tasks: Array,
   statuses: Array,
+  boardId: {
+    type: String,
+    default: ''
+  },
 })
 
 const emit = defineEmits([
@@ -38,20 +43,30 @@ const sortedTasks = ref([])
 const originalTasks = ref([])
 const sortOrder = ref('Default')
 
-onMounted(async () => {
-  if (props.tasks) {
-    originalTasks.value = props.tasks
-  }
-  filterAndSortTasks()
-  decoded()
-  const items = await getItems(`${import.meta.env.VITE_API_ENDPOINT}/v3/boards/${}/tasks`)
-  const status = await getItems(
-    `${import.meta.env.VITE_API_ENDPOINT}/v2/statuses`
-  )
-  allStatuses.value.addStatuses(status)
-  allTask.value.addDtoTasks(items)
-})
+const tasks = ref(props.tasks || [])
+const statuses = ref(props.statuses || [])
 
+onMounted(async () => {
+  try {
+    if (props.tasks) {
+      originalTasks.value = props.tasks
+    }
+    filterAndSortTasks()
+    decoded()
+    if (props.boardId) {
+      const items = await getItems(`${import.meta.env.VITE_API_ENDPOINT}/v3/boards/${props.boardId}/tasks`)
+      const status = await getItems(`${import.meta.env.VITE_API_ENDPOINT}/v2/statuses`)
+      statuses.value = status
+      tasks.value = items
+    } else {
+      console.error('Board ID is undefined')
+      // Handle the case when boardId is undefined, e.g., show an error message or redirect
+    }
+  } catch (error) {
+    console.error('Error fetching data:', error)
+    // Handle the error appropriately (e.g., show an error message to the user)
+  }
+})
 
 const selectedStatusIds = ref([])
 
@@ -68,7 +83,7 @@ watch(selectedStatusIds, () => {
 })
 
 const filterAndSortTasks = () => {
-  let filteredTasks = [...originalTasks.value]
+  let filteredTasks = [...tasks.value]
 
   if (selectedStatusIds.value.length > 0) {
     filteredTasks = filteredTasks.filter((task) =>
@@ -212,9 +227,6 @@ const removeSelectedStatus = (statusId) => {
       </div>
     </nav>
     <div class="w-full flex justify-center items-center">
-      <div class="flex justify-center text-5xl">
-        <h1>{{ name }}</h1>
-        </div>
       <div class="rounded-xl p-5 w-5/6">
         <div v-if="selectedStatusNames.length > 0">
           <div class="font-semibold text-lg">Selected Statuses:</div>

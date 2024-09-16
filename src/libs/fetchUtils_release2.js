@@ -57,7 +57,7 @@ async function getUserBoard(url, token) {
   }
 }
 
-async function createNewBoard(url , token , boardName) {
+async function createNewBoard(url, token, boardName) {
   try {
     const response = await fetch(url, {
       method: 'POST',
@@ -68,13 +68,28 @@ async function createNewBoard(url , token , boardName) {
       body: JSON.stringify({ name: boardName }), 
     })
 
-      console.log(token)
-    if (response.status !== 201) {
+    console.log('Create board response:', response)
+
+    if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`)
     }
 
     const data = await response.json() 
     console.log('Created board:', data)
+
+    if (response.status === 201 && response.board) {
+      const newBoard = response.board
+      console.log('New board:', newBoard)
+      if (newBoard && newBoard.id) {
+        router.push(`/board/${newBoard.id}`);
+      } else {
+        console.error('New board created, but no ID was returned:', newBoard);
+        // จัดการกรณีที่ไม่มี ID
+      }
+    } else {
+      console.error('Unexpected response:', response);
+      // จัดการข้อผิดพลาด
+    }
 
     return {
       status: response.status,
