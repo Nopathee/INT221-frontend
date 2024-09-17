@@ -44,7 +44,9 @@ const handlerLogin = async () => {
     
     if(data && data.length > 0){
       console.log(props.boardId)
-      router.push(`/board/${props.boardId}`);
+      console.log(data)
+      console.log()
+      router.push(`/board/${data[0].boardId}`);
     } else {
       router.push('/board')
     }
