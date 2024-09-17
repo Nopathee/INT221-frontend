@@ -398,12 +398,12 @@ const confDelete = async () => {
           <tbody>
             <tr v-for="(task, index) in sortedTasks" :key="task.id">
               <td class="font-bold">
-                <img
-                  src="../icon/Threebtn.svg"
-                  alt="edit"
-                  @click="showEdit(task)"
-                  class="cursor-pointer itbkk-button-edit"
-                />
+                <button
+                      @click="$emit('editTask', task.id)"
+                      class="text-black dark:text-white itbkk-button-edit"
+                    >
+                      Edit
+                    </button>
               </td>
               <td>
                 <button
@@ -433,12 +433,12 @@ const confDelete = async () => {
                 </span>
               </td>
               <td class="font-bold">
-                <img
-                  src="../icon/Delete.svg"
-                  alt="delete"
-                  @click="showDelete(task, index + 1)"
-                  class="cursor-pointer itbkk-button-delete"
-                />
+                <button
+                      @click="$emit('deleteTask', task.id, index + 1)"
+                      class="text-red-600 itbkk-button-delete"
+                    >
+                      Delete
+                    </button>
               </td>
             </tr>
           </tbody>
