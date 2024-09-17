@@ -30,10 +30,11 @@ const isSaveDisabled = computed(() => {
       props.task.assignees === originalTasks.value.assignees &&
       props.task.status === originalTasks.value.status) ||
     (props.task.title.length > 100 ||
-      props.task.description.length > 500 ||
-      props.task.assignees.length > 30)
+      (props.task.description && props.task.description.length > 500) ||
+      (props.task.assignees && props.task.assignees.length > 30))
   )
 })
+
 
 defineEmits(['saveTask', 'cancelTask'])
 </script>

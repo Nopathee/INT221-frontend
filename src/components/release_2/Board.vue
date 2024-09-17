@@ -51,11 +51,13 @@ const createBoard = async () => {
     if (response.status === 201) {
       const newBoard =  response.board
       console.log(newBoard.name)
+      console.log(newBoard)
       if(newBoard){
         router.push({ 
           name: 'emptyboard', 
           params: { 
             boardId: newBoard.boardId, 
+            boardName:newBoard.name
             }
         })
 

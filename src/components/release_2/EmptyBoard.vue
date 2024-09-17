@@ -16,6 +16,8 @@ const props = defineProps({
   boardId: String,
 })
 
+
+
 const emit = defineEmits([
   'openModal',
   'closeModal',
@@ -91,9 +93,11 @@ onMounted(async () => {
       allTask.value.addDtoTasks(items)
       tasks.value = items
       statuses.value = status
+      sortedTasks.value = allTask.value.getTasks()
     } else {
       console.error('Board ID is undefined')
     }
+
   } catch (error) {
     console.error('Error fetching data:', error)
   }
@@ -271,7 +275,7 @@ const confDelete = async () => {
                   class="p-2 shadow menu dropdown-content z-[1] bg-base-100 rounded-box w-52 itbkk-status-choice"
                 >
                   <span
-                    v-for="status in props.statuses"
+                    v-for="status in allStatuses.getStatuses()"
                     :key="status.id"
                     class="mx-3 my-2 flex itbkk-filter-item"
                   >
