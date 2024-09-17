@@ -399,7 +399,7 @@ const confDelete = async () => {
             <tr v-for="(task, index) in sortedTasks" :key="task.id">
               <td class="font-bold">
                 <img
-                  src="../icon/Edit.svg"
+                  src="../icon/Threebtn.svg"
                   alt="edit"
                   @click="showEdit(task)"
                   class="cursor-pointer itbkk-button-edit"
