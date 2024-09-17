@@ -2,7 +2,13 @@
 import { defineProps, ref, watch, onMounted } from 'vue'
 import { jwtDecode } from 'jwt-decode'
 import router from '@/router'
-import { getItems } from '@/libs/fetchUtils'
+import { getItems, addItem, deleteItemById } from '@/libs/fetchUtils'
+import TaskDetail from '../TaskDetail.vue'
+import ConfirmDelete from '../ConfirmDelete.vue'
+import TaskModal from '../TaskModal.vue'
+import Limit from '../Limit.vue'
+import { TaskManagement } from '../../libs/TaskManagement.js'
+import { StatusManagement } from '../../libs/StatusManagement.js'
 
 const props = defineProps({
   tasks: Array,
@@ -44,6 +50,31 @@ const sortOrder = ref('Default')
 const tasks = ref(props.tasks || [])
 const statuses = ref(props.statuses || [])
 
+const allTask = ref(new TaskManagement())
+const allStatuses = ref(new StatusManagement())
+
+const showModal = ref(false)
+const limitModal = ref(false)
+const confirmDelete = ref(false)
+const showModalDetail = ref(false)
+
+const task = ref({
+  id: undefined,
+  title: '',
+  description: null,
+  assignees: null,
+  status: {
+    id: '1',
+    name: 'No Status',
+    description: 'A status has not been assigned',
+    color: '#ffffff',
+  },
+})
+
+const taskDetail = ref(null)
+const deleteTask = ref(null)
+const deleteIndex = ref(null)
+
 onMounted(async () => {
   try {
     if (props.tasks) {
@@ -56,14 +87,15 @@ onMounted(async () => {
     if (props.boardId) {
       const items = await getItems(`${import.meta.env.VITE_API_ENDPOINT}/v3/boards/${props.boardId}/tasks`)
       const status = await getItems(`${import.meta.env.VITE_API_ENDPOINT}/v3/boards/${props.boardId}/statuses`)
-      statuses.value = status
+      allStatuses.value.addStatuses(status)
+      allTask.value.addDtoTasks(items)
       tasks.value = items
+      statuses.value = status
     } else {
       console.error('Board ID is undefined')
     }
   } catch (error) {
     console.error('Error fetching data:', error)
-
   }
 })
 
@@ -135,6 +167,60 @@ const removeSelectedStatus = (statusId) => {
     (id) => id !== statusId
   )
   filterAndSortTasks()
+}
+
+const addNewTask = () => {
+  showModal.value = true
+}
+
+const saveTask = async (newTask) => {
+  try {
+    const response = await addItem(`${import.meta.env.VITE_API_ENDPOINT}/v3/boards/${props.boardId}/tasks`, newTask)
+    if (response.status === 201) {
+      allTask.value.addTask(response.item)
+      tasks.value.push(response.item)
+      filterAndSortTasks()
+    }
+  } catch (error) {
+    console.error('Error saving task:', error)
+  }
+  showModal.value = false
+}
+
+const showEdit = (taskToEdit) => {
+  task.value = { ...taskToEdit }
+  showModal.value = true
+}
+
+const showDetail = (taskToShow) => {
+  taskDetail.value = taskToShow
+  showModalDetail.value = true
+}
+
+const closeDetail = () => {
+  showModalDetail.value = false
+}
+
+const showDelete = (taskToDelete, index) => {
+  deleteTask.value = taskToDelete
+  deleteIndex.value = index
+  confirmDelete.value = true
+}
+
+const closeDelete = () => {
+  confirmDelete.value = false
+}
+
+const confDelete = async () => {
+  try {
+    await deleteItemById(`${import.meta.env.VITE_API_ENDPOINT}/v3/boards/${props.boardId}/tasks`, deleteTask.value.id)
+    allTask.value.deleteTask(deleteTask.value.id)
+    tasks.value = tasks.value.filter(t => t.id !== deleteTask.value.id)
+    filterAndSortTasks()
+  } catch (error) {
+    console.error('Error deleting task:', error)
+  }
+  confirmDelete.value = false
 }
 </script>
 
@@ -280,7 +366,7 @@ const removeSelectedStatus = (statusId) => {
                 <img
                   src="../icon/InsertBtn.svg"
                   alt="Add Task"
-                  @click="$emit('openModal', true)"
+                  @click="addNewTask"
                   class="cursor-pointer itbkk-button-add"
                 />
               </th>
@@ -310,18 +396,18 @@ const removeSelectedStatus = (statusId) => {
             </tr>
           </thead>
           <tbody>
-            <tr v-for="task in sortedTasks" :key="task.id">
+            <tr v-for="(task, index) in sortedTasks" :key="task.id">
               <td class="font-bold">
                 <img
                   src="../icon/Edit.svg"
                   alt="edit"
-                  @click="$emit('editTask', task)"
+                  @click="showEdit(task)"
                   class="cursor-pointer itbkk-button-edit"
                 />
               </td>
               <td>
                 <button
-                  @click="$emit('showDetail', task)"
+                  @click="showDetail(task)"
                   class="w-full text-left font-bold itbkk-button-detail"
                 >
                   {{ task.title }}
@@ -350,7 +436,7 @@ const removeSelectedStatus = (statusId) => {
                 <img
                   src="../icon/Delete.svg"
                   alt="delete"
-                  @click="$emit('deleteTask', task)"
+                  @click="showDelete(task, index + 1)"
                   class="cursor-pointer itbkk-button-delete"
                 />
               </td>
@@ -360,6 +446,44 @@ const removeSelectedStatus = (statusId) => {
       </div>
     </div>
   </section>
+
+  <Teleport to="#modal">
+    <div v-if="showModal">
+      <TaskModal
+        @cancelTask="showModal = false"
+        @saveTask="saveTask"
+        :task="task"
+        :statuses="allStatuses.getStatuses()"
+      />
+    </div>
+  </Teleport>
+
+  <Teleport to="#modal">
+    <div v-if="showModalDetail">
+      <TaskDetail @close="closeDetail" :task="taskDetail" />
+    </div>
+  </Teleport>
+
+  <Teleport to="#modal">
+    <div v-if="confirmDelete">
+      <ConfirmDelete
+        @close="closeDelete"
+        @confirm="confDelete"
+        :task="deleteTask"
+        :index="deleteIndex"
+      />
+    </div>
+  </Teleport>
+
+  <Teleport to="#modal">
+    <div v-if="limitModal">
+      <Limit
+        @cancelLimit="limitModal = false"
+        @saveLimit="saveLimit"
+        :limitNumber="limitNumber"
+      />
+    </div>
+  </Teleport>
 </template>
 
 <style scoped></style>
