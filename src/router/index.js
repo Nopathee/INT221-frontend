@@ -68,7 +68,7 @@ const router = createRouter({
     { path: '/login', name: 'login', component: Login },
     { path: '/board', name: 'board', component: Board },
     { path: '/board/add', name: 'boardAdd', component: Board },
-    { path: '/board/:id', name: 'boardOwn', component: EmptyBoard },
+    { path: '/board/:boardId', name: 'emptyboard', component: EmptyBoard , props:true,},
   ],
 })
 

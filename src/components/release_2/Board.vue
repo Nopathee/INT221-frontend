@@ -7,7 +7,7 @@ import { getUserBoard , createNewBoard } from '@/libs/fetchUtils_release2'
 const fullName = ref('')
 const addBoardModal = ref(false)
 const showBoard = ref(false)
-
+const boardName = ref('')
 onMounted(async () => {
   const token = localStorage.getItem('accessToken');
   if (token) {
@@ -21,7 +21,7 @@ onMounted(async () => {
   }
 })
 
-
+console.log(boardName.value)
 
 
 const logout = () => {
@@ -38,21 +38,28 @@ const closeModal = () => {
     boardName.value = ''
 }
 
-const boardName = ref('')
+
 
 
 const createBoard = async () => {
   const token = localStorage.getItem('accessToken');
   try {
     console.log(boardName.value)
-    const response = await createNewBoard(`${import.meta.env.VITE_API_ENDPOINT}/v3/boards`, token, boardName.value)
+    const response = await createNewBoard(`${import.meta.env.VITE_API_ENDPOINT}/v3/boards`, token , boardName.value)
     if (response.status === 201) {
-      const newBoard = response.board
-      console.log(newBoard)
-      if(newBoard && newBoard.boardId){
-        localStorage.setItem('currentBoardId', newBoard.boardId);
-        router.push(`/board/${newBoard.boardId}`);
+      const newBoard =  response.board
+      console.log(newBoard.name)
+      if(newBoard){
+        router.push({ 
+          name: 'emptyboard', 
+          params: { 
+            boardId: newBoard.boardId, 
+            }
+        })
+        localStorage.setItem('boardName', boardName.value)
+        localStorage.setItem('boardId', newBoard.boardId)
       }
+      console.log(boardName.name)
     } else if (response.status === 401) {
       router.push('/login'); 
     } 

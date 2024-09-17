@@ -7,10 +7,7 @@ import { getItems } from '@/libs/fetchUtils'
 const props = defineProps({
   tasks: Array,
   statuses: Array,
-  boardId: {
-    type: String,
-    default: ''
-  },
+  boardId: String,
 })
 
 const emit = defineEmits([
@@ -24,6 +21,7 @@ const emit = defineEmits([
 ])
 
 const fullName = ref('')
+
 const decoded = () => {
   const token = localStorage.getItem('accessToken')
   if (token) {
@@ -32,8 +30,8 @@ const decoded = () => {
     console.log(fullName.value)
   }
 }
-
-const name = localStorage.getItem('boardName')
+const boardName = localStorage.getItem('boardName')
+console.log(boardName)
 const logout = () => {
   localStorage.removeItem('accessToken')
   router.push('/login')
@@ -46,26 +44,28 @@ const sortOrder = ref('Default')
 const tasks = ref(props.tasks || [])
 const statuses = ref(props.statuses || [])
 
-const boardId = ref(props.boardId)
-
-watch(() => props.boardId, async (newBoardId) => {
-  if (!newBoardId) {
-    newBoardId = localStorage.getItem('currentBoardId');
-  }
-  if (newBoardId) {
-    try {
-      const items = await getItems(`${import.meta.env.VITE_API_ENDPOINT}/v3/boards/${newBoardId}/tasks`)
-      const status = await getItems(`${import.meta.env.VITE_API_ENDPOINT}/v2/statuses`)
+onMounted(async () => {
+  try {
+    if (props.tasks) {
+      originalTasks.value = props.tasks
+    }
+    filterAndSortTasks()
+    decoded()
+    console.log(props.boardId)
+    console.log(props.boardName)
+    if (props.boardId) {
+      const items = await getItems(`${import.meta.env.VITE_API_ENDPOINT}/v3/boards/${props.boardId}/tasks`)
+      const status = await getItems(`${import.meta.env.VITE_API_ENDPOINT}/v3/boards/${props.boardId}/statuses`)
       statuses.value = status
       tasks.value = items
-    } catch (error) {
-      console.error('Error fetching data:', error)
+    } else {
+      console.error('Board ID is undefined')
     }
-  } else {
-    console.error('Board ID is undefined')
-    // Handle the case when boardId is undefined, e.g., show an error message or redirect
+  } catch (error) {
+    console.error('Error fetching data:', error)
+
   }
-}, { immediate: true })
+})
 
 const selectedStatusIds = ref([])
 
@@ -271,7 +271,7 @@ const removeSelectedStatus = (statusId) => {
           </template>
         </div>
         <div class="text-3xl flex justify-center p-8">
-          <h1>{{ name }}</h1>
+          <h1>{{ boardName }}</h1>
         </div>
         <table class="w-full table table-lg rounded-lg overflow-hidden">
           <thead>
