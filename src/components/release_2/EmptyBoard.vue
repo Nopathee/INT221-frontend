@@ -24,7 +24,6 @@ const emit = defineEmits([
 ])
 
 const fullName = ref('')
-
 const decoded = () => {
   const token = localStorage.getItem('accessToken')
   if (token) {
@@ -33,6 +32,7 @@ const decoded = () => {
     console.log(fullName.value)
   }
 }
+
 const name = localStorage.getItem('boardName')
 const logout = () => {
   localStorage.removeItem('accessToken')
@@ -46,27 +46,26 @@ const sortOrder = ref('Default')
 const tasks = ref(props.tasks || [])
 const statuses = ref(props.statuses || [])
 
-onMounted(async () => {
-  try {
-    if (props.tasks) {
-      originalTasks.value = props.tasks
-    }
-    filterAndSortTasks()
-    decoded()
-    if (props.boardId) {
-      const items = await getItems(`${import.meta.env.VITE_API_ENDPOINT}/v3/boards/${props.boardId}/tasks`)
+const boardId = ref(props.boardId)
+
+watch(() => props.boardId, async (newBoardId) => {
+  if (!newBoardId) {
+    newBoardId = localStorage.getItem('currentBoardId');
+  }
+  if (newBoardId) {
+    try {
+      const items = await getItems(`${import.meta.env.VITE_API_ENDPOINT}/v3/boards/${newBoardId}/tasks`)
       const status = await getItems(`${import.meta.env.VITE_API_ENDPOINT}/v2/statuses`)
       statuses.value = status
       tasks.value = items
-    } else {
-      console.error('Board ID is undefined')
-      // Handle the case when boardId is undefined, e.g., show an error message or redirect
+    } catch (error) {
+      console.error('Error fetching data:', error)
     }
-  } catch (error) {
-    console.error('Error fetching data:', error)
-    // Handle the error appropriately (e.g., show an error message to the user)
+  } else {
+    console.error('Board ID is undefined')
+    // Handle the case when boardId is undefined, e.g., show an error message or redirect
   }
-})
+}, { immediate: true })
 
 const selectedStatusIds = ref([])
 

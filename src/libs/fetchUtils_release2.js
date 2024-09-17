@@ -77,20 +77,6 @@ async function createNewBoard(url, token, boardName) {
     const data = await response.json() 
     console.log('Created board:', data)
 
-    if (response.status === 201 && response.board) {
-      const newBoard = response.board
-      console.log('New board:', newBoard)
-      if (newBoard && newBoard.id) {
-        router.push(`/board/${newBoard.id}`);
-      } else {
-        console.error('New board created, but no ID was returned:', newBoard);
-        // จัดการกรณีที่ไม่มี ID
-      }
-    } else {
-      console.error('Unexpected response:', response);
-      // จัดการข้อผิดพลาด
-    }
-
     return {
       status: response.status,
       board: data, 

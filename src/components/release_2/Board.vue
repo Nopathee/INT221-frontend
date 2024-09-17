@@ -45,11 +45,12 @@ const createBoard = async () => {
   const token = localStorage.getItem('accessToken');
   try {
     console.log(boardName.value)
-    const response = await createNewBoard(`${import.meta.env.VITE_API_ENDPOINT}/v3/boards`, token , boardName.value)
+    const response = await createNewBoard(`${import.meta.env.VITE_API_ENDPOINT}/v3/boards`, token, boardName.value)
     if (response.status === 201) {
-      const newBoard =  response.board
+      const newBoard = response.board
       console.log(newBoard)
-      if(newBoard){
+      if(newBoard && newBoard.boardId){
+        localStorage.setItem('currentBoardId', newBoard.boardId);
         router.push(`/board/${newBoard.boardId}`);
       }
     } else if (response.status === 401) {
