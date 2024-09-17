@@ -1,6 +1,6 @@
 <script setup>
 import { login } from '@/libs/fetchUtils_release2'
-import { computed, ref } from 'vue'
+import { computed, ref , defineProps} from 'vue'
 import { useRouter } from 'vue-router'
 
 const userName = ref('')
@@ -9,6 +9,11 @@ const error = ref(false)
 const isLoginDisabled = computed(() => {
   return userName.value.length === 0 || password.value.length === 0
 })
+
+const props = defineProps({
+  boardId: String,
+})
+
 
 const router = useRouter()
 
@@ -38,8 +43,8 @@ const handlerLogin = async () => {
     const data = await response.json()
     
     if(data && data.length > 0){
-      const userBoard = data[0]
-      router.push(`/board/${userBoard.id}`);
+      console.log(props.boardId)
+      router.push(`/board/${props.boardId}`);
     } else {
       router.push('/board')
     }

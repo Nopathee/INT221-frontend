@@ -26,6 +26,8 @@ console.log(boardName.value)
 
 const logout = () => {
   localStorage.removeItem('accessToken')
+
+  
   router.push('/login')
 }
 
@@ -56,8 +58,11 @@ const createBoard = async () => {
             boardId: newBoard.boardId, 
             }
         })
-        localStorage.setItem('boardName', boardName.value)
-        localStorage.setItem('boardId', newBoard.boardId)
+
+      
+      localStorage.setItem('boardName', boardName.value)
+
+       
       }
       console.log(boardName.name)
     } else if (response.status === 401) {

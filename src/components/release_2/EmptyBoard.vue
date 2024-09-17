@@ -52,7 +52,7 @@ onMounted(async () => {
     filterAndSortTasks()
     decoded()
     console.log(props.boardId)
-    console.log(props.boardName)
+   
     if (props.boardId) {
       const items = await getItems(`${import.meta.env.VITE_API_ENDPOINT}/v3/boards/${props.boardId}/tasks`)
       const status = await getItems(`${import.meta.env.VITE_API_ENDPOINT}/v3/boards/${props.boardId}/statuses`)
