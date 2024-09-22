@@ -56,7 +56,7 @@ const createBoard = async () => {
         router.push({ 
           name: 'emptyboard', 
           params: { 
-            boardId: newBoard.boardId, 
+            boardId: newBoard.id, 
             boardName:newBoard.name
             }
         })

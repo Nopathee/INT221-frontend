@@ -48,6 +48,7 @@ async function addItem(url, newItem) {
       method: 'POST',
       headers: {
         'content-type': 'application/json',
+        'Authorization': `Bearer ${token}`,
       },
       body: JSON.stringify({
         ...newItem,
@@ -67,6 +68,9 @@ async function deleteItemById(url, id) {
   try {
     const res = await fetch(`${url}/${id}`, {
       method: 'DELETE',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+      },
     })
     return res.status
   } catch (error) {
@@ -76,8 +80,11 @@ async function deleteItemById(url, id) {
 
 async function transferItem(url, id , newId) {
   try {
-    const res = await fetch(`${url}/${id}/${newId}`,{
+    const res = await fetch(`${url}/${id}/${newId}`, {
       method: 'DELETE',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+      },
     })
     return res.status
     
@@ -92,6 +99,7 @@ async function editItem(url, id, editItem) {
       method: 'PUT',
       headers: {
         'content-type': 'application/json',
+        'Authorization': `Bearer ${token}`,
       },
       body: JSON.stringify({
         ...editItem,

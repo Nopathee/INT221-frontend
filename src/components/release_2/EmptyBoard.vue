@@ -16,8 +16,6 @@ const props = defineProps({
   boardId: String,
 })
 
-
-
 const emit = defineEmits([
   'openModal',
   'closeModal',
@@ -94,6 +92,7 @@ onMounted(async () => {
       tasks.value = items
       statuses.value = status
       sortedTasks.value = allTask.value.getTasks()
+      console.log(tasks.value)
     } else {
       console.error('Board ID is undefined')
     }
@@ -178,6 +177,7 @@ const addNewTask = () => {
 }
 
 const saveTask = async (newTask) => {
+  console.log(newTask)
   try {
     const response = await addItem(`${import.meta.env.VITE_API_ENDPOINT}/v3/boards/${props.boardId}/tasks`, newTask)
     if (response.status === 201) {
@@ -298,7 +298,7 @@ const confDelete = async () => {
               <button
                 class="bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 px-4 border-b-4 border-blue-700 hover:border-blue-500 rounded-lg mb-4 itbkk-manage-status"
               >
-                <router-link to="/status" @click="$emit('statusDetail')">
+                <router-link :to="`/board/${props.boardId}/status`" @click="$emit('statusDetail')">
                   Manage Status
                 </router-link>
               </button>

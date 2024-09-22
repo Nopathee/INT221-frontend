@@ -5,6 +5,7 @@ import StatusList from '@/components/StatusList.vue'
 import Login from '../components/release_2/Login.vue'
 import Board from '@/components/release_2/Board.vue'
 import EmptyBoard from '@/components/release_2/EmptyBoard.vue'
+import StatusBoard from '@/components/release_2/StatusBoard.vue'
 
 
 
@@ -105,7 +106,7 @@ const router = createRouter({
     { path: '/board/:boardId', name: 'emptyboard', component: EmptyBoard , props:true,  meta: { requiresAuth: true } },
     
     
-    { path: '/board/:boardId/status', name: 'statusBoard', component: EmptyBoard , props:true,  meta: { requiresAuth: true } },
+    { path: '/board/:boardId/status', name: 'statusBoard', component: StatusBoard , props:true,  meta: { requiresAuth: true } },
     { path: '/board/:id/status/add', name: 'addStatusBoard', component: EmptyBoard , props:true,  meta: { requiresAuth: true } },
    
 ]})
