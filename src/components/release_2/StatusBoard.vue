@@ -80,6 +80,7 @@ const statusToDelete = ref({
 const transDelete = ref(false)
 
 const deleteStatus = async (id) => {
+  console.log(id)
   const status = await getItemById(
     `${import.meta.env.VITE_API_ENDPOINT}/v3/boards/${props.boardId}/statuses`,
     id
@@ -88,6 +89,7 @@ const deleteStatus = async (id) => {
     `${import.meta.env.VITE_API_ENDPOINT}/v3/boards/${props.boardId}/tasks`
   )
   const task = allTask.filter((task) => task.status.id === status.item.id)
+  console.log(status.item.name)
   deletedStatus.value = status.item.name
 
   taskCount.value = task.length

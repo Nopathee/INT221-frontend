@@ -22,6 +22,7 @@ async function getItems(url) {
     console.log(`error: ${error}`)
   }
 }
+
 async function getItemById(url, id) {
   const token = localStorage.getItem('accessToken')
   try {
@@ -40,9 +41,9 @@ async function getItemById(url, id) {
   }
 }
 
-
-
-async function addItem(url, newItem) {
+async function addItem(url, item) {
+  const token = localStorage.getItem('accessToken')
+  console.log(token)
   try {
     const res = await fetch(url, {
       method: 'POST',
@@ -50,21 +51,19 @@ async function addItem(url, newItem) {
         'content-type': 'application/json',
         'Authorization': `Bearer ${token}`,
       },
-      body: JSON.stringify({
-        ...newItem,
-      }),
+      body: JSON.stringify(item),
     })
+    console.log(res)
     const addedItem = await res.json()
     return addedItem
   } catch (error) {
     console.log(`error: ${error}`)
-    
   }
 }
 
 async function deleteItemById(url, id) {
   console.log(`${url}/${id}`)
-
+  const token = localStorage.getItem('accessToken')
   try {
     const res = await fetch(`${url}/${id}`, {
       method: 'DELETE',
@@ -79,6 +78,7 @@ async function deleteItemById(url, id) {
 }
 
 async function transferItem(url, id , newId) {
+  const token = localStorage.getItem('accessToken')
   try {
     const res = await fetch(`${url}/${id}/${newId}`, {
       method: 'DELETE',
@@ -94,6 +94,7 @@ async function transferItem(url, id , newId) {
 }
 
 async function editItem(url, id, editItem) {
+  const token = localStorage.getItem('accessToken')
   try {
     const res = await fetch(`${url}/${id}`, {
       method: 'PUT',
@@ -111,5 +112,6 @@ async function editItem(url, id, editItem) {
     console.log(`error: ${error}`)
   }
 }
+
 
 export { getItems, getItemById, addItem, deleteItemById, editItem , transferItem}

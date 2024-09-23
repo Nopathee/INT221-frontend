@@ -8,6 +8,7 @@ const fullName = ref('')
 const addBoardModal = ref(false)
 const showBoard = ref(false)
 const boardName = ref('')
+
 onMounted(async () => {
   const token = localStorage.getItem('accessToken');
   if (token) {
@@ -19,15 +20,20 @@ onMounted(async () => {
   } else {
     router.push('/login');
   }
+
+  
 })
 
+
 console.log(boardName.value)
+
+
+
 
 
 const logout = () => {
   localStorage.removeItem('accessToken')
 
-  
   router.push('/login')
 }
 
@@ -39,9 +45,6 @@ const closeModal = () => {
     addBoardModal.value = false
     boardName.value = ''
 }
-
-
-
 
 const createBoard = async () => {
   const token = localStorage.getItem('accessToken');
@@ -60,13 +63,11 @@ const createBoard = async () => {
             boardName:newBoard.name
             }
         })
-
       
       localStorage.setItem('boardName', boardName.value)
-
        
       }
-      console.log(boardName.name)
+      console.log(boardName.value)
     } else if (response.status === 401) {
       router.push('/login'); 
     } 

@@ -43,21 +43,16 @@ const handlerLogin = async () => {
     const data = await response.json()
     
     if(data && data.length > 0){
-      console.log(props.boardId)
       console.log(data)
       console.log()
       router.push(`/board/${data[0].boardId}`);
     } else {
       router.push('/board')
     }
-
-  
     } catch (error) {
     console.error("Error fetching boards:", error);
-  
     }
 
-    
   } else {
     error.value = true
     setTimeout(() => {
