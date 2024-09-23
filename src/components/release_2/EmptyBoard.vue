@@ -227,6 +227,7 @@ const saveTask = async (newTask) => {
   if (newTask.id === undefined) {
     const response = await addItem(`${import.meta.env.VITE_API_ENDPOINT}/v3/boards/${props.boardId}/tasks`, item)
     taskInsert.value = newTask.title
+    console.log(response)
     allTask.value.addTask(
       response.id,
       response.title,
@@ -394,7 +395,7 @@ const confDelete = async () => {
         <button
           class="bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 px-4 border-b-4 border-blue-700 hover:border-blue-500 rounded-lg mb-4 itbkk-manage-status"
         >
-          <router-link to="/status" @click="$emit('statusDetail')">
+          <router-link :to="`/board/${props.boardId}/status`" @click="$emit('statusDetail')">
             Manage Status
           </router-link>
         </button>
