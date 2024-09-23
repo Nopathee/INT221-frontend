@@ -23,14 +23,14 @@ onMounted(() => {
 console.log(props.task)
 
 const formatterCreateOn = computed(() => {
-  if (!props.task || !props.task.createdOn) return ''
-  const createdOn = new Date(props.task.createdOn).toLocaleString('en-GB')
+  if (!props.task || !props.task.item.createdOn) return ''
+  const createdOn = new Date(props.task.item.createdOn).toLocaleString('en-GB')
   return createdOn
 })
 
 const formatterUpdatedOn = computed(() => {
-  if (!props.task || !props.task.updatedOn) return ''
-  const updatedOn = new Date(props.task.updatedOn).toLocaleString('en-GB')
+  if (!props.task || !props.task.item.updatedOn) return ''
+  const updatedOn = new Date(props.task.item.updatedOn).toLocaleString('en-GB')
   return updatedOn
 })
 
@@ -50,7 +50,7 @@ onMounted(async () => {
     <div class="w-full flex justify-center p-10">
       <div class="bg-white shadow-lg w-3/4 flex flex-col p-2 gap-5 rounded-xl">
         <div class="font-bold text-2xl">
-          <h1 class="itbkk-title mt-3 ml-2">{{ props.task.title }}</h1>
+          <h1 class="itbkk-title mt-3 ml-2">{{ props.task.item.title }}</h1>
         </div>
         <hr />
         <div class="flex gap-2">
@@ -60,12 +60,12 @@ onMounted(async () => {
               class="textarea bg-slate-100 border-slate-300 h-72 w-full itbkk-description rounded-md"
               readonly="true"
               :style="{
-                fontStyle: props.task.description ? 'normal' : 'italic',
+                fontStyle: props.task.item.description ? 'normal' : 'italic',
               }"
-              :class="props.task.description ? 'text-black' : 'text-gray-500'"
+              :class="props.task.item.description ? 'text-black' : 'text-gray-500'"
               >{{
-                props.task.description
-                  ? props.task.description
+                props.task.item.description
+                  ? props.task.item.description
                   : 'No Description Provided'
               }}</textarea
             >
@@ -77,11 +77,11 @@ onMounted(async () => {
                 class="textarea h-24 w-full itbkk-assignees rounded-md bg-slate-100 border-slate-300"
                 readonly="true"
                 :style="{
-                  fontStyle: props.task.assignees ? 'normal' : 'italic',
+                  fontStyle: props.task.item.assignees ? 'normal' : 'italic',
                 }"
-                :class="props.task.assignees ? 'text-black' : 'text-gray-500'"
+                :class="props.task.item.assignees ? 'text-black' : 'text-gray-500'"
                 >{{
-                  props.task.assignees ? props.task.assignees : 'Unassigned'
+                  props.task.item.assignees ? props.task.item.assignees : 'Unassigned'
                 }}</textarea
               >
             </div>
@@ -90,7 +90,7 @@ onMounted(async () => {
               <select
                 class="select select-bordered w-full max-w-xs itbkk-status disabled:border-slate-300 disabled:bg-slate-100 disabled:text-black"
                 disabled="true"
-                v-model="props.task.status.name"
+                v-model="props.task.item.status.name"
               >
                 <option
                   v-for="status in statuses.getStatuses()"

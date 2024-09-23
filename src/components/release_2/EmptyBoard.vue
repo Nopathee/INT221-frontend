@@ -243,8 +243,9 @@ const showEdit = (taskToEdit) => {
   showModal.value = true
 }
 
-const showDetail = (taskToShow) => {
-  taskDetail.value = taskToShow
+const showDetail = async (taskToShow) => {
+  const showTask = await getItemById(`${import.meta.env.VITE_API_ENDPOINT}/v3/boards/${props.boardId}/tasks` , taskToShow)
+  taskDetail.value = showTask
   showModalDetail.value = true
 }
 
@@ -477,7 +478,7 @@ const confDelete = async () => {
 
             <td
               class="text-blue-800 hover:underline itbkk-title font-semibold transition-property: transform;"
-              @click="$emit('showDetail', task.id)"
+              @click="showDetail(task.id)"
             >
               {{ task.title }}
             </td>
