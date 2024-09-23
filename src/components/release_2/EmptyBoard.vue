@@ -41,6 +41,8 @@ const fullName = ref('')
 
 const taskInsert = ref('')
 
+const taskEdit = ref('')
+
 const decoded = () => {
   const token = localStorage.getItem('accessToken')
   if (token) {
@@ -190,7 +192,26 @@ const addNewTask = () => {
   router.push(`/board/${props.boardId}/task/add`)
 }
 
+const showEdit = (taskToEdit) => {
+  task.value = { ...taskToEdit }
+  showModal.value = true
+  console.log(taskToEdit.id)
+  router.push(`/board/${props.boardId}/task/${taskToEdit.id}/edit`)
+}
+
 const closeModal = () => {
+  task.value = {
+    id: undefined,
+    title: '',
+    description: null,
+    assignees: null,
+    status: {
+      id: '1',
+      name: 'No Status',
+      description: 'A status hos not been assigned',
+      color: '#ffffff',
+    },
+  }
   showModal.value = false
   router.push(`/board/${props.boardId}`)
 }
@@ -235,13 +256,47 @@ const saveTask = async (newTask) => {
     setTimeout(() => {
       successToast.value = false
     }, 3000)
-  }
+  } else {
+
+    const updatedTask = await addItem(`${import.meta.env.VITE_API_ENDPOINT}/v3/boards/${props.boardId}/tasks`, item)
+    taskEdit.value = newTask.title
+
+allTask.value.updateTask(
+  updatedTask.id,
+  updatedTask.title,
+  updatedTask.description,
+  updatedTask.assignees,
+  updatedTask.status
+)
+editToast.value = true
+showModal.value = false
+setTimeout(() => {
+  editToast.value = false
+}, 3000)
+task.value = {
+  id: undefined,
+  title: '',
+  description: null,
+  assignees: null,
+  status: {
+    id: '1',
+    name: 'No Status',
+    description: 'A status hos not been assigned',
+    color: '#ffffff',
+  },
 }
 
-const showEdit = (taskToEdit) => {
-  task.value = { ...taskToEdit }
-  showModal.value = true
+router.push(`/board/${props.boardId}`)
+
+successToast.value = true
+
+setTimeout(() => {
+  successToast.value = false
+}, 3000)
 }
+}
+
+
 
 const showDetail = async (taskToShow) => {
   const showTask = await getItemById(`${import.meta.env.VITE_API_ENDPOINT}/v3/boards/${props.boardId}/tasks` , taskToShow)
@@ -458,7 +513,7 @@ const confDelete = async () => {
                 >
                   <li>
                     <button
-                      @click="$emit('editTask', task.id)"
+                      @click="showEdit(task)"
                       class="text-black dark:text-white itbkk-button-edit"
                     >
                       Edit
