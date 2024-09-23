@@ -24,6 +24,7 @@ async function getItems(url) {
 }
 
 async function getItemById(url, id) {
+  console.log(url)
   const token = localStorage.getItem('accessToken')
   try {
     const data = await fetch(`${url}/${id}`,{
@@ -42,6 +43,7 @@ async function getItemById(url, id) {
 }
 
 async function addItem(url, item) {
+  console.log(url)
   const token = localStorage.getItem('accessToken')
   console.log(token)
   try {

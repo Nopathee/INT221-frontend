@@ -7,8 +7,6 @@ import Board from '@/components/release_2/Board.vue'
 import EmptyBoard from '@/components/release_2/EmptyBoard.vue'
 import StatusBoard from '@/components/release_2/StatusBoard.vue'
 
-
-
 const history = createWebHistory(import.meta.env.BASE_URL)
 
 const router = createRouter({
@@ -30,23 +28,30 @@ const router = createRouter({
           return { name: 'task' }
         }
         to.params.item = item
-      }},
-      {
-        path: '/status/:id/edit',
-        name: 'statusEdit',
-        component: StatusList,
-        props: true,
-        async beforeEnter(to) {
-          const id = to.params.id
-          const url = `${import.meta.env.VITE_API_ENDPOINT}/v2/statuses`
-          const { item, status } = await getItemById(url, id)
-          if (status === 404) {
-            to.params.notFound = true
-            return
-          }
-          to.params.item = item
-        }},
-    { path: '/board/:id', name: 'board', component: EmptyBoard , meta: { requiresAuth: true } },
+      },
+    },
+    {
+      path: '/status/:id/edit',
+      name: 'statusEdit',
+      component: StatusList,
+      props: true,
+      async beforeEnter(to) {
+        const id = to.params.id
+        const url = `${import.meta.env.VITE_API_ENDPOINT}/v2/statuses`
+        const { item, status } = await getItemById(url, id)
+        if (status === 404) {
+          to.params.notFound = true
+          return
+        }
+        to.params.item = item
+      },
+    },
+    {
+      path: '/board/:id',
+      name: 'board',
+      component: EmptyBoard,
+      meta: { requiresAuth: true },
+    },
     { path: '/', name: 'home', component: Login },
     {
       path: '/task/:id',
@@ -63,9 +68,15 @@ const router = createRouter({
         }
         to.params.item = item
       },
-      meta: { requiresAuth: true } 
+      meta: { requiresAuth: true },
     },
-    { path: '/board/:boardId/task/add', name: 'addTaskBoard', component: EmptyBoard , props:true,  meta: { requiresAuth: true } },
+    {
+      path: '/board/:boardId/task/add',
+      name: 'addTaskBoard',
+      component: EmptyBoard,
+      props: true,
+      meta: { requiresAuth: true },
+    },
     {
       path: '/board/:boardId/task/:id/edit',
       name: 'editTaskBoard',
@@ -73,7 +84,10 @@ const router = createRouter({
       props: true,
       async beforeEnter(to) {
         const id = to.params.id
-        const url = `${import.meta.env.VITE_API_ENDPOINT}/v3/boards/:boardId/tasks`
+        const boardId = to.params.boardId
+        const url = `${
+          import.meta.env.VITE_API_ENDPOINT
+        }/v3/boards/${boardId}/tasks`
         const { item, status } = await getItemById(url, id)
         if (status === 404) {
           alert('Task not found')
@@ -81,40 +95,53 @@ const router = createRouter({
         }
         to.params.item = item
       },
-      meta: { requiresAuth: true } 
+      meta: { requiresAuth: true },
     },
     { path: '/status', name: 'status', component: StatusList },
-    {
-      path: '/board/:id/status/:status-id/edit',
-      component: StatusList,
-      props: true,
-      async beforeEnter(to) {
-        const id = to.params.id
-        const url = `${import.meta.env.VITE_API_ENDPOINT}/v3/boards/:boardId/statuses`
-        const { item, status } = await getItemById(url, id)
-        if (status === 404) {
-          to.params.notFound = true
-          return
-        }
-        to.params.item = item
-      },
-      meta: { requiresAuth: true } 
-    },
     { path: '/login', name: 'login', component: Login },
-    { path: '/board', name: 'board', component: Board , meta: { requiresAuth: true } },
-    
-    { path: '/board/:boardId', name: 'emptyboard', component: EmptyBoard , props:true,  meta: { requiresAuth: true } },
-    
-    
-    { path: '/board/:boardId/status', name: 'statusBoard', component: StatusBoard , props:true,  meta: { requiresAuth: true } },
-    { path: '/board/:id/status/add', name: 'addStatusBoard', component: EmptyBoard , props:true,  meta: { requiresAuth: true } },
-   
-]})
+    {
+      path: '/board',
+      name: 'board',
+      component: Board,
+      meta: { requiresAuth: true },
+    },
+
+    {
+      path: '/board/:boardId',
+      name: 'emptyboard',
+      component: EmptyBoard,
+      props: true,
+      meta: { requiresAuth: true },
+    },
+
+    {
+      path: '/board/:boardId/status',
+      name: 'statusBoard',
+      component: StatusBoard,
+      props: true,
+      meta: { requiresAuth: true },
+    },
+    {
+      path: '/board/:boardId/status/:statusId/edit',
+      name: 'editStatusBoard',
+      component: StatusBoard,
+      props: true,
+      meta: { requiresAuth: true },
+    },
+    {
+      path: '/board/:id/status/add',
+      name: 'addStatusBoard',
+      component: EmptyBoard,
+      props: true,
+      meta: { requiresAuth: true },
+    },
+  ],
+})
 
 router.beforeEach((to, from, next) => {
   const token = localStorage.getItem('accessToken')
-  if (to.path !== '/login'){
-    if(token){
+  if (to.path !== '/login') {
+    if (token) {
       next()
     } else {
       next('/login')
@@ -122,6 +149,6 @@ router.beforeEach((to, from, next) => {
   } else {
     next()
   }
-});
+})
 
 export default router

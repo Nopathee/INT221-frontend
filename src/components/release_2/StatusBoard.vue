@@ -24,6 +24,7 @@ const props = defineProps({
   item: Object,
   notFound: Boolean,
   boardId: String,
+  statusId: String
 })
 
 defineEmits(['addStatus'])
@@ -67,7 +68,7 @@ onMounted(async () => {
 })
 
 const back = () => {
-  router.go(-1)
+  router.push(`/board/${props.boardId}`)
 }
 
 const statusToDelete = ref({
@@ -160,7 +161,7 @@ const editStatus = async (id) => {
     `${import.meta.env.VITE_API_ENDPOINT}/v3/boards/${props.boardId}/statuses`,
     id
   )
-  router.push(`/status/${id}/edit`)
+  router.push(`/board/${props.boardId}/status/${id}/edit`)
   if (item.status === 404) {
     notFound.value = true
     errorToast.value = true
@@ -222,7 +223,7 @@ const saveStatus = async (status) => {
         color: '#ffffff',
       }
 
-      router.push('/status')
+      router.push(`/board/${props.boardId}/status`)
 
       successToast.value = true
       setTimeout(() => {
@@ -254,7 +255,7 @@ const saveStatus = async (status) => {
       color: '#ffffff',
     }
 
-    router.push('/status')
+    router.push(`/board/${props.boardId}/status`)
   }
 }
 
@@ -270,7 +271,7 @@ if (props.notFound) {
     errorToast.value = false
     notFound.value = false
   }, 3000)
-  router.push('/status')
+  router.push(`/board/${props.boardId}/status`)
 }
 </script>
 
