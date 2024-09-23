@@ -16,12 +16,26 @@ onMounted(async () => {
     fullName.value = decoded.name;
     boardName.value = `${fullName.value}'s personal board`
     console.log(fullName.value);
-
+    try {
+      const response = await fetch(`${import.meta.env.VITE_API_ENDPOINT}/v3/boards` , {
+        headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    });
+    const data = await response.json()
+    if(data && data.length > 0){
+      console.log(data)
+      router.push(`/board/${data[0].boardId}`);
+    } else {
+      router.push('/board')
+    }
+    } catch (error) {
+    console.error("Error fetching boards:", error);
+    }
   } else {
     router.push('/login');
   }
-
-  
 })
 
 
@@ -113,10 +127,10 @@ const createBoard = async () => {
  <div v-if="addBoardModal" class="w-full h-full flex justify-center itbkk-modal-new">
     <div class="bg-white w-2/5 h-60 rounded-3xl p-5 modal-box">
     <h3 class="text-lg font-bold text-black">New Board</h3>
-    <p class="py-4 text-black itbkk-board-name">Name</p>
+    <p class="py-4 text-black ">Name</p>
     <input 
     type="text" 
-    class="bg-white border w-full text-black"
+    class="bg-white border w-full text-black itbkk-board-name"
     maxlength="120"
     v-model="boardName"
     

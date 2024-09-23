@@ -1,6 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import Task from '../views/Task.vue'
-import { getItemById } from '@/libs/fetchUtils.js'
+import { getItemById, getItems } from '@/libs/fetchUtils.js'
 import StatusList from '@/components/StatusList.vue'
 import Login from '../components/release_2/Login.vue'
 import Board from '@/components/release_2/Board.vue'
@@ -46,12 +46,6 @@ const router = createRouter({
         to.params.item = item
       },
     },
-    {
-      path: '/board/:id',
-      name: 'board',
-      component: EmptyBoard,
-      meta: { requiresAuth: true },
-    },
     { path: '/', name: 'home', component: Login },
     {
       path: '/task/:id',
@@ -80,21 +74,34 @@ const router = createRouter({
     {
       path: '/board/:boardId/task/:id/edit',
       name: 'editTaskBoard',
-      component: Task,
+      component: EmptyBoard,
       props: true,
-      async beforeEnter(to) {
-        const id = to.params.id
+      async beforeEnter(to , from , next) {
         const boardId = to.params.boardId
-        const url = `${
-          import.meta.env.VITE_API_ENDPOINT
-        }/v3/boards/${boardId}/tasks`
-        const { item, status } = await getItemById(url, id)
-        if (status === 404) {
-          alert('Task not found')
-          return { name: 'task' }
+        const taskId = to.params.id
+        const token = localStorage.getItem('accessToken')
+        if (token) {
+          try {
+            const response = await fetch(`${import.meta.env.VITE_API_ENDPOINT}/v3/boards/${boardId}/tasks/${taskId}`, {
+              headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "application/json",
+              },
+            });
+            console.log('Response status:', response.status);
+            if (response.status === 404 || response.status == 401) {
+              next('/login')
+            } else {
+              next()
+            }
+          } catch (error) {
+            next('/login')
+          }
+        } else {
+          next('/login')
         }
-        to.params.item = item
-      },
+      }
+      ,
       meta: { requiresAuth: true },
     },
     { path: '/status', name: 'status', component: StatusList },
@@ -112,6 +119,30 @@ const router = createRouter({
       component: EmptyBoard,
       props: true,
       meta: { requiresAuth: true },
+      async beforeEnter(to , from , next) {
+        const boardId = to.params.boardId
+        const token = localStorage.getItem('accessToken')
+        if (token) {
+          try {
+            const response = await fetch(`${import.meta.env.VITE_API_ENDPOINT}/v3/boards/${boardId}`, {
+              headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "application/json",
+              },
+            });
+            if (response.status === 404 || response.status == 401) {
+              next('/login')
+            } else {
+              next()
+            }
+          } catch (error) {
+            next('/login')
+          }
+        } else {
+          next('/login')
+        }
+      }
+      
     },
 
     {
@@ -120,6 +151,30 @@ const router = createRouter({
       component: StatusBoard,
       props: true,
       meta: { requiresAuth: true },
+      async beforeEnter(to , from , next) {
+        const boardId = to.params.boardId
+        const token = localStorage.getItem('accessToken')
+        if (token) {
+          try {
+            const response = await fetch(`${import.meta.env.VITE_API_ENDPOINT}/v3/boards/${boardId}/statuses`, {
+              headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "application/json",
+              },
+            });
+            console.log('Response status:', response.status);
+            if (response.status === 404 || response.status == 401) {
+              next('/login')
+            } else {
+              next()
+            }
+          } catch (error) {
+            next('/login')
+          }
+        } else {
+          next('/login')
+        }
+      }
     },
     {
       path: '/board/:boardId/status/:statusId/edit',
@@ -127,6 +182,31 @@ const router = createRouter({
       component: StatusBoard,
       props: true,
       meta: { requiresAuth: true },
+      async beforeEnter(to , from , next) {
+        const boardId = to.params.boardId
+        const statusId = to.params.statusId
+        const token = localStorage.getItem('accessToken')
+        if (token) {
+          try {
+            const response = await fetch(`${import.meta.env.VITE_API_ENDPOINT}/v3/boards/${boardId}/statuses/${statusId}`, {
+              headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "application/json",
+              },
+            });
+            console.log('Response status:', response.status);
+            if (response.status === 404 || response.status == 401) {
+              next('/login')
+            } else {
+              next()
+            }
+          } catch (error) {
+            next('/login')
+          }
+        } else {
+          next('/login')
+        }
+      }
     },
     {
       path: '/board/:id/status/add',
@@ -134,6 +214,31 @@ const router = createRouter({
       component: EmptyBoard,
       props: true,
       meta: { requiresAuth: true },
+      async beforeEnter(to , from , next) {
+        const boardId = to.params.boardId
+        const statusId = to.params.statusId
+        const token = localStorage.getItem('accessToken')
+        if (token) {
+          try {
+            const response = await fetch(`${import.meta.env.VITE_API_ENDPOINT}/v3/boards/${boardId}/statuses/${statusId}`, {
+              headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "application/json",
+              },
+            });
+            console.log('Response status:', response.status);
+            if (response.status === 404 || response.status == 401) {
+              next('/login')
+            } else {
+              next()
+            }
+          } catch (error) {
+            next('/login')
+          }
+        } else {
+          next('/login')
+        }
+      }
     },
   ],
 })

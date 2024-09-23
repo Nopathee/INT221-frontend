@@ -316,6 +316,8 @@ const showDelete = async (taskToDelete, index) => {
   confirmDelete.value = true
 }
 
+
+
 const closeDelete = () => {
   confirmDelete.value = false
 }
@@ -407,6 +409,7 @@ const confDelete = async () => {
               Limit tasks
         </button>
       </li>
+ 
     </ul>
   </div>
   
@@ -497,6 +500,8 @@ const confDelete = async () => {
             </th>
           </tr>
         </thead>
+
+
         <tbody>
           <tr
             v-for="(task, index) in sortedTasks"

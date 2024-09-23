@@ -15,6 +15,8 @@ async function getItems(url) {
     } else if (data.status === 401) {
       localStorage.removeItem('accessToken');
       router.push('/login');
+    } else if (data.status === 404) {
+      console.error('Error 404: Item not found.');
     } else {
       console.error(`Error: Received status code ${data.status}`);
     }
