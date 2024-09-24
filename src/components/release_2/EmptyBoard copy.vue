@@ -16,6 +16,9 @@ const props = defineProps({
   boardId: String,
 })
 
+console.log(props)
+console.log(props.boardId)
+
 const emit = defineEmits([
   'openModal',
   'closeModal',
