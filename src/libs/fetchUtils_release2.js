@@ -69,7 +69,7 @@ async function createNewBoard(url, token, boardName) {
     })
 
     console.log('Create board response:', response)
-
+    
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`)
     }

@@ -62,6 +62,11 @@ const closeModal = () => {
 
 const createBoard = async () => {
   const token = localStorage.getItem('accessToken');
+  if (!token) {
+    console.error('No access token found, redirecting to login');
+    router.push('/login');
+    return
+  }
   try {
     console.log(boardName.value)
     const response = await createNewBoard(`${import.meta.env.VITE_API_ENDPOINT}/v3/boards`, token , boardName.value)
@@ -83,8 +88,11 @@ const createBoard = async () => {
       }
       console.log(boardName.value)
     } else if (response.status === 401) {
+      console.error('Unauthorized, redirecting to login');
       router.push('/login'); 
-    } 
+    } else {
+      console.error(`Unexpected status code: ${response.status}`);
+    }
   } catch (err) {
     console.error('Error creating board:', err);
  
