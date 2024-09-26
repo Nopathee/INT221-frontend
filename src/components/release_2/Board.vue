@@ -90,7 +90,6 @@ const createBoard = async () => {
           name: 'emptyboard', 
           params: { 
             boardId: newBoard.id, 
-            boardName:newBoard.name
             }
         })    
       localStorage.setItem('boardName', boardName.value)     

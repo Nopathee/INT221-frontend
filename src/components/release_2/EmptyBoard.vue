@@ -363,7 +363,7 @@ const confDelete = async () => {
   confirmDelete.value = false
 }
 
-console.log(task.value.status.)
+console.log(task.value.status)
 </script>
 
 <template>
