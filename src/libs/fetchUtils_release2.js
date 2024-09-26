@@ -1,3 +1,5 @@
+
+
 async function login(url, user) {
   try {
     const response = await fetch(url, {
@@ -10,6 +12,11 @@ async function login(url, user) {
     console.log(JSON.stringify(user))
     console.log(response)
 
+    if (response.status === 401) {
+      console.error('Unauthorized, redirecting to login');
+      router.push('/login'); // Redirect to login if unauthorized
+      return { status: 401, error: 'Unauthorized' }; // Return 401 status
+    }
     const data = await response.json()
     console.log(data)
 
@@ -58,33 +65,35 @@ async function getUserBoard(url, token) {
 }
 
 async function createNewBoard(url, token, boardName) {
-  try {
-    const response = await fetch(url, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`, 
-      },
-      body: JSON.stringify({ name: boardName }), 
-    })
+    try {
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`, 
+        },
+        body: JSON.stringify({ name: boardName }), 
+      })
+  
+      console.log('Create board response:', response)
 
-    console.log('Create board response:', response)
-    
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`)
+   
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`)
+      }
+  
+      const data = await response.json() 
+      console.log('Created board:', data)
+  
+      return {
+        status: response.status,
+        board: data, 
+      }
+    } catch (error) {
+      console.error('Error creating board:', error)
+      return { status: 500, error: 'Internal Server Error' }
     }
-
-    const data = await response.json() 
-    console.log('Created board:', data)
-
-    return {
-      status: response.status,
-      board: data, 
-    }
-  } catch (error) {
-    console.error('Error creating board:', error)
-    return { status: 500, error: 'Internal Server Error' }
-  }
+ 
 }
 
 export { login, getUserBoard , createNewBoard}

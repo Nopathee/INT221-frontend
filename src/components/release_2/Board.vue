@@ -11,6 +11,7 @@ const boardName = ref('')
 
 onMounted(async () => {
   const token = localStorage.getItem('accessToken');
+  console.log(token)
   if (token) {
     const decoded = jwtDecode(token);
     fullName.value = decoded.name;
@@ -23,17 +24,25 @@ onMounted(async () => {
         "Content-Type": "application/json",
       },
     });
-    const data = await response.json()
-    if(data && data.length > 0){
-      console.log(data)
-      router.push(`/board/${data[0].boardId}`);
-    } else {
-      router.push('/board')
-    }
+    console.log(response.status)
+    if (response.status === 401) {
+        console.error("Unauthorized, redirecting to login");
+        router.push('/login');
+      } else {
+        const data = await response.json();
+        if (data && data.length > 0) {
+          console.log(data);
+          router.push(`/board/${data[0].boardId}`);
+        } else {
+          router.push('/board');
+        }
+      }
     } catch (error) {
     console.error("Error fetching boards:", error);
+    router.push('/login')
     }
   } else {
+    console.error("Error fetching boards:", error);
     router.push('/login');
   }
 })
@@ -60,16 +69,18 @@ const closeModal = () => {
     boardName.value = ''
 }
 
+
+
+
 const createBoard = async () => {
-  const token = localStorage.getItem('accessToken');
-  if (!token) {
-    console.error('No access token found, redirecting to login');
-    router.push('/login');
-    return
-  }
+  const token = localStorage.getItem('accessToken')
+  console.log(token)
+
+
   try {
     console.log(boardName.value)
     const response = await createNewBoard(`${import.meta.env.VITE_API_ENDPOINT}/v3/boards`, token , boardName.value)
+    console.log(response.status)
     if (response.status === 201) {
       const newBoard =  response.board
       console.log(newBoard.name)
@@ -81,24 +92,25 @@ const createBoard = async () => {
             boardId: newBoard.id, 
             boardName:newBoard.name
             }
-        })
-      
-      localStorage.setItem('boardName', boardName.value)
-       
+        })    
+      localStorage.setItem('boardName', boardName.value)     
       }
       console.log(boardName.value)
     } else if (response.status === 401) {
       console.error('Unauthorized, redirecting to login');
       router.push('/login'); 
     } else {
-      console.error(`Unexpected status code: ${response.status}`);
+      router.push('/login')
     }
   } catch (err) {
     console.error('Error creating board:', err);
- 
   }
+
+
   closeModal();
 };
+
+
 
 </script>
  

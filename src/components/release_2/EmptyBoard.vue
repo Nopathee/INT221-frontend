@@ -18,6 +18,7 @@ import Succes from '../Succes.vue'
 import Delete from '../Delete.vue'
 import Edit from '../Edit.vue'
 import Error from '../Error.vue'
+
 const props = defineProps({
   tasks: Array,
   statuses: Array,
@@ -100,10 +101,10 @@ const deleteTask = ref(null)
 const deleteIndex = ref(null)
 
 onMounted(async () => {
+ 
   try {
     const board = await getItemById(`${import.meta.env.VITE_API_ENDPOINT}/v3/boards`,props.boardId)
     console.log(board)
-
     if (props.tasks) {
       originalTasks.value = props.tasks
     }
@@ -361,6 +362,8 @@ const confDelete = async () => {
   }
   confirmDelete.value = false
 }
+
+console.log(task.value.status.)
 </script>
 
 <template>
@@ -454,7 +457,9 @@ const confDelete = async () => {
         </div>
       </div>
     </nav>
-
+    <div class="text-4xl flex justify-center pt-5 font-semibold itbkk-board-name">
+              {{  boardName }}
+      </div>
     <div class="w-full flex justify-center items-center">
       <div class="rounded-xl p-5 w-5/6">
         <div v-if="selectedStatusNames.length > 0">
@@ -536,6 +541,7 @@ const confDelete = async () => {
               </th>
             </tr>
           </thead>
+            
 
           <tbody>
             <tr

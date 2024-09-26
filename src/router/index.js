@@ -90,6 +90,7 @@ const router = createRouter({
             });
             console.log('Response status:', response.status);
             if (response.status === 404 || response.status == 401) {
+              localStorage.removeItem('accessToken')
               next('/login')
             } else {
               next()
@@ -131,6 +132,7 @@ const router = createRouter({
               },
             });
             if (response.status === 404 || response.status == 401) {
+              localStorage.removeItem('accessToken')
               next('/login')
             } else {
               next()
@@ -164,6 +166,7 @@ const router = createRouter({
             });
             console.log('Response status:', response.status);
             if (response.status === 404 || response.status == 401) {
+              localStorage.removeItem('accessToken')
               next('/login')
             } else {
               next()
@@ -196,6 +199,7 @@ const router = createRouter({
             });
             console.log('Response status:', response.status);
             if (response.status === 404 || response.status == 401) {
+              localStorage.removeItem('accessToken')
               next('/login')
             } else {
               next()
@@ -228,6 +232,7 @@ const router = createRouter({
             });
             console.log('Response status:', response.status);
             if (response.status === 404 || response.status == 401) {
+              localStorage.removeItem('accessToken')
               next('/login')
             } else {
               next()
