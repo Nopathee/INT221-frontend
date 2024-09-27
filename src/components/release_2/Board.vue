@@ -32,7 +32,7 @@ onMounted(async () => {
         const data = await response.json();
         if (data && data.length > 0) {
           console.log(data);
-          router.push(`/board/${data[0].boardId}`);
+          router.push(`/board/${data[0].id}`);
         } else {
           router.push('/board');
         }
@@ -66,7 +66,6 @@ const addBoard = () => {
 
 const closeModal = () => {
     addBoardModal.value = false
-    boardName.value = ''
 }
 
 
@@ -75,8 +74,6 @@ const closeModal = () => {
 const createBoard = async () => {
   const token = localStorage.getItem('accessToken')
   console.log(token)
-
-
   try {
     console.log(boardName.value)
     const response = await createNewBoard(`${import.meta.env.VITE_API_ENDPOINT}/v3/boards`, token , boardName.value)
@@ -88,13 +85,10 @@ const createBoard = async () => {
       if(newBoard){
         router.push({ 
           name: 'emptyboard', 
-          params: { 
-            boardId: newBoard.id, 
-            }
-        })    
-      localStorage.setItem('boardName', boardName.value)     
+          params: { boardId: newBoard.id},
+        })        
       }
-      console.log(boardName.value)
+      console.log(newBoard.value)
     } else if (response.status === 401) {
       console.error('Unauthorized, redirecting to login');
       router.push('/login'); 
@@ -104,8 +98,6 @@ const createBoard = async () => {
   } catch (err) {
     console.error('Error creating board:', err);
   }
-
-
   closeModal();
 };
 
@@ -152,7 +144,6 @@ const createBoard = async () => {
     class="bg-white border w-full text-black itbkk-board-name"
     maxlength="120"
     v-model="boardName"
-    
     >
     <div class="modal-action">
         <button @click="createBoard" class="btn bg-green-500 text-black itbkk-button-ok" >Submit</button>

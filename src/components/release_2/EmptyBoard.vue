@@ -18,16 +18,19 @@ import Succes from '../Succes.vue'
 import Delete from '../Delete.vue'
 import Edit from '../Edit.vue'
 import Error from '../Error.vue'
+import { getUserBoard } from '@/libs/fetchUtils_release2'
+
 
 const props = defineProps({
   tasks: Array,
   statuses: Array,
   boardId: String,
-  boardName: String
+  
 })
 
 console.log(props)
 console.log(props.boardId)
+
 
 const emit = defineEmits([
   'openModal',
@@ -38,6 +41,9 @@ const emit = defineEmits([
   'statusDetail',
   'limitModal',
 ])
+
+const boardName = ref('')
+console.log(boardName.value)
 
 const deletedToast = ref(false)
 
@@ -61,8 +67,7 @@ const decoded = () => {
     console.log(fullName.value)
   }
 }
-const boardName = localStorage.getItem('boardName')
-console.log(boardName)
+console.log(props.boardName)
 const logout = () => {
   localStorage.removeItem('accessToken')
   router.push('/login')
@@ -101,7 +106,7 @@ const deleteTask = ref(null)
 const deleteIndex = ref(null)
 
 onMounted(async () => {
- 
+ const token = localStorage.getItem('accessToken')
   try {
     const board = await getItemById(`${import.meta.env.VITE_API_ENDPOINT}/v3/boards`,props.boardId)
     console.log(board)
@@ -121,6 +126,12 @@ onMounted(async () => {
           props.boardId
         }/statuses`
       )
+      const board = await getUserBoard(
+        `${import.meta.env.VITE_API_ENDPOINT}/v3/boards/${props.boardId}` , token
+      )
+      console.log(board)
+      boardName.value = board.board.boardName
+      console.log(boardName.value)
       allStatuses.value.addStatuses(status)
       allTask.value.addDtoTasks(items)
       tasks.value = items
@@ -457,8 +468,8 @@ console.log(task.value.status)
         </div>
       </div>
     </nav>
-    <div class="text-4xl flex justify-center pt-5 font-semibold itbkk-board-name">
-              {{  boardName }}
+    <div class="text-2xl flex justify-center pt-5 font-semibold">
+          <p>{{ boardName }}</p>    
       </div>
     <div class="w-full flex justify-center items-center">
       <div class="rounded-xl p-5 w-5/6">
