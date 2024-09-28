@@ -14,6 +14,7 @@ const getTimezone = () => {
 defineEmits(['close'])
 const props = defineProps({
   task: Object,
+  
 })
 
 onMounted(() => {
@@ -43,6 +44,20 @@ onMounted(async () => {
   statuses.value.addStatuses(items)
 })
 
+const displayStatus = computed(() => {
+  switch (props.task.item.status.name) {
+    case 'NO_STATUS':
+      return 'No Status';
+    case 'TO_DO':
+      return 'To Do';
+    case 'DOING':
+      return 'Doing';
+    case 'DONE':
+      return 'Done';
+    default:
+      return props.task.item.status.name || 'Unknown Status'
+  }
+});
 </script>
 
 <template>
@@ -87,19 +102,9 @@ onMounted(async () => {
             </div>
             <div class="ml-1 mr-2">
               <p class="text-sm">Status</p>
-              <select
-                class="select select-bordered w-full max-w-xs itbkk-status disabled:border-slate-300 disabled:bg-slate-100 disabled:text-black"
-                disabled="true"
-                v-model="props.task.item.status.name"
-              >
-                <option
-                  v-for="status in statuses.getStatuses()"
-                  :key="status.id"
-                  :value="status.name"
-                >
-                  {{ status.name }}
-                </option>
-              </select>
+              <span class="bg-slate-100 p-1 px-10 mx-2 text-black rounded-lg">
+                {{ displayStatus}}
+              </span>
             </div>
             <div class="m-1 flex">
               <p class="text-sm">

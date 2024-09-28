@@ -40,8 +40,23 @@ class StatusManagement {
   }
 
   getStatuses() {
-    return this.statuses
-  }
+    console.log(this.statuses);
+
+    return this.statuses.map(status => {
+        switch (status.name) {
+            case 'NO_STATUS':
+                return { ...status, name: 'No Status' };
+            case 'TO_DO':
+                return { ...status, name: 'To Do' };
+            case 'DOING':
+                return { ...status, name: 'Doing' };
+            case 'DONE':
+                return { ...status, name: 'Done' };
+            default:
+                return status;
+        }
+    });
+}
 
   
 }

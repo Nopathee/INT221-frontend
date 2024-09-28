@@ -31,7 +31,6 @@ describe(`TC-PBI19-PERSIONAL-BOARD-3-FE-3\n
         cy.get('.itbkk-title').contains("user1 first task").parents(".itbkk-item").as("item")
         cy.get('@item').find('.itbkk-button-action').click().as('action')
         cy.get('@action').find('.itbkk-button-edit')
-    
     })
 
     it('[Step 7] should click the edit button to open a mdal window with task detail and change the status to "To Do".',()=>{
@@ -42,14 +41,15 @@ describe(`TC-PBI19-PERSIONAL-BOARD-3-FE-3\n
         cy.wait(100)
 
         cy.get('.itbkk-modal-task').should('exist').as('modal')
-        cy.get('@modal').find('.itbkk-status').select('TO_DO')
+        cy.get('@modal').find('.itbkk-status').select('To Do')
         cy.get('@modal').find('.itbkk-button-confirm').should('exist').click({ force: true })
     })
+   
 
     it('Should have "user1 first task","Unassigned" and "To Do".',()=>{
         cy.get('.itbkk-title').contains('user1 first task').parents('.itbkk-item').as('item')
         cy.get('@item').contains('.itbkk-assignees','Unassigned')
-        cy.get('@item').contains('.itbkk-status',"TO_DO")
+        cy.get('@item').contains('.itbkk-status',"To Do")
     })
 
     it('[Step 8] should have button action and button delete.',()=>{
