@@ -75,45 +75,13 @@ class TaskManagement {
   }
 
   getTasks() {
-    return this.tasks.map(task => {
-        switch (task.status.name) {
-            case 'NO_STATUS':
-                task.status.name = 'No Status';
-                break;
-            case 'TO_DO':
-                task.status.name = 'To Do';
-                break;
-            case 'DOING':
-                task.status.name = 'Doing';
-                break;
-            case 'DONE':
-                task.status.name = 'Done';
-                break;
-            default:
-                break;
-        }
-        return task;
-    });
-}
+    return this.tasks
+  }
 
-getStatuses() {
-  console.log(this.statuses);
+  getStatus() {
+    return this.statuses
+  }
 
-  return this.statuses.map(status => {
-      switch (status.name) {
-          case 'NO_STATUS':
-              return { ...status, name: 'No Status' };
-          case 'TO_DO':
-              return { ...status, name: 'To Do' };
-          case 'DOING':
-              return { ...status, name: 'Doing' };
-          case 'DONE':
-              return { ...status, name: 'Done' };
-          default:
-              return status;
-      }
-  });
-}
   addStatus(id,name,description) {
     this.statuses.push({
       id: id,
