@@ -15,7 +15,7 @@ onMounted(async () => {
   if (token) {
     const decoded = jwtDecode(token);
     fullName.value = decoded.name;
-    boardName.value = `${fullName.value}'s personal board`
+    boardName.value = `${fullName.value} personal board`
     console.log(fullName.value);
     try {
       const response = await fetch(`${import.meta.env.VITE_API_ENDPOINT}/v3/boards` , {

@@ -458,7 +458,7 @@ console.log(task.value.status)
             </li>
             <li>
               <button
-                class="bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 px-4 border-b-4 border-blue-700 hover:border-blue-500 rounded-lg mb-4 itbkk-manage-status"
+                class="bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 px-4 border-b-4 border-blue-700 hover:border-blue-500 rounded-lg mb-4"
                 @click="$emit('limitModal', true)"
               >
                 Limit tasks
@@ -562,14 +562,14 @@ console.log(task.value.status)
             >
               <td class="text-white text-center font-semibold flex">
                 {{ index + 1 }}
-                <div class="dropdown dropdown-right dropdown-end tra">
-                  <div tabindex="0" role="button" class="itbkk-button-action">
+                <div class="dropdown dropdown-right dropdown-end tra itbkk-button-action">
+                  <div tabindex="0" role="button">
                     <img src="../icon/Threebtn.svg" />
                   </div>
                   <ul
                     class="p-1 shadow menu dropdown-content z-[1] bg-base-100 rounded-box w-32"
                   >
-                    <li>
+                    <li class="">
                       <button
                         @click="showEdit(task)"
                         class="text-black dark:text-white itbkk-button-edit"

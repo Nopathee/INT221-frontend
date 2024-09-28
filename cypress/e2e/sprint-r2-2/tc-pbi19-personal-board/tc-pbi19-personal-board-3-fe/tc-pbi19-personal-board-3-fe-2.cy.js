@@ -30,14 +30,14 @@ describe(`TC-PBI19-PERSIONAL-BOARD-3-FE-1\n
 
         cy.get('.itbkk-modal-task').should('exist').as('modal')
         cy.get('@modal').find('.itbkk-title').type('user2 first task')
-        cy.get('@modal').find('.itbkk-status').select('Doing')
+        cy.get('@modal').find('.itbkk-status').select('DOING')
         cy.get('@modal').find('.itbkk-button-confirm').should('exist').click()
     })
 
     it('Should have task title "user2 first task"',()=>{
         cy.get('.itbkk-title').contains('user2 first task').parents('.itbkk-item').as('item')
         cy.get('@item').contains('.itbkk-assignees','Unassigned')
-        cy.get('@item').contains('.itbkk-status',"Doing")
+        cy.get('@item').contains('.itbkk-status',"DOING")
     })
 
     it('Should have "No Description Provided","Unassigned" and "Doing".',()=>{
@@ -47,7 +47,7 @@ describe(`TC-PBI19-PERSIONAL-BOARD-3-FE-1\n
         cy.get('.itbkk-title').contains("user2 first task")
         cy.get('.itbkk-description').contains('No Description Provided').as('description')
         cy.get('.itbkk-assignees').contains('Unassigned')
-        cy.get('.itbkk-status').contains('Doing')
+        cy.get('.itbkk-status').contains('DOING')
     })
 
 })

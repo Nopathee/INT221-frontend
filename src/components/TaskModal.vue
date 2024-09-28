@@ -19,7 +19,7 @@ const originalTasks = ref({
   title: props.task.title,
   description: props.task.description,
   assignees: props.task.assignees,
-  status: props.task.status,
+  status: props.task.status.id,
 })
 
 const isSaveDisabled = computed(() => {
@@ -28,12 +28,14 @@ const isSaveDisabled = computed(() => {
     (props.task.title === originalTasks.value.title &&
       props.task.description === originalTasks.value.description &&
       props.task.assignees === originalTasks.value.assignees &&
-      props.task.status === originalTasks.value.status) ||
+      props.task.status.id === originalTasks.value.status) ||
     props.task.title.length > 100 ||
     (props.task.description && props.task.description.length > 500) ||
     (props.task.assignees && props.task.assignees.length > 30)
   )
 })
+
+
 
 defineEmits(['saveTask', 'cancelTask'])
 </script>

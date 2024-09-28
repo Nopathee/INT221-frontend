@@ -31,16 +31,16 @@ describe(`TC-PBI19-PERSIONAL-BOARD-4-FE-1\n
         cy.get('.itbkk-item').should('have.length',4) ;
 
         cy.get('.itbkk-item').eq(0).as('item')
-        cy.get('@item').contains('.itbkk-status-name',"No Status") 
+        cy.get('@item').contains('.itbkk-status-name',"NO_STATUS") 
 
         cy.get('.itbkk-item').eq(1).as('item')
-        cy.get('@item').contains('.itbkk-status-name',"To Do")
+        cy.get('@item').contains('.itbkk-status-name',"TO_DO")
 
         cy.get('.itbkk-item').eq(2).as('item')
-        cy.get('@item').contains('.itbkk-status-name',"Doing")
+        cy.get('@item').contains('.itbkk-status-name',"DOING")
 
         cy.get('.itbkk-item').eq(3).as('item')
-        cy.get('@item').contains('.itbkk-status-name',"Done")
+        cy.get('@item').contains('.itbkk-status-name',"DONE")
     })
 
     it('[Step 1.2] should have an Add Status and click the button to show the modal window and add status "To Review".',()=>{
@@ -81,26 +81,26 @@ describe(`TC-PBI19-PERSIONAL-BOARD-4-FE-1\n
 
         cy.get('.itbkk-modal-task').should('exist').as('modal')
         cy.get('@modal').find('.itbkk-title').type('user1 second task')
-        cy.get('@modal').find('.itbkk-status').select('Doing')
+        cy.get('@modal').find('.itbkk-status').select('DOING')
         cy.get('@modal').find('.itbkk-button-confirm').should('exist').click()
     })
 
     it('[Step 1.4] Should have task title "user1 second task" with "Doing".',()=>{
         cy.get('.itbkk-title').contains('user1 second task').parents('.itbkk-item').as('item')
         cy.get('@item').contains('.itbkk-assignees','Unassigned')
-        cy.get('@item').contains('.itbkk-status',"Doing")
+        cy.get('@item').contains('.itbkk-status',"DOING")
     })
 
     it('[Step 1.5] Should change "Doing" status to "In Progress" status.', ()=>{
         cy.get('.itbkk-manage-status').should('exist').click() ;
         cy.wait(100) ;
 
-        cy.get('.itbkk-status-name').contains('Doing').parents('.itbkk-item').as('item')
+        cy.get('.itbkk-status-name').contains('DOING').parents('.itbkk-item').as('item')
         cy.get('@item').contains('.itbkk-button-edit','Edit').should('exist').click()
         cy.wait(100)
 
         cy.get('.itbkk-modal-status').as('modal')
-        cy.get('@modal').find('.itbkk-status-name','Doing')
+        cy.get('@modal').find('.itbkk-status-name','DOING')
         cy.get('@modal').find('.itbkk-status-name').clear()
         cy.get('@modal').find('.itbkk-status-name').type('In Progress')
         cy.get('@modal').find('.itbkk-button-confirm').click() 
