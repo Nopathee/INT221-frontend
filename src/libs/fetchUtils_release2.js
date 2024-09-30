@@ -96,6 +96,35 @@ async function createNewBoard(url, token, boardName) {
  
 }
 
-export { login, getUserBoard , createNewBoard}
+async function changeVisi(url, token , visi) {
+  try {
+    const response = await fetch(url, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`, 
+      },
+      body: JSON.stringify(visi), 
+    })
+    console.log('Change Visibility response:', response)
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`)
+    }
+    const data = await response.json() 
+    console.log('Changed visibility:', data)
+
+    return {
+      status: response.status,
+      board: data, 
+    }
+  } catch (error) {
+    console.error('Error changing visibility:', error)
+    return { status: 500, error: 'Internal Server Error' }
+  }
+
+}
+
+export { login, getUserBoard , createNewBoard , changeVisi}
 
 

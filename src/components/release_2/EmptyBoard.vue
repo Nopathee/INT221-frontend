@@ -1,5 +1,5 @@
 <script setup>
-import { defineProps, ref, watch, onMounted } from 'vue'
+import { defineProps, ref, watch, onMounted, computed } from 'vue'
 import { jwtDecode } from 'jwt-decode'
 import router from '@/router'
 import {
@@ -18,7 +18,7 @@ import Succes from '../Succes.vue'
 import Delete from '../Delete.vue'
 import Edit from '../Edit.vue'
 import Error from '../Error.vue'
-import { getUserBoard } from '@/libs/fetchUtils_release2'
+import { changeVisi, getUserBoard } from '@/libs/fetchUtils_release2'
 import ConfirmChangeVisi from './ConfirmChangeVisi.vue'
 
 
@@ -363,10 +363,7 @@ const showDelete = async (taskToDelete, index) => {
 const closeDelete = () => {
   confirmDelete.value = false
 }
-const closeVisiModal = () => {
-  confirmVisi.value = false
-  
-}
+
 const confDelete = async () => {
   try {
     await deleteItemById(
@@ -383,14 +380,38 @@ const confDelete = async () => {
   confirmDelete.value = false
 }
 
-const confChangeVisi = () => {
+const confChangeVisi = async (newVisi) => {
+  const token = localStorage.getItem('accessToken')
+  try{
+    const response = await changeVisi(`${import.meta.env.VITE_API_ENDPOINT}/v3/boards/${props.boardId}`, token , newVisi )
+    if(response  && response.status === 200){
+
+    console.log(response.status)
+    console.log(response.board)
+  } 
+} catch (err) {
+    console.error('Error creating board:', err)
+  }
+}
+const originalVisibility = ref('')
+const toggleVisibility = () => {
+  originalVisibility.value = visibility.value
+  newVisi.value = visibility.value === 'PRIVATE' ? 'PUBLIC' : 'PRIVATE'
+  confirmVisi.value = true
   
 }
-const isPrivate = ref('private')
-const toggleVisibility = () => {
-    confirmVisi.value = true
+
+const isChecked = computed(() => {
+  return originalVisibility.value !== newVisi.value
+})
+
+const closeVisiModal = () => {
+  confirmVisi.value = false
+  newVisi.value = originalVisibility.value
 }
 
+
+console.log(newVisi.value)
 console.log(task.value.status)
 </script>
 
@@ -415,11 +436,11 @@ console.log(task.value.status)
             class="flex flex-row font-medium md:p-0 mt-4 border border-gray-100 rounded-lg bg-gray-50 md:space-x-8 md:flex-row md:mt-0 md:border-0 md:bg-white dark:bg-gray-800 md:dark:bg-gray-900 dark:border-gray-700"
           >
             <li class="flex items-center space-x-2">
-            <span class="label-text">{{ isPrivate ? 'Private' : 'Public' }}</span>
+            <span class="label-text">{{visibility}}</span>
               <input 
               type="checkbox" 
-              class="toggle" 
-              :checked="!isPrivate" 
+              class="toggle"
+              :checked="isChecked"       
               @change="toggleVisibility" 
             />
             </li>
@@ -691,8 +712,7 @@ console.log(task.value.status)
       <ConfirmChangeVisi
         @close="closeVisiModal"
         @confirm="confChangeVisi"
-        :new-mode="newVisi"
-       
+        :newVisi="newVisi" 
       />
     </div>
   </Teleport>
