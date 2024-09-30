@@ -44,20 +44,7 @@ onMounted(async () => {
   statuses.value.addStatuses(items)
 })
 
-const displayStatus = computed(() => {
-  switch (props.task.item.status.name) {
-    case 'NO_STATUS':
-      return 'No Status';
-    case 'TO_DO':
-      return 'To Do';
-    case 'DOING':
-      return 'Doing';
-    case 'DONE':
-      return 'Done';
-    default:
-      return props.task.item.status.name || 'Unknown Status'
-  }
-});
+
 </script>
 
 <template>

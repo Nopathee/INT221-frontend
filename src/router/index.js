@@ -119,33 +119,36 @@ const router = createRouter({
       name: 'emptyboard',
       component: EmptyBoard,
       props: true,
-      meta: { requiresAuth: true },
+      meta: { requiresAuth: false },
       async beforeEnter(to , from , next) {
         const boardId = to.params.boardId
         const token = localStorage.getItem('accessToken')
-        if (token) {
           try {
             const response = await fetch(`${import.meta.env.VITE_API_ENDPOINT}/v3/boards/${boardId}`, {
               headers: {
-                Authorization: `Bearer ${token}`,
+                Authorization: token ? `Bearer ${token}`: '',
                 "Content-Type": "application/json",
               },
             });
+            const boardData = await response.json();
+            console.log(boardData.visibility)
             if (response.status === 404 || response.status == 401) {
               localStorage.removeItem('accessToken')
               next('/login')
-            } if (response.status === 403) {
-              alert('Access denied, you do not have permission to view this page.');
+            } else if (response.status === 403) {
+              if(boardData.visibility === 'public'){
+                next()
+              } else {
+                alert('Access denied, you do not have permission to view this page.');
               next(false)
+              }
+              
            }else {
               next()
             }
           } catch (error) {
             next('/login')
-          }
-        } else {
-          next('/login')
-        }
+        } 
       }
       
     },
@@ -172,7 +175,7 @@ const router = createRouter({
               localStorage.removeItem('accessToken')
               next('/login')
             } if (response.status === 403) {
-              alert('Access denied, you do not have permission to view this page.');
+              alert('Access denied, you do not have permission to view this page.')
               next(false)
            } else {
               next()

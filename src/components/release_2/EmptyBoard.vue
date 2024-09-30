@@ -386,7 +386,7 @@ const confChangeVisi = async (newVisi) => {
     console.log('New visibility:' , newVisi)
     const response = await changeVisi(`${import.meta.env.VITE_API_ENDPOINT}/v3/boards/${props.boardId}`, token , newVisi )
     if(response  && response.status === 200){
-
+    visibility.value = newVisi
     console.log(response.status)
     console.log(response.board)
   } 
@@ -445,7 +445,7 @@ console.log(task.value.status)
             <span class="label-text">PRIVATE</span>
               <input 
               type="checkbox" 
-              class="toggle"
+              class="toggle itbkk-board-visibility"
               :checked="isChecked"       
               @change="toggleVisibility" 
             />
