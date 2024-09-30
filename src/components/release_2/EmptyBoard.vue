@@ -108,8 +108,6 @@ const deleteTask = ref(null)
 const deleteIndex = ref(null)
 const newVisi = ref(null)
 const visibility = ref('')
-const errorMessage = ref('')
-
 onMounted(async () => {
  const token = localStorage.getItem('accessToken')
   try {
@@ -384,40 +382,34 @@ const confDelete = async () => {
 
 const confChangeVisi = async (newVisi) => {
   const token = localStorage.getItem('accessToken')
-  try {
-    const response = await changeVisi(`${import.meta.env.VITE_API_ENDPOINT}/v3/boards/${props.boardId}`, token, newVisi)
-    
-    if (response.status === 200) {
-      visibility.value = newVisi; // อัปเดตสถานะการมองเห็น
-      console.log('Visibility changed successfully:', response.data)
-    } else if (response.status === 401) {
-      localStorage.removeItem('accessToken'); // รีเซ็ตสถานะการตรวจสอบสิทธิ์
-      router.push('/login'); // เปลี่ยนเส้นทางไปยังหน้าเข้าสู่ระบบ
-    } else if (response.status === 403) {
-      errorMessage.value = "You do not have permission to change the board visibility mode."
-    } else {
-      errorMessage.value = "There is a problem. Please try again later."
-    }
-  } catch (err) {
-    console.error('Error changing visibility:', err)
-    errorMessage.value = "There is a problem. Please try again later."
+  try{
+    const response = await changeVisi(`${import.meta.env.VITE_API_ENDPOINT}/v3/boards/${props.boardId}`, token , newVisi )
+    if(response  && response.status === 200){
+
+    console.log(response.status)
+    console.log(response.board)
+  } 
+} catch (err) {
+    console.error('Error creating board:', err)
   }
 }
-
+const originalVisibility = ref('')
 const toggleVisibility = () => {
+  originalVisibility.value = visibility.value
   newVisi.value = visibility.value === 'PRIVATE' ? 'PUBLIC' : 'PRIVATE'
   confirmVisi.value = true
+  
 }
-
-const closeVisiModal = () => {
-  confirmVisi.value = false
-}
-
-const originalVisibility = ref('')
 
 const isChecked = computed(() => {
   return originalVisibility.value !== newVisi.value
 })
+
+const closeVisiModal = () => {
+  confirmVisi.value = false
+  newVisi.value = originalVisibility.value
+}
+
 
 console.log(newVisi.value)
 console.log(task.value.status)
@@ -736,5 +728,4 @@ console.log(task.value.status)
   </Teleport>
 </template>
 
-<style scoped>
-</style>
+<style scoped></style>
