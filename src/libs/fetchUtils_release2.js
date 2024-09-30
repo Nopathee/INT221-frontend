@@ -96,7 +96,7 @@ async function createNewBoard(url, token, boardName) {
  
 }
 
-async function changeVisi(url, token , visi) {
+async function changeVisi(url, token , visibility) {
   try {
     const response = await fetch(url, {
       method: 'PATCH',
@@ -104,7 +104,7 @@ async function changeVisi(url, token , visi) {
         'Content-Type': 'application/json',
         Authorization: `Bearer ${token}`, 
       },
-      body: JSON.stringify(visi), 
+      body: JSON.stringify({visibility:visibility}), 
     })
     console.log('Change Visibility response:', response)
 

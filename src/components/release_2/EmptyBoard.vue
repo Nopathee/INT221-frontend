@@ -106,7 +106,7 @@ const task = ref({
 const taskDetail = ref(null)
 const deleteTask = ref(null)
 const deleteIndex = ref(null)
-const newVisi = ref(null)
+const newVisi = ref('')
 const visibility = ref('')
 onMounted(async () => {
  const token = localStorage.getItem('accessToken')
@@ -383,6 +383,7 @@ const confDelete = async () => {
 const confChangeVisi = async (newVisi) => {
   const token = localStorage.getItem('accessToken')
   try{
+    console.log('New visibility:' , newVisi)
     const response = await changeVisi(`${import.meta.env.VITE_API_ENDPOINT}/v3/boards/${props.boardId}`, token , newVisi )
     if(response  && response.status === 200){
 
@@ -392,6 +393,7 @@ const confChangeVisi = async (newVisi) => {
 } catch (err) {
     console.error('Error creating board:', err)
   }
+  confirmVisi.value = false
 }
 const originalVisibility = ref('')
 const toggleVisibility = () => {
@@ -402,7 +404,11 @@ const toggleVisibility = () => {
 }
 
 const isChecked = computed(() => {
-  return originalVisibility.value !== newVisi.value
+  if(visibility.value === 'PRIVATE'){
+    return false
+  } else if(visibility.value === 'PUBLIC'){
+    return true
+  }
 })
 
 const closeVisiModal = () => {
@@ -436,13 +442,14 @@ console.log(task.value.status)
             class="flex flex-row font-medium md:p-0 mt-4 border border-gray-100 rounded-lg bg-gray-50 md:space-x-8 md:flex-row md:mt-0 md:border-0 md:bg-white dark:bg-gray-800 md:dark:bg-gray-900 dark:border-gray-700"
           >
             <li class="flex items-center space-x-2">
-            <span class="label-text">{{visibility}}</span>
+            <span class="label-text">PRIVATE</span>
               <input 
               type="checkbox" 
               class="toggle"
               :checked="isChecked"       
               @change="toggleVisibility" 
             />
+            <span class="label-text">PUBLIC</span>
             </li>
             <li class="flex items-center">
               <details class="dropdown">

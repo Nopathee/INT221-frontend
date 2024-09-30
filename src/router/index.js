@@ -134,7 +134,10 @@ const router = createRouter({
             if (response.status === 404 || response.status == 401) {
               localStorage.removeItem('accessToken')
               next('/login')
-            } else {
+            } if (response.status === 403) {
+              alert('Access denied, you do not have permission to view this page.');
+              next(false)
+           }else {
               next()
             }
           } catch (error) {
@@ -168,7 +171,10 @@ const router = createRouter({
             if (response.status === 404 || response.status == 401) {
               localStorage.removeItem('accessToken')
               next('/login')
-            } else {
+            } if (response.status === 403) {
+              alert('Access denied, you do not have permission to view this page.');
+              next(false)
+           } else {
               next()
             }
           } catch (error) {
