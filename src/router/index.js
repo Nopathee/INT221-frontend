@@ -1,13 +1,13 @@
-import { createRouter, createWebHistory } from 'vue-router'
-import Task from '../views/Task.vue'
-import { getItemById, getItems } from '@/libs/fetchUtils.js'
-import StatusList from '@/components/StatusList.vue'
-import Login from '../components/release_2/Login.vue'
-import Board from '@/components/release_2/Board.vue'
-import EmptyBoard from '@/components/release_2/EmptyBoard.vue'
-import StatusBoard from '@/components/release_2/StatusBoard.vue'
+import { createRouter, createWebHistory } from 'vue-router';
+import Task from '../views/Task.vue';
+import { getItemById, getItems } from '@/libs/fetchUtils.js';
+import StatusList from '@/components/StatusList.vue';
+import Login from '../components/release_2/Login.vue';
+import Board from '@/components/release_2/Board.vue';
+import EmptyBoard from '@/components/release_2/EmptyBoard.vue';
+import StatusBoard from '@/components/release_2/StatusBoard.vue';
 
-const history = createWebHistory(import.meta.env.BASE_URL)
+const history = createWebHistory(import.meta.env.BASE_URL);
 
 const router = createRouter({
   history,
@@ -20,14 +20,14 @@ const router = createRouter({
       component: Task,
       props: true,
       async beforeEnter(to) {
-        const id = to.params.id
-        const url = `${import.meta.env.VITE_API_ENDPOINT}/v2/tasks`
-        const { item, status } = await getItemById(url, id)
+        const id = to.params.id;
+        const url = `${import.meta.env.VITE_API_ENDPOINT}/v2/tasks`;
+        const { item, status } = await getItemById(url, id);
         if (status === 404) {
-          alert('Task not found')
-          return { name: 'task' }
+          alert('Task not found');
+          return { name: 'task' };
         }
-        to.params.item = item
+        to.params.item = item;
       },
     },
     {
@@ -36,14 +36,14 @@ const router = createRouter({
       component: StatusList,
       props: true,
       async beforeEnter(to) {
-        const id = to.params.id
-        const url = `${import.meta.env.VITE_API_ENDPOINT}/v2/statuses`
-        const { item, status } = await getItemById(url, id)
+        const id = to.params.id;
+        const url = `${import.meta.env.VITE_API_ENDPOINT}/v2/statuses`;
+        const { item, status } = await getItemById(url, id);
         if (status === 404) {
-          to.params.notFound = true
-          return
+          to.params.notFound = true;
+          return;
         }
-        to.params.item = item
+        to.params.item = item;
       },
     },
     { path: '/', name: 'home', component: Login },
@@ -53,14 +53,14 @@ const router = createRouter({
       component: Task,
       props: true,
       async beforeEnter(to) {
-        const id = to.params.id
-        const url = `${import.meta.env.VITE_API_ENDPOINT}/v2/tasks`
-        const { item, status } = await getItemById(url, id)
+        const id = to.params.id;
+        const url = `${import.meta.env.VITE_API_ENDPOINT}/v2/tasks`;
+        const { item, status } = await getItemById(url, id);
         if (status === 404) {
-          alert('Task not found')
-          return { name: 'task' }
+          alert('Task not found');
+          return { name: 'task' };
         }
-        to.params.item = item
+        to.params.item = item;
       },
       meta: { requiresAuth: true },
     },
@@ -70,40 +70,15 @@ const router = createRouter({
       component: EmptyBoard,
       props: true,
       meta: { requiresAuth: true },
+      beforeEnter: checkBoardVisibility,
     },
     {
       path: '/board/:boardId/task/:id/edit',
       name: 'editTaskBoard',
       component: EmptyBoard,
       props: true,
-      async beforeEnter(to , from , next) {
-        const boardId = to.params.boardId
-        const taskId = to.params.id
-        const token = localStorage.getItem('accessToken')
-        if (token) {
-          try {
-            const response = await fetch(`${import.meta.env.VITE_API_ENDPOINT}/v3/boards/${boardId}/tasks/${taskId}`, {
-              headers: {
-                Authorization: `Bearer ${token}`,
-                "Content-Type": "application/json",
-              },
-            });
-            console.log('Response status:', response.status);
-            if (response.status === 404 || response.status == 401) {
-              localStorage.removeItem('accessToken')
-              next('/login')
-            } else {
-              next()
-            }
-          } catch (error) {
-            next('/login')
-          }
-        } else {
-          next('/login')
-        }
-      }
-      ,
       meta: { requiresAuth: true },
+      beforeEnter: checkTaskAccess,
     },
     { path: '/status', name: 'status', component: StatusList },
     { path: '/login', name: 'login', component: Login },
@@ -113,80 +88,21 @@ const router = createRouter({
       component: Board,
       meta: { requiresAuth: true },
     },
-
     {
       path: '/board/:boardId',
       name: 'emptyboard',
       component: EmptyBoard,
       props: true,
       meta: { requiresAuth: false },
-      async beforeEnter(to , from , next) {
-        const boardId = to.params.boardId
-        const token = localStorage.getItem('accessToken')
-          try {
-            const response = await fetch(`${import.meta.env.VITE_API_ENDPOINT}/v3/boards/${boardId}`, {
-              headers: {
-                Authorization: token ? `Bearer ${token}`: '',
-                "Content-Type": "application/json",
-              },
-            });
-            const boardData = await response.json();
-            console.log(boardData.visibility)
-            if (response.status === 404 || response.status == 401) {
-              localStorage.removeItem('accessToken')
-              next('/login')
-            } else if (response.status === 403) {
-              if(boardData.visibility === 'public'){
-                next()
-              } else {
-                alert('Access denied, you do not have permission to view this page.');
-              next(false)
-              }
-              
-           }else {
-              next()
-            }
-          } catch (error) {
-            next('/login')
-        } 
-      }
-      
+      beforeEnter: checkBoardAccess,
     },
-
     {
       path: '/board/:boardId/status',
       name: 'statusBoard',
       component: StatusBoard,
       props: true,
       meta: { requiresAuth: true },
-      async beforeEnter(to , from , next) {
-        const boardId = to.params.boardId
-        const token = localStorage.getItem('accessToken')
-        if (token) {
-          try {
-            const response = await fetch(`${import.meta.env.VITE_API_ENDPOINT}/v3/boards/${boardId}/statuses`, {
-              headers: {
-                Authorization: `Bearer ${token}`,
-                "Content-Type": "application/json",
-              },
-            });
-            console.log('Response status:', response.status);
-            if (response.status === 404 || response.status == 401) {
-              localStorage.removeItem('accessToken')
-              next('/login')
-            } if (response.status === 403) {
-              alert('Access denied, you do not have permission to view this page.')
-              next(false)
-           } else {
-              next()
-            }
-          } catch (error) {
-            next('/login')
-          }
-        } else {
-          next('/login')
-        }
-      }
+      beforeEnter: checkBoardStatusAccess,
     },
     {
       path: '/board/:boardId/status/:statusId/edit',
@@ -194,32 +110,7 @@ const router = createRouter({
       component: StatusBoard,
       props: true,
       meta: { requiresAuth: true },
-      async beforeEnter(to , from , next) {
-        const boardId = to.params.boardId
-        const statusId = to.params.statusId
-        const token = localStorage.getItem('accessToken')
-        if (token) {
-          try {
-            const response = await fetch(`${import.meta.env.VITE_API_ENDPOINT}/v3/boards/${boardId}/statuses/${statusId}`, {
-              headers: {
-                Authorization: `Bearer ${token}`,
-                "Content-Type": "application/json",
-              },
-            });
-            console.log('Response status:', response.status);
-            if (response.status === 404 || response.status == 401) {
-              localStorage.removeItem('accessToken')
-              next('/login')
-            } else {
-              next()
-            }
-          } catch (error) {
-            next('/login')
-          }
-        } else {
-          next('/login')
-        }
-      }
+      beforeEnter: checkStatusAccess,
     },
     {
       path: '/board/:id/status/add',
@@ -227,47 +118,152 @@ const router = createRouter({
       component: EmptyBoard,
       props: true,
       meta: { requiresAuth: true },
-      async beforeEnter(to , from , next) {
-        const boardId = to.params.boardId
-        const statusId = to.params.statusId
-        const token = localStorage.getItem('accessToken')
-        if (token) {
-          try {
-            const response = await fetch(`${import.meta.env.VITE_API_ENDPOINT}/v3/boards/${boardId}/statuses/${statusId}`, {
-              headers: {
-                Authorization: `Bearer ${token}`,
-                "Content-Type": "application/json",
-              },
-            });
-            console.log('Response status:', response.status);
-            if (response.status === 404 || response.status == 401) {
-              localStorage.removeItem('accessToken')
-              next('/login')
-            } else {
-              next()
-            }
-          } catch (error) {
-            next('/login')
-          }
-        } else {
-          next('/login')
-        }
-      }
+      beforeEnter: checkStatusAccess,
     },
   ],
-})
+});
 
-router.beforeEach((to, from, next) => {
-  const token = localStorage.getItem('accessToken')
-  if (to.path !== '/login') {
-    if (token) {
-      next()
+// Function to check board visibility
+async function checkBoardVisibility(to, from, next) {
+  const boardId = to.params.boardId;
+  const token = localStorage.getItem('accessToken');
+  try {
+    const response = await fetch(`${import.meta.env.VITE_API_ENDPOINT}/v3/boards/${boardId}`, {
+      headers: {
+        Authorization: token ? `Bearer ${token}` : '',
+        "Content-Type": "application/json",
+      },
+    });
+    const boardData = await response.json();
+    if (response.status === 404 || response.status === 401) {
+      localStorage.removeItem('accessToken');
+      next('/login');
+    } else if (response.status === 403) {
+      if (boardData.visibility === 'public') {
+        next();
+      } else {
+        alert('Access denied, you do not have permission to view this page.');
+        next(false);
+      }
     } else {
-      next('/login')
+      next();
+    }
+  } catch (error) {
+    next('/login');
+  }
+}
+
+// Function to check task access
+async function checkTaskAccess(to, from, next) {
+  const boardId = to.params.boardId;
+  const taskId = to.params.id;
+  const token = localStorage.getItem('accessToken');
+  if (token) {
+    try {
+      const response = await fetch(`${import.meta.env.VITE_API_ENDPOINT}/v3/boards/${boardId}/tasks/${taskId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
+      if (response.status === 404 || response.status === 401) {
+        localStorage.removeItem('accessToken');
+        next('/login');
+      } else {
+        next();
+      }
+    } catch (error) {
+      next('/login');
     }
   } else {
-    next()
+    next('/login');
   }
-})
+}
 
-export default router
+// Function to check board access
+async function checkBoardAccess(to, from, next) {
+  const boardId = to.params.boardId;
+  const token = localStorage.getItem('accessToken');
+  try {
+    const response = await fetch(`${import.meta.env.VITE_API_ENDPOINT}/v3/boards/${boardId}`, {
+      headers: {
+        Authorization: token ? `Bearer ${token}` : '',
+        "Content-Type": "application/json",
+      },
+    });
+    const boardData = await response.json();
+    if (response.status === 404 || response.status === 401) {
+      localStorage.removeItem('accessToken');
+      next('/login');
+    } else if (response.status === 403) {
+      if (boardData.visibility === 'public') {
+        next();
+      } else {
+        alert('Access denied, you do not have permission to view this page.');
+        next(false);
+      }
+    } else {
+      next();
+    }
+  } catch (error) {
+    next('/login');
+  }
+}
+
+// Function to check board status access
+async function checkBoardStatusAccess(to, from, next) {
+  const boardId = to.params.boardId;
+  const token = localStorage.getItem('accessToken');
+  if (token) {
+    try {
+      const response = await fetch(`${import.meta.env.VITE_API_ENDPOINT}/v3/boards/${boardId}/statuses`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
+      if (response.status === 404 || response.status === 401) {
+        localStorage.removeItem('accessToken');
+        next('/login');
+      } else if (response.status === 403) {
+        alert('Access denied, you do not have permission to view this page.');
+        next(false);
+      } else {
+        next();
+      }
+    } catch (error) {
+      next('/login');
+    }
+  } else {
+    next('/login');
+  }
+}
+
+// Function to check status access
+async function checkStatusAccess(to, from, next) {
+  const boardId = to.params.boardId;
+  const statusId = to.params.statusId;
+  const token = localStorage.getItem('accessToken');
+  if (token) {
+    try {
+      const response = await fetch(`${import.meta.env.VITE_API_ENDPOINT}/v3/boards/${boardId}/statuses/${statusId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
+      if (response.status === 404 || response.status === 401) {
+        localStorage.removeItem('accessToken');
+        next('/login');
+      } else {
+        next();
+      }
+    } catch (error) {
+      next('/login');
+    }
+  } else {
+    next('/login');
+  }
+}
+
+export default router;
