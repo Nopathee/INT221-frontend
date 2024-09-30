@@ -19,6 +19,7 @@ import Delete from '../Delete.vue'
 import Edit from '../Edit.vue'
 import Error from '../Error.vue'
 import { getUserBoard } from '@/libs/fetchUtils_release2'
+import ConfirmChangeVisi from './ConfirmChangeVisi.vue'
 
 
 const props = defineProps({
@@ -87,6 +88,7 @@ const showModal = ref(false)
 const limitModal = ref(false)
 const confirmDelete = ref(false)
 const showModalDetail = ref(false)
+const confirmVisi = ref(false)
 
 const task = ref({
   id: undefined,
@@ -104,7 +106,8 @@ const task = ref({
 const taskDetail = ref(null)
 const deleteTask = ref(null)
 const deleteIndex = ref(null)
-
+const newVisi = ref(null)
+const visibility = ref('')
 onMounted(async () => {
  const token = localStorage.getItem('accessToken')
   try {
@@ -131,12 +134,15 @@ onMounted(async () => {
       )
       console.log(board)
       boardName.value = board.board.boardName
+      visibility.value = board.board.visibility
+      console.log(visibility.value)
       console.log(boardName.value)
       allStatuses.value.addStatuses(status)
       allTask.value.addDtoTasks(items)
       tasks.value = items
       statuses.value = status
       sortedTasks.value = allTask.value.getTasks()
+      
       console.log(tasks.value)
     } else {
       console.error('Board ID is undefined')
@@ -357,7 +363,10 @@ const showDelete = async (taskToDelete, index) => {
 const closeDelete = () => {
   confirmDelete.value = false
 }
-
+const closeVisiModal = () => {
+  confirmVisi.value = false
+  
+}
 const confDelete = async () => {
   try {
     await deleteItemById(
@@ -372,6 +381,14 @@ const confDelete = async () => {
     console.error('Error deleting task:', error)
   }
   confirmDelete.value = false
+}
+
+const confChangeVisi = () => {
+  
+}
+const isPrivate = ref('private')
+const toggleVisibility = () => {
+    confirmVisi.value = true
 }
 
 console.log(task.value.status)
@@ -392,10 +409,21 @@ console.log(task.value.status)
         <div
           class="items-center justify-between hidden w-full md:flex md:w-auto md:order-1 pt-7"
         >
+       
+   
           <ul
-            class="flex flex-col font-medium md:p-0 mt-4 border border-gray-100 rounded-lg bg-gray-50 md:space-x-8 md:flex-row md:mt-0 md:border-0 md:bg-white dark:bg-gray-800 md:dark:bg-gray-900 dark:border-gray-700"
+            class="flex flex-row font-medium md:p-0 mt-4 border border-gray-100 rounded-lg bg-gray-50 md:space-x-8 md:flex-row md:mt-0 md:border-0 md:bg-white dark:bg-gray-800 md:dark:bg-gray-900 dark:border-gray-700"
           >
-            <li>
+            <li class="flex items-center space-x-2">
+            <span class="label-text">{{ isPrivate ? 'Private' : 'Public' }}</span>
+              <input 
+              type="checkbox" 
+              class="toggle" 
+              :checked="!isPrivate" 
+              @change="toggleVisibility" 
+            />
+            </li>
+            <li class="flex items-center">
               <details class="dropdown">
                 <summary
                   v-if="fullName"
@@ -406,7 +434,7 @@ console.log(task.value.status)
                 <ul
                   class="p-2 shadow menu dropdown-content z-[1] bg-red-600 rounded-box w-full text-center my-2 text-black"
                 >
-                  <li>
+                  <li class="flex items-center">
                     <button @click="logout" class="flex justify-center">
                       logout
                     </button>
@@ -414,7 +442,7 @@ console.log(task.value.status)
                 </ul>
               </details>
             </li>
-            <li>
+            <li class="flex items-center">
               <details class="dropdown itbkk-status-filter">
                 <summary
                   class="bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 px-4 border-b-4 border-blue-700 hover:border-blue-500 rounded-lg mb-4 itbkk-filter-item"
@@ -654,6 +682,17 @@ console.log(task.value.status)
         @confirm="confDelete"
         :task="deleteTask"
         :index="deleteIndex"
+      />
+    </div>
+  </Teleport>
+
+  <Teleport to="#modal">
+    <div v-if="confirmVisi">
+      <ConfirmChangeVisi
+        @close="closeVisiModal"
+        @confirm="confChangeVisi"
+        :new-mode="newVisi"
+       
       />
     </div>
   </Teleport>
