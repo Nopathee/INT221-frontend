@@ -18,12 +18,13 @@ import Succes from '../Succes.vue'
 import Delete from '../Delete.vue'
 import Edit from '../Edit.vue'
 import Error from '../Error.vue'
+import ConfirmChangeVisi from './ConfirmChangeVisi.vue'
 
 const props = defineProps({
   tasks: Array,
   statuses: Array,
   boardId: String,
-  boardName: String
+  boardName: String,
 })
 
 console.log(props)
@@ -82,6 +83,8 @@ const showModal = ref(false)
 const limitModal = ref(false)
 const confirmDelete = ref(false)
 const showModalDetail = ref(false)
+const confirmVisi = ref(false)
+
 
 const task = ref({
   id: undefined,
@@ -99,11 +102,15 @@ const task = ref({
 const taskDetail = ref(null)
 const deleteTask = ref(null)
 const deleteIndex = ref(null)
+const newVisi = ref(null)
+const visibility = ref('')
 
 onMounted(async () => {
- 
   try {
-    const board = await getItemById(`${import.meta.env.VITE_API_ENDPOINT}/v3/boards`,props.boardId)
+    const board = await getItemById(
+      `${import.meta.env.VITE_API_ENDPOINT}/v3/boards`,
+      props.boardId
+    )
     console.log(board)
     if (props.tasks) {
       originalTasks.value = props.tasks
@@ -457,9 +464,11 @@ console.log(task.value.status)
         </div>
       </div>
     </nav>
-    <div class="text-4xl flex justify-center pt-5 font-semibold itbkk-board-name">
-              {{  boardName }}
-      </div>
+    <div
+      class="text-4xl flex justify-center pt-5 font-semibold itbkk-board-name"
+    >
+      {{ boardName }}
+    </div>
     <div class="w-full flex justify-center items-center">
       <div class="rounded-xl p-5 w-5/6">
         <div v-if="selectedStatusNames.length > 0">
@@ -541,7 +550,6 @@ console.log(task.value.status)
               </th>
             </tr>
           </thead>
-            
 
           <tbody>
             <tr
