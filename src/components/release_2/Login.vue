@@ -44,7 +44,6 @@ const handlerLogin = async () => {
     
     if(data && data.length > 0){
       console.log(data)
-      console.log()
       router.push(`/board/${data[0].id}`);
     } else {
       router.push('/board')

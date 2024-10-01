@@ -1,5 +1,5 @@
 <script setup>
-import { defineProps, ref, watch, onMounted } from 'vue'
+import { defineProps, ref, watch, onMounted, computed } from 'vue'
 import { jwtDecode } from 'jwt-decode'
 import router from '@/router'
 import {
@@ -18,17 +18,20 @@ import Succes from '../Succes.vue'
 import Delete from '../Delete.vue'
 import Edit from '../Edit.vue'
 import Error from '../Error.vue'
+import { changeVisi, getUserBoard } from '@/libs/fetchUtils_release2'
 import ConfirmChangeVisi from './ConfirmChangeVisi.vue'
+
 
 const props = defineProps({
   tasks: Array,
   statuses: Array,
   boardId: String,
-  boardName: String,
+  
 })
 
 console.log(props)
 console.log(props.boardId)
+
 
 const emit = defineEmits([
   'openModal',
@@ -39,6 +42,9 @@ const emit = defineEmits([
   'statusDetail',
   'limitModal',
 ])
+
+const boardName = ref('')
+console.log(boardName.value)
 
 const deletedToast = ref(false)
 
@@ -62,8 +68,7 @@ const decoded = () => {
     console.log(fullName.value)
   }
 }
-const boardName = localStorage.getItem('boardName')
-console.log(boardName)
+console.log(props.boardName)
 const logout = () => {
   localStorage.removeItem('accessToken')
   router.push('/login')
@@ -85,7 +90,6 @@ const confirmDelete = ref(false)
 const showModalDetail = ref(false)
 const confirmVisi = ref(false)
 
-
 const task = ref({
   id: undefined,
   title: '',
@@ -102,15 +106,24 @@ const task = ref({
 const taskDetail = ref(null)
 const deleteTask = ref(null)
 const deleteIndex = ref(null)
-const newVisi = ref(null)
+const newVisi = ref('')
 const visibility = ref('')
-
+const boardVisibility = ref('')
+const isAuthenticated = ref(false)
 onMounted(async () => {
+ const token = localStorage.getItem('accessToken')
+ isAuthenticated.value = !!token
   try {
-    const board = await getItemById(
-      `${import.meta.env.VITE_API_ENDPOINT}/v3/boards`,
-      props.boardId
-    )
+    const board = await getItemById(`${import.meta.env.VITE_API_ENDPOINT}/v3/boards`,props.boardId)
+    console.log(board)
+    console.log(board.item.visibility)
+    boardVisibility.value = board.item.visibility
+    if (boardVisibility.value === 'PRIVATE' && !isAuthenticated.value) {
+      console.error('Access denied, you do not have permission to view this page.')
+      alert('You must be logged in to view this private board.')
+      router.push('/login')
+      return
+    }
     console.log(board)
     if (props.tasks) {
       originalTasks.value = props.tasks
@@ -128,11 +141,21 @@ onMounted(async () => {
           props.boardId
         }/statuses`
       )
+      const board = await getUserBoard(
+        `${import.meta.env.VITE_API_ENDPOINT}/v3/boards/${props.boardId}` , token
+      )
+      console.log(board)
+      boardName.value = board.board.boardName
+      visibility.value = board.board.visibility
+      isChecked.value = true
+      console.log(visibility.value)
+      console.log(boardName.value)
       allStatuses.value.addStatuses(status)
       allTask.value.addDtoTasks(items)
       tasks.value = items
       statuses.value = status
       sortedTasks.value = allTask.value.getTasks()
+      
       console.log(tasks.value)
     } else {
       console.error('Board ID is undefined')
@@ -370,6 +393,44 @@ const confDelete = async () => {
   confirmDelete.value = false
 }
 
+const confChangeVisi = async (newVisi) => {
+  const token = localStorage.getItem('accessToken')
+  try{
+    console.log('New visibility:' , newVisi)
+    const response = await changeVisi(`${import.meta.env.VITE_API_ENDPOINT}/v3/boards/${props.boardId}`, token , newVisi )
+    if(response  && response.status === 200){
+    visibility.value = newVisi
+    console.log(response.status)
+    console.log(response.board)
+  } 
+} catch (err) {
+    console.error('Error creating board:', err)
+  }
+  confirmVisi.value = false
+}
+const originalVisibility = ref('')
+const toggleVisibility = () => {
+  originalVisibility.value = visibility.value
+  newVisi.value = visibility.value === 'PRIVATE' ? 'PUBLIC' : 'PRIVATE'
+  confirmVisi.value = true
+  
+}
+
+const isChecked = computed(() => {
+  if(visibility.value === 'PRIVATE'){
+    return false
+  } else if(visibility.value === 'PUBLIC'){
+    return true
+  }
+})
+
+const closeVisiModal = () => {
+  confirmVisi.value = false
+  newVisi.value = originalVisibility.value
+}
+
+
+console.log(newVisi.value)
 console.log(task.value.status)
 </script>
 
@@ -388,10 +449,22 @@ console.log(task.value.status)
         <div
           class="items-center justify-between hidden w-full md:flex md:w-auto md:order-1 pt-7"
         >
+       
+   
           <ul
-            class="flex flex-col font-medium md:p-0 mt-4 border border-gray-100 rounded-lg bg-gray-50 md:space-x-8 md:flex-row md:mt-0 md:border-0 md:bg-white dark:bg-gray-800 md:dark:bg-gray-900 dark:border-gray-700"
+            class="flex flex-row font-medium md:p-0 mt-4 border border-gray-100 rounded-lg bg-gray-50 md:space-x-8 md:flex-row md:mt-0 md:border-0 md:bg-white dark:bg-gray-800 md:dark:bg-gray-900 dark:border-gray-700"
           >
-            <li>
+            <li class="flex items-center space-x-2">
+            <span class="label-text">PRIVATE</span>
+              <input 
+              type="checkbox" 
+              class="toggle itbkk-board-visibility"
+              :checked="isChecked"       
+              @change="toggleVisibility" 
+            />
+            <span class="label-text">PUBLIC</span>
+            </li>
+            <li class="flex items-center">
               <details class="dropdown">
                 <summary
                   v-if="fullName"
@@ -402,7 +475,7 @@ console.log(task.value.status)
                 <ul
                   class="p-2 shadow menu dropdown-content z-[1] bg-red-600 rounded-box w-full text-center my-2 text-black"
                 >
-                  <li>
+                  <li class="flex items-center">
                     <button @click="logout" class="flex justify-center">
                       logout
                     </button>
@@ -410,7 +483,7 @@ console.log(task.value.status)
                 </ul>
               </details>
             </li>
-            <li>
+            <li class="flex items-center">
               <details class="dropdown itbkk-status-filter">
                 <summary
                   class="bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 px-4 border-b-4 border-blue-700 hover:border-blue-500 rounded-lg mb-4 itbkk-filter-item"
@@ -454,7 +527,7 @@ console.log(task.value.status)
             </li>
             <li>
               <button
-                class="bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 px-4 border-b-4 border-blue-700 hover:border-blue-500 rounded-lg mb-4 itbkk-manage-status"
+                class="bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 px-4 border-b-4 border-blue-700 hover:border-blue-500 rounded-lg mb-4"
                 @click="$emit('limitModal', true)"
               >
                 Limit tasks
@@ -464,11 +537,9 @@ console.log(task.value.status)
         </div>
       </div>
     </nav>
-    <div
-      class="text-4xl flex justify-center pt-5 font-semibold itbkk-board-name"
-    >
-      {{ boardName }}
-    </div>
+    <div class="text-2xl flex justify-center pt-5 font-semibold">
+          <p>{{ boardName }}</p>    
+      </div>
     <div class="w-full flex justify-center items-center">
       <div class="rounded-xl p-5 w-5/6">
         <div v-if="selectedStatusNames.length > 0">
@@ -550,6 +621,7 @@ console.log(task.value.status)
               </th>
             </tr>
           </thead>
+            
 
           <tbody>
             <tr
@@ -559,14 +631,14 @@ console.log(task.value.status)
             >
               <td class="text-white text-center font-semibold flex">
                 {{ index + 1 }}
-                <div class="dropdown dropdown-right dropdown-end tra">
-                  <div tabindex="0" role="button" class="itbkk-button-action">
+                <div class="dropdown dropdown-right dropdown-end tra itbkk-button-action">
+                  <div tabindex="0" role="button">
                     <img src="../icon/Threebtn.svg" />
                   </div>
                   <ul
                     class="p-1 shadow menu dropdown-content z-[1] bg-base-100 rounded-box w-32"
                   >
-                    <li>
+                    <li class="">
                       <button
                         @click="showEdit(task)"
                         class="text-black dark:text-white itbkk-button-edit"
@@ -651,6 +723,16 @@ console.log(task.value.status)
         @confirm="confDelete"
         :task="deleteTask"
         :index="deleteIndex"
+      />
+    </div>
+  </Teleport>
+
+  <Teleport to="#modal">
+    <div v-if="confirmVisi">
+      <ConfirmChangeVisi
+        @close="closeVisiModal"
+        @confirm="confChangeVisi"
+        :newVisi="newVisi" 
       />
     </div>
   </Teleport>
