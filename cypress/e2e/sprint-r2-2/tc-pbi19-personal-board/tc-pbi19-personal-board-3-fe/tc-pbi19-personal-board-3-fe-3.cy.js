@@ -42,7 +42,7 @@ describe(`TC-PBI19-PERSIONAL-BOARD-3-FE-3\n
 
         cy.get('.itbkk-modal-task').should('exist').as('modal')
         cy.get('@modal').find('.itbkk-status').select('To Do')
-        cy.get('@modal').find('.itbkk-button-confirm').should('exist').click()
+        cy.get('@modal').find('.itbkk-button-confirm').should('exist').click({ force: true })
     })
 
     it('Should have "user1 first task","Unassigned" and "To Do".',()=>{
