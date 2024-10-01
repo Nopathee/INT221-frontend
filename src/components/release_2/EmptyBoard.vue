@@ -108,10 +108,22 @@ const deleteTask = ref(null)
 const deleteIndex = ref(null)
 const newVisi = ref('')
 const visibility = ref('')
+const boardVisibility = ref('')
+const isAuthenticated = ref(false)
 onMounted(async () => {
  const token = localStorage.getItem('accessToken')
+ isAuthenticated.value = !!token
   try {
     const board = await getItemById(`${import.meta.env.VITE_API_ENDPOINT}/v3/boards`,props.boardId)
+    console.log(board)
+    console.log(board.item.visibility)
+    boardVisibility.value = board.item.visibility
+    if (boardVisibility.value === 'PRIVATE' && !isAuthenticated.value) {
+      console.error('Access denied, you do not have permission to view this page.')
+      alert('You must be logged in to view this private board.')
+      router.push('/login')
+      return
+    }
     console.log(board)
     if (props.tasks) {
       originalTasks.value = props.tasks
@@ -135,6 +147,7 @@ onMounted(async () => {
       console.log(board)
       boardName.value = board.board.boardName
       visibility.value = board.board.visibility
+      isChecked.value = true
       console.log(visibility.value)
       console.log(boardName.value)
       allStatuses.value.addStatuses(status)
