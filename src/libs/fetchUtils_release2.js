@@ -30,14 +30,22 @@ async function login(url, user) {
 
 async function getUserBoard(url, token) {
   try {
-    const response = await fetch(url, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`,
-      },
-    })
+    const options = token
+    ? {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    : {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }
 
+  const response = await fetch(url, options)
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`)
     }

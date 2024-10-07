@@ -8,7 +8,6 @@ const fullName = ref('')
 const addBoardModal = ref(false)
 const showBoard = ref(false)
 const boardName = ref('')
-
 onMounted(async () => {
   const token = localStorage.getItem('accessToken');
   console.log(token)

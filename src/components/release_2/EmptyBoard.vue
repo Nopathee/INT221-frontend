@@ -66,6 +66,8 @@ const decoded = () => {
     const decoded = jwtDecode(token)
     fullName.value = decoded.name
     console.log(fullName.value)
+  } else {
+    fullName.value = 'Guest'
   }
 }
 console.log(props.boardName)
@@ -110,52 +112,74 @@ const newVisi = ref('')
 const visibility = ref('')
 const boardVisibility = ref('')
 const isAuthenticated = ref(false)
+const isOwner = ref(false)
 onMounted(async () => {
- const token = localStorage.getItem('accessToken')
- isAuthenticated.value = !!token
+  const token = localStorage.getItem('accessToken')
+  isAuthenticated.value = !!token
   try {
-    const board = await getItemById(`${import.meta.env.VITE_API_ENDPOINT}/v3/boards`,props.boardId)
+    // Fetch board data
+    const board = await getItemById(`${import.meta.env.VITE_API_ENDPOINT}/v3/boards`, props.boardId)
+    
+    if (!board || !board.item) {
+      console.error('Board is undefined or missing item field:', board)
+      return
+    }
+
     console.log(board)
     console.log(board.item.visibility)
     boardVisibility.value = board.item.visibility
+    
+    // Check if the board is private and the user is not authenticated
     if (boardVisibility.value === 'PRIVATE' && !isAuthenticated.value) {
       console.error('Access denied, you do not have permission to view this page.')
       alert('You must be logged in to view this private board.')
       router.push('/login')
       return
     }
-    console.log(board)
+
     if (props.tasks) {
       originalTasks.value = props.tasks
     }
+
     filterAndSortTasks()
     decoded()
-    console.log(props.boardId)
 
     if (props.boardId) {
-      const items = await getItems(
-        `${import.meta.env.VITE_API_ENDPOINT}/v3/boards/${props.boardId}/tasks`
-      )
-      const status = await getItems(
-        `${import.meta.env.VITE_API_ENDPOINT}/v3/boards/${
-          props.boardId
-        }/statuses`
-      )
+      // Fetch tasks and statuses
+      const items = await getItems(`${import.meta.env.VITE_API_ENDPOINT}/v3/boards/${props.boardId}/tasks`)
+      const status = await getItems(`${import.meta.env.VITE_API_ENDPOINT}/v3/boards/${props.boardId}/statuses`)
+      
+      // Fetch board name and visibility
       const board = await getUserBoard(
-        `${import.meta.env.VITE_API_ENDPOINT}/v3/boards/${props.boardId}` , token
+        `${import.meta.env.VITE_API_ENDPOINT}/v3/boards/${props.boardId}`, token
       )
+
+      if (!board || !board.board) {
+        console.error('Board data is undefined:', board)
+        return
+      }
+
       console.log(board)
+      console.log(fullName.value)
+      console.log(board.board.owner.name);
+      
+      if(fullName.value === board.board.owner.name){
+        isOwner.value = true
+      }
       boardName.value = board.board.boardName
       visibility.value = board.board.visibility
       isChecked.value = true
+
       console.log(visibility.value)
       console.log(boardName.value)
+      
+      // Add statuses and tasks
       allStatuses.value.addStatuses(status)
       allTask.value.addDtoTasks(items)
       tasks.value = items
       statuses.value = status
       sortedTasks.value = allTask.value.getTasks()
-      
+
       console.log(tasks.value)
     } else {
       console.error('Board ID is undefined')
@@ -351,12 +375,17 @@ const saveTask = async (newTask) => {
 }
 
 const showDetail = async (taskToShow) => {
-  const showTask = await getItemById(
+  try {
+    const showTask = await getItemById(
     `${import.meta.env.VITE_API_ENDPOINT}/v3/boards/${props.boardId}/tasks`,
     taskToShow
   )
   taskDetail.value = showTask
   showModalDetail.value = true
+  }  catch (error) {
+    console.error('Error fetching task details:', error);
+  }
+  
 }
 
 const closeDetail = () => {
@@ -460,7 +489,8 @@ console.log(task.value.status)
               type="checkbox" 
               class="toggle itbkk-board-visibility"
               :checked="isChecked"       
-              @change="toggleVisibility" 
+              @change="toggleVisibility"
+              :disabled="!isAuthenticated || !isOwner"
             />
             <span class="label-text">PUBLIC</span>
             </li>
@@ -589,12 +619,14 @@ console.log(task.value.status)
           <thead>
             <tr class="font-bold text-red-800 text-lg bg-pink-300">
               <th class="w-1/12">
-                <img
-                  src="../icon/InsertBtn.svg"
-                  alt="Add Task"
+                <button
                   @click="addNewTask"
                   class="cursor-pointer itbkk-button-add"
-                />
+                  :class="{ 'cursor-not-allowed opacity-50': !isAuthenticated || !isOwner }"
+                  :disabled="!isAuthenticated || !isOwner"
+                >
+              <img src="../icon/InsertBtn.svg" alt="Add Task" />
+              </button>
               </th>
               <th class="w-5/12">Title</th>
               <th class="w-3/12">Assignees</th>
@@ -642,6 +674,8 @@ console.log(task.value.status)
                       <button
                         @click="showEdit(task)"
                         class="text-black dark:text-white itbkk-button-edit"
+                        :class="{ 'cursor-not-allowed opacity-50': !isAuthenticated || !isOwner}"
+                        :disabled="!isAuthenticated || !isOwner"
                       >
                         Edit
                       </button>
@@ -650,6 +684,8 @@ console.log(task.value.status)
                       <button
                         @click="showDelete(task.id, index + 1)"
                         class="text-red-600 itbkk-button-delete"
+                        :class="{ 'cursor-not-allowed opacity-50': !isAuthenticated || !isOwner }"
+                        :disabled="!isAuthenticated || !isOwner"
                       >
                         Delete
                       </button>
