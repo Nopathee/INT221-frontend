@@ -32,14 +32,22 @@ async function login(url, user) {
 
 async function getUserBoard(url, token) {
   try {
-    const response = await fetch(url, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`,
-      },
-    })
+    const options = token
+    ? {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    : {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }
 
+  const response = await fetch(url, options)
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`)
     }
@@ -96,6 +104,35 @@ async function createNewBoard(url, token, boardName) {
  
 }
 
-export { login, getUserBoard , createNewBoard}
+async function changeVisi(url, token , visibility) {
+  try {
+    const response = await fetch(url, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`, 
+      },
+      body: JSON.stringify({visibility:visibility}), 
+    })
+    console.log('Change Visibility response:', response)
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`)
+    }
+    const data = await response.json() 
+    console.log('Changed visibility:', data)
+
+    return {
+      status: response.status,
+      board: data, 
+    }
+  } catch (error) {
+    console.error('Error changing visibility:', error)
+    return { status: 500, error: 'Internal Server Error' }
+  }
+
+}
+
+export { login, getUserBoard , createNewBoard , changeVisi}
 
 

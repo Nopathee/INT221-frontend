@@ -23,14 +23,14 @@ const props = defineProps({
           Delete Task {{ props.index }}
         </h1>
         <h2 class=" flex justify-center itbkk-message mx-6">
-          Do you really want to delete the task "<span class=" font-semibold italic text-red-800">{{ props.task.item.title }}</span>"?
+          Do you want to delete the task number "<span class=" font-semibold italic text-red-800">{{ props.task.item.title }}</span>"?
         </h2>
         <div class="flex justify-center gap-2 mt-3 mb-6">
           <button
             class="btn btn-sm w-16 bg-red-500 text-white hover:bg-red-700 itbkk-button-confirm"
             @click="$emit('confirm', props.task.item.id)"
           >
-            Delete
+            Confirm
           </button>
           <button
             class="btn btn-sm w-16 bg-slate-400 hover:bg-slate-600 text-white itbkk-button-cancel"

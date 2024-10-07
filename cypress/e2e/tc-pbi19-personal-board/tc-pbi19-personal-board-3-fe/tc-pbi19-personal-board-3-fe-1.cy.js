@@ -31,7 +31,7 @@ describe(`TC-PBI19-PERSIONAL-BOARD-3-FE-1\n
     it('[Step 1] Should have task title "user1 first task"',()=>{
         cy.get('.itbkk-title').contains('user1 first task').parents('.itbkk-item').as('item')
         cy.get('@item').contains('.itbkk-assignees','Unassigned')
-        cy.get('@item').contains('.itbkk-status',"No Status")
+        cy.get('@item').contains('.itbkk-status',"NO_STATUS")
     })
 
     it('Should have "No Description Provided","Unassigned" and "No Status".',()=>{
@@ -41,7 +41,7 @@ describe(`TC-PBI19-PERSIONAL-BOARD-3-FE-1\n
         cy.get('.itbkk-title').contains("user1 first task")
         cy.get('.itbkk-description').contains('No Description Provided').as('description')
         cy.get('.itbkk-assignees').contains('Unassigned')
-        cy.get('.itbkk-status').contains('No Status')
+        cy.get('.itbkk-status').contains('NO_STATUS')
     })
 
 })

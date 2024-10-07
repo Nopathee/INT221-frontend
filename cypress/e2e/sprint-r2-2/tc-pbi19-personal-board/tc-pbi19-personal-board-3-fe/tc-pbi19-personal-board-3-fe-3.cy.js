@@ -44,6 +44,7 @@ describe(`TC-PBI19-PERSIONAL-BOARD-3-FE-3\n
         cy.get('@modal').find('.itbkk-status').select('To Do')
         cy.get('@modal').find('.itbkk-button-confirm').should('exist').click()
     })
+   
 
     it('Should have "user1 first task","Unassigned" and "To Do".',()=>{
         cy.get('.itbkk-title').contains('user1 first task').parents('.itbkk-item').as('item')

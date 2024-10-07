@@ -119,30 +119,34 @@ const router = createRouter({
       name: 'emptyboard',
       component: EmptyBoard,
       props: true,
-      meta: { requiresAuth: true },
+      meta: { requiresAuth: false },
       async beforeEnter(to , from , next) {
         const boardId = to.params.boardId
         const token = localStorage.getItem('accessToken')
-        if (token) {
           try {
             const response = await fetch(`${import.meta.env.VITE_API_ENDPOINT}/v3/boards/${boardId}`, {
               headers: {
-                Authorization: `Bearer ${token}`,
+                Authorization: token ? `Bearer ${token}`: '',
                 "Content-Type": "application/json",
               },
             });
-            if (response.status === 404 || response.status == 401) {
+            const boardData = await response.json();
+            console.log(boardData.visibility)
+            if(boardData.visibility === 'PUBLIC'){
+              next()
+            } else if (response.status === 404 || response.status == 401) {
               localStorage.removeItem('accessToken')
               next('/login')
-            } else {
+            } else if (response.status === 403) {
+            
+              alert('Access denied, you do not have permission to view this page.');
+              next('/login')
+              } else {
               next()
             }
           } catch (error) {
             next('/login')
-          }
-        } else {
-          next('/login')
-        }
+        } 
       }
       
     },
@@ -152,15 +156,14 @@ const router = createRouter({
       name: 'statusBoard',
       component: StatusBoard,
       props: true,
-      meta: { requiresAuth: true },
+      meta: { requiresAuth: false },
       async beforeEnter(to , from , next) {
         const boardId = to.params.boardId
         const token = localStorage.getItem('accessToken')
-        if (token) {
           try {
             const response = await fetch(`${import.meta.env.VITE_API_ENDPOINT}/v3/boards/${boardId}/statuses`, {
               headers: {
-                Authorization: `Bearer ${token}`,
+                Authorization: token ? `Bearer ${token}`: '',
                 "Content-Type": "application/json",
               },
             });
@@ -168,16 +171,16 @@ const router = createRouter({
             if (response.status === 404 || response.status == 401) {
               localStorage.removeItem('accessToken')
               next('/login')
-            } else {
+            } if (response.status === 403) {
+              alert('Access denied, you do not have permission to view this page.')
+              next(false)
+           } else {
               next()
             }
           } catch (error) {
             next('/login')
           }
-        } else {
-          next('/login')
-        }
-      }
+        } 
     },
     {
       path: '/board/:boardId/status/:statusId/edit',
@@ -248,17 +251,5 @@ const router = createRouter({
   ],
 })
 
-router.beforeEach((to, from, next) => {
-  const token = localStorage.getItem('accessToken')
-  if (to.path !== '/login') {
-    if (token) {
-      next()
-    } else {
-      next('/login')
-    }
-  } else {
-    next()
-  }
-})
 
 export default router
