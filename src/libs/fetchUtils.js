@@ -5,7 +5,7 @@ async function getItems(url) {
     const data = await fetch(url,{
       method: "GET",
       headers:{
-        'Authorization': `Bearer ${token}`
+        Authorization: token ? `Bearer ${token}`: ''
       }
     })
     if(data.status === 200){
@@ -32,7 +32,8 @@ async function getItemById(url, id) {
     const data = await fetch(`${url}/${id}`,{
       method: "GET",
       headers:{
-        Authorization: `Bearer ${token}`
+        Authorization: token ? `Bearer ${token}`: ''
+
       }
     })
     const item = await data.json()

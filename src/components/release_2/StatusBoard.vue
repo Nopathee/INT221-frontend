@@ -57,8 +57,12 @@ const status = ref({
   description: null,
   color: '#ffffff',
 })
+const isAuthenticated = ref(false)
+
 
 onMounted(async () => {
+  const token = localStorage.getItem('accessToken')
+  isAuthenticated.value = !!token
   const items = await getItems(
     `${import.meta.env.VITE_API_ENDPOINT}/v3/boards/${props.boardId}/statuses`
   )
@@ -295,6 +299,8 @@ if (props.notFound) {
           <button
             class="bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 px-4 border-b-4 border-blue-700 hover:border-blue-500 rounded itbkk-button-add"
             @click="addStatus"
+            :class="{ 'cursor-not-allowed opacity-50': !isAuthenticated }"
+            :disabled="!isAuthenticated"
           >
             Add Status
           </button>
@@ -342,15 +348,19 @@ if (props.notFound) {
               <td class="text-center">
                 <button
                   @click="editStatus(status.id)"
-                  class="btn btn-sm bg-slate-200 text-black itbkk-button-edit mr-2"
+                  class="bg-slate-200 text-black text-sm py-2 px-4 rounded mr-2 itbkk-button-edit"
                   v-if="status.name !== 'No Status' && status.name !== 'Done'"
+                   :class="{ 'cursor-not-allowed opacity-50': !isAuthenticated }"
+                  :disabled="!isAuthenticated"
                 >
                   Edit
                 </button>
                 <button
                   @click="deleteStatus(status.id)"
-                  class="btn btn-sm btn-error itbkk-button-delete ml-2"
+                  class="bg-red-500 text-white text-sm py-2 px-4 rounded ml-2 itbkk-button-delete"
                   v-if="status.name !== 'No Status' && status.name !== 'Done'"
+                  :class="{ 'cursor-not-allowed opacity-50': !isAuthenticated }"
+                  :disabled="!isAuthenticated"
                 >
                   Delete
                 </button>
@@ -416,4 +426,5 @@ if (props.notFound) {
   </Teleport>
 </template>
 
-<style scoped></style>
+<style scoped>
+</style>

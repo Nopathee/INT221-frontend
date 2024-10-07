@@ -14,12 +14,10 @@ const getTimezone = () => {
 defineEmits(['close'])
 const props = defineProps({
   task: Object,
-  
+  statuses: Array,
+  boardId: String,
 })
 
-onMounted(() => {
-  getTimezone()
-})
 
 console.log(props.task)
 
@@ -38,18 +36,30 @@ const formatterUpdatedOn = computed(() => {
 const statuses = ref(new StatusManagement())
 
 onMounted(async () => {
-  const items = await getItems(
-    `${import.meta.env.VITE_API_ENDPOINT}/v2/statuses`
-  )
-  statuses.value.addStatuses(items)
-})
+  try {
+    const items = await getItems(
+      `${import.meta.env.VITE_API_ENDPOINT}/v3/boards/${props.boardId}/statuses`
+    );
+
+    if(items.status === 200) {
+      statuses.value.addStatuses(items);
+      getTimezone()
+    }  else {
+      console.error('Expected an array but got:', response);
+    }
+      
+  } catch (error) {
+    console.error('Error fetching statuses:', error);
+  }
+});
+
 
 
 </script>
 
 <template>
   <div class="fixed inset-0 flex items-center justify-center">
-    <div class="w-full flex justify-center p-10">
+    <div class="w-full flex justify-center p-10 itbkk-modal-task">
       <div class="bg-white shadow-lg w-3/4 flex flex-col p-2 gap-5 rounded-xl">
         <div class="font-bold text-2xl">
           <h1 class="itbkk-title mt-3 ml-2">{{ props.task.item.title }}</h1>
@@ -89,8 +99,8 @@ onMounted(async () => {
             </div>
             <div class="ml-1 mr-2">
               <p class="text-sm">Status</p>
-              <span class="bg-slate-100 p-1 px-10 mx-2 text-black rounded-lg">
-                {{ displayStatus}}
+              <span class="bg-slate-100 p-1 px-10 mx-2 text-black rounded-lg itbkk-status">
+                {{ props.task.item.status.name}}
               </span>
             </div>
             <div class="m-1 flex">

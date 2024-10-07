@@ -8,7 +8,7 @@ const fullName = ref('')
 const addBoardModal = ref(false)
 const showBoard = ref(false)
 const boardName = ref('')
-
+const user = ref('');
 onMounted(async () => {
   const token = localStorage.getItem('accessToken');
   console.log(token)
@@ -16,6 +16,7 @@ onMounted(async () => {
     const decoded = jwtDecode(token);
     fullName.value = decoded.name;
     boardName.value = `${fullName.value} personal board`
+    user.value = { id: decoded.oid, name: decoded.name }
     console.log(fullName.value);
     try {
       const response = await fetch(`${import.meta.env.VITE_API_ENDPOINT}/v3/boards` , {
