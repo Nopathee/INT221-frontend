@@ -168,7 +168,6 @@ onMounted(async () => {
       }
       boardName.value = board.board.boardName
       visibility.value = board.board.visibility
-      isChecked.value = true
 
       console.log(visibility.value)
       console.log(boardName.value)

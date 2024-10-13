@@ -22,7 +22,8 @@ async function login(url, user) {
 
     return {
       status: response.status,
-      token: data.access_token
+      token: data.access_token,
+      refreshToken:data.refresh_token
     }
   } catch (error) {
     console.error('Error during login:', error)
@@ -32,7 +33,7 @@ async function login(url, user) {
 
 async function getUserBoard(url, token) {
   try {
-    const options = token
+    const checkToken = token
     ? {
         method: 'GET',
         headers: {
@@ -47,7 +48,7 @@ async function getUserBoard(url, token) {
         },
       }
 
-  const response = await fetch(url, options)
+  const response = await fetch(url, checkToken)
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`)
     }
@@ -133,6 +134,34 @@ async function changeVisi(url, token , visibility) {
 
 }
 
-export { login, getUserBoard , createNewBoard , changeVisi}
+async function getNewAccessToken(url,refreshToken) {
+  try {
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(refreshToken),
+    });
+
+    if (response.status === 200) {
+      const data = await response.json();
+      localStorage.setItem('accessToken', data.access_token); // เก็บ access token ใหม่
+      return data.access_token; 
+    }
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`)
+    }
+
+    const data = await response.json() 
+    console.log('got new Token:', data)
+
+  } catch (error) {
+    console.error('Error get refreshToken:', error)
+    return { status: 500, error: 'Internal Server Error' }
+  }
+}
+
+export { login, getUserBoard , createNewBoard , changeVisi , getNewAccessToken }
 
 
