@@ -112,6 +112,14 @@ const router = createRouter({
       name: 'board',
       component: Board,
       meta: { requiresAuth: true },
+      beforeEnter: (to, from, next) => {
+        const token = localStorage.getItem('accessToken');
+        if (token) {
+          next()
+        } else {
+          next('/login'); 
+        }
+      },
     },
 
     {
