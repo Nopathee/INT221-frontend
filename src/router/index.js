@@ -6,7 +6,7 @@ import Login from '../components/release_2/Login.vue'
 import Board from '@/components/release_2/Board.vue'
 import EmptyBoard from '@/components/release_2/EmptyBoard.vue'
 import StatusBoard from '@/components/release_2/StatusBoard.vue'
-import { getNewAccessToken } from '@/libs/fetchUtils_release2'
+
 const history = createWebHistory(import.meta.env.BASE_URL)
 
 const router = createRouter({
@@ -120,76 +120,37 @@ const router = createRouter({
       component: EmptyBoard,
       props: true,
       meta: { requiresAuth: false },
-      async beforeEnter(to, from, next) {
-        const boardId = to.params.boardId;
-        const token = localStorage.getItem('accessToken');
-        const refreshToken = localStorage.getItem('refreshToken');
-        const url = `${import.meta.env.VITE_API_ENDPOINT}/v3/boards/${boardId}`
-        try {
-          const response = await fetch(`${import.meta.env.VITE_API_ENDPOINT}/v3/boards/${boardId}`, {
-            headers: {
-              Authorization: token ? `Bearer ${token}` : '',
-              "Content-Type": "application/json",
-            },
-          });
-          if (response.status === 200) {
+      async beforeEnter(to , from , next) {
+        const boardId = to.params.boardId
+        const token = localStorage.getItem('accessToken')
+          try {
+            const response = await fetch(`${import.meta.env.VITE_API_ENDPOINT}/v3/boards/${boardId}`, {
+              headers: {
+                Authorization: token ? `Bearer ${token}`: '',
+                "Content-Type": "application/json",
+              },
+            });
             const boardData = await response.json();
-            console.log(boardData.visibility);
-            if (boardData.visibility === 'PUBLIC') {
+            console.log(boardData.visibility)
+            if(boardData.visibility === 'PUBLIC'){
               next()
-            } else {
-              localStorage.removeItem('accessToken');
-              localStorage.removeItem('refreshToken');
+            } else if (response.status === 404 || response.status == 401) {
+              localStorage.removeItem('accessToken')
               next('/login')
-            }
-          } else if (response.status === 401 && refreshToken) {
-            // ถ้า access token หมดอายุและมี refresh token
-            const newAccessToken = await getNewAccessToken(url,refreshToken);
-    
-            if (newAccessToken) {
-              // ถ้าได้รับ access token ใหม่สำเร็จ
-              localStorage.setItem('accessToken', newAccessToken); // เก็บ access token ใหม่
-    
-              // เรียก request API อีกครั้งด้วย access token ใหม่
-              const response = await fetch(`${import.meta.env.VITE_API_ENDPOINT}/v3/boards/${boardId}`, {
-                headers: {
-                  Authorization: `Bearer ${newAccessToken}`,
-                  "Content-Type": "application/json",
-                },
-              });
-    
-              if (response.status === 200) {
-                const boardData = await response.json();
-                if (boardData.visibility === 'PUBLIC') {
-                  next(); // ผ่านเข้าไปได้
-                } else {
-                  next('/login'); // ไม่ใช่ public board ให้ redirect ไป login
-                }
+            } else if (response.status === 403) {
+            
+              alert('Access denied, you do not have permission to view this page.');
+              next('/login')
               } else {
-                localStorage.removeItem('accessToken');
-                localStorage.removeItem('refreshToken');
-                next('/login'); // ไม่สำเร็จให้ redirect ไป login
-              }
-            } else {
-              localStorage.removeItem('accessToken');
-              localStorage.removeItem('refreshToken');
-              next('/login'); // ไม่สามารถรับ access token ใหม่ได้ ให้ redirect ไป login
+              next()
             }
-          } else if (response.status === 404) {
-            localStorage.removeItem('accessToken');
-            next('/login'); // กรณีไม่พบกระดาน ให้ redirect ไป login
-          } else if (response.status === 403) {
-            alert('Access denied, you do not have permission to view this page.');
-            next('/login'); // กรณีสิทธิ์ไม่พอ
-          } else {
-            next('/login'); // ค่าอื่นๆ ที่ไม่ใช่ 200 ก็ให้ redirect ไป login
-          }
-        } catch (error) {
-          console.error('Error fetching board data:', error);
-          next('/login'); // ในกรณีที่เกิดข้อผิดพลาด
-        }
+          } catch (error) {
+            next('/login')
+        } 
       }
+      
     },
+
     {
       path: '/board/:boardId/status',
       name: 'statusBoard',
@@ -289,7 +250,6 @@ const router = createRouter({
     },
   ],
 })
-
 
 
 export default router
