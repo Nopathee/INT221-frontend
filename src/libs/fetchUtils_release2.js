@@ -19,10 +19,11 @@ async function login(url, user) {
     }
     const data = await response.json()
     console.log(data)
-
+    console.log(data.refresh_token)
     return {
       status: response.status,
-      token: data.access_token
+      token: data.access_token,
+      refreshToken:data.refresh_token,
     }
   } catch (error) {
     console.error('Error during login:', error)

@@ -11,7 +11,7 @@ describe(`TC-PBI20-BOARD-VISIBILITY-1-FE\n
         cy.get('.itbkk-button-signin').click()
 
         cy.wait(100)
-        cy.visit('/board/TMJL2AoW1h')  // <------ add your board id here
+        cy.visit('/board/2M6tCeErJj')  // <------ add your board id here
     }) ;
 
     it('[Step 1] Should open the /board/:id page', () => {
@@ -128,7 +128,7 @@ describe(`TC-PBI20-BOARD-VISIBILITY-1-FE\n
     it(`[Step 2.5] Should no open /board/:id/task/:task-id/edit page and 
                 show message "Access denied, you do not have permission to view this page.`,()=>{
 
-        cy.visit('/board/TMJL2AoW1h/task/2/edit') // <------ add your board id and task id here
+        cy.visit('/board/2M6tCeErJj/task/2/edit') // <------ add your board id and task id here
 
         cy.on('window:alert',(str)=>{
             expect(str).to.include('Access denied, you do not have permission to view this page.')
@@ -140,7 +140,7 @@ describe(`TC-PBI20-BOARD-VISIBILITY-1-FE\n
     it(`[Step 2.6] Should no open /board/:id/status/add page and 
                 show message "Access denied, you do not have permission to view this page.`,()=>{
 
-        cy.visit('/board/TMJL2AoW1h/status/add') // <------ add your board id here
+        cy.visit('/board/2M6tCeErJj/status/add') // <------ add your board id here
 
         cy.on('window:alert',(str)=>{
             expect(str).to.include('Access denied, you do not have permission to view this page.')
@@ -152,7 +152,7 @@ describe(`TC-PBI20-BOARD-VISIBILITY-1-FE\n
     it(`[Step 2.7] Should no open /board/:id/status/:status-id/edit page and 
                 show message "Access denied, you do not have permission to view this page.`,()=>{
 
-        cy.visit('/board/TMJL2AoW1h/status/2/edit') // <------ add your board id and status id here
+        cy.visit('/board/2M6tCeErJj/status/2/edit') // <------ add your board id and status id here
 
         cy.on('window:alert',(str)=>{
             expect(str).to.include('Access denied, you do not have permission to view this page.')

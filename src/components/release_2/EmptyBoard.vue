@@ -70,9 +70,10 @@ const decoded = () => {
     fullName.value = 'Guest'
   }
 }
-console.log(props.boardName)
+
 const logout = () => {
   localStorage.removeItem('accessToken')
+  localStorage.removeItem('refreshToken')
   router.push('/login')
 }
 
