@@ -61,13 +61,6 @@ async function addItem(url, item) {
       })
       console.log(res);
       
-      if (!res.ok) {
-        console.error(`Request failed with status ${res.status}`);
-        if (res.status === 401) {
-          console.error("Unauthorized: Token may be invalid or expired.");
-        }
-        return null; // คืนค่า null ถ้าคำขอล้มเหลว
-      }
       if(res.status === 401){
         const refreshToken = localStorage.getItem('refreshToken');
         const response = await fetch(`${import.meta.env.VITE_API_ENDPOINT}/login/token`, {
@@ -83,16 +76,22 @@ async function addItem(url, item) {
           console.log(newToken);
           localStorage.setItem('accessToken', newToken);
           token = newToken;
-          console.log(token);
+          console.log(token)
+
+          res = await fetch(url, {
+            method: 'POST',
+            headers: {
+              'content-type': 'application/json',
+              'Authorization': `Bearer ${token}`,
+            },
+            body: JSON.stringify(item),
+          })
+        } else {
+          localStorage.removeItem('accessToken')
+          localStorage.removeItem('refreshToken')
+          router.push('/login')
         }
-         res = await fetch(url, {
-          method: 'POST',
-          headers: {
-            'content-type': 'application/json',
-            'Authorization': `Bearer ${token}`,
-          },
-          body: JSON.stringify(item),
-        })
+
       }
       console.log(res)
       console.log(JSON.stringify(item));
