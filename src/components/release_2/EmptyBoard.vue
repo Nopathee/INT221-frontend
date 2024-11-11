@@ -64,6 +64,8 @@ const decoded = () => {
   const token = localStorage.getItem('accessToken')
   if (token) {
     const decoded = jwtDecode(token)
+    console.log(decoded);
+    
     fullName.value = decoded.name
     console.log(fullName.value)
   } else {
@@ -72,9 +74,11 @@ const decoded = () => {
 }
 
 const logout = () => {
+  console.log("Logging out...")
   localStorage.removeItem('accessToken')
   localStorage.removeItem('refreshToken')
   router.push('/login')
+  
 }
 
 const sortedTasks = ref([])
@@ -290,6 +294,15 @@ const closeModal = () => {
 }
 
 const saveTask = async (newTask) => {
+  console.log(newTask);
+  if (!newTask.status || !newTask.status.id) {
+    console.error("Status or status ID is undefined");
+    return;
+  }
+  if (!props.boardId) {
+    console.error("Board ID is undefined");
+    return;
+  }
   const item = {
     id: newTask.id,
     title: newTask.title,
@@ -297,11 +310,17 @@ const saveTask = async (newTask) => {
     assignees: newTask.assignees,
     status: newTask.status.id,
   }
+  console.log(item);
+  
   if (newTask.id === undefined) {
     const response = await addItem(
       `${import.meta.env.VITE_API_ENDPOINT}/v3/boards/${props.boardId}/tasks`,
       item
     )
+    if (!response) {
+      console.error("Failed to create task. No response received.");
+      return; // จบการทำงานถ้า response เป็น null
+    }
     taskInsert.value = newTask.title
     console.log(response)
     allTask.value.addTask(

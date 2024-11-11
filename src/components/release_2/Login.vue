@@ -33,7 +33,7 @@ const handlerLogin = async () => {
     localStorage.setItem('accessToken',token)
     localStorage.setItem('refreshToken' , refreshToken)
     console.log(localStorage.getItem('accessToken'))
-    console.log(`"${token}"`)
+    console.log(`${token}`)
     console.log(`login success`)
     try {
       const response = await fetch(`${import.meta.env.VITE_API_ENDPOINT}/v3/boards` , {
@@ -44,10 +44,11 @@ const handlerLogin = async () => {
     });
 
     const data = await response.json()
+    console.log(data);
     
-    if(data && data.length > 0){
+    if(data && data.personalBoards.length > 0){
       console.log(data)
-      router.push(`/board/${data[0].id}`);
+      router.push(`/board/${data.personalBoards[0].id}`);
     } else {
       router.push('/board')
     }

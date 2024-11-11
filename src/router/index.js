@@ -112,10 +112,29 @@ const router = createRouter({
       name: 'board',
       component: Board,
       meta: { requiresAuth: true },
-      beforeEnter: (to, from, next) => {
+      async beforeEnter(to, from, next){
         const token = localStorage.getItem('accessToken');
         if (token) {
-          next()
+          try {
+            const response = await fetch(`${import.meta.env.VITE_API_ENDPOINT}/v3/boards` , {
+              headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "application/json",
+            },
+          });
+      
+          const data = await response.json()
+          console.log(data);
+          
+          if(data && data.personalBoards.length > 0){
+            console.log(data)
+            next(`/board/${data.personalBoards[0].id}`);
+          } else {
+            next()
+          }
+          } catch (error) {
+          console.error("Error fetching boards:", error);
+          }
         } else {
           next('/login'); 
         }
