@@ -1,0 +1,245 @@
+<script setup>
+import { ref, onMounted , computed } from 'vue';
+import { jwtDecode } from 'jwt-decode';
+import router from '@/router';
+import {  createNewBoard } from '@/libs/fetchUtils_release2'
+
+const addBoardModal = ref(false)
+const showBoard = ref(false)
+const boardName = ref('')
+const fullName = ref('');
+const personalBoards = ref([]);
+const collabBoards = ref([]); // เก็บข้อมูล collab boards
+const noboard = ref(true)
+onMounted(async () => {
+  const token = localStorage.getItem('accessToken');
+  if (token) {
+    const decoded = jwtDecode(token);
+    fullName.value = decoded.name;
+    boardName.value = `${fullName.value} personal board`
+    // ดึงข้อมูล boards เมื่อ component ถูก mount
+    await fetchBoards();
+  } else {
+    console.error("Error fetching boards: Unauthorized");
+    router.push('/login');
+  }
+});
+
+const fetchBoards = async () => {
+  const token = localStorage.getItem('accessToken');
+  try {
+    const response = await fetch(`${import.meta.env.VITE_API_ENDPOINT}/v3/boards`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    });
+    const data = await response.json();
+
+    // แยก personal boards และ collab boards
+    personalBoards.value = data.personalBoards.sort((a, b) => new Date(a.created_on) - new Date(b.created_on)); // เรียงลำดับจากวันที่สร้าง
+    collabBoards.value = data.collabBoards.sort((a, b) => new Date(a.added_on) - new Date(b.added_on)); // เรียงลำดับจากวันที่เพิ่ม
+    console.log(data);
+    console.log(personalBoards.value);
+    if (data.personalBoards && data.personalBoards.length > 0) {
+        noboard.value = false;
+        } else {
+        noboard.value = true;
+        }
+  } catch (error) {
+    console.error("Error fetching boards:", error);
+  }
+};
+
+const logout = () => {
+  localStorage.removeItem('accessToken');
+  localStorage.removeItem('refreshToken');
+  router.push('/login');
+};
+
+const goToBoard = (boardId) => {
+  router.push(`/board/${boardId}`);
+};
+
+const leaveBoard = async (boardId) => {
+  const token = localStorage.getItem('accessToken');
+  if (!token) {
+    console.error("No access token found");
+    return;
+  }
+
+  try {
+    // ใช้ DELETE method สำหรับการออกจาก board
+    const response = await fetch(`${import.meta.env.VITE_API_ENDPOINT}/v3/boards/${boardId}/collab`, {
+      method: 'DELETE', // ใช้ DELETE เพื่อออกจาก collab board
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (response.ok) {
+      // ทำการอัพเดต collabBoards หลังจากออกจาก board
+      collabBoards.value = collabBoards.value.filter(board => board.id !== boardId);
+      console.log(`Successfully left the board with ID: ${boardId}`);
+    } else {
+      console.error("Error leaving the board:", response.statusText);
+    }
+  } catch (error) {
+    console.error("Error leaving the board:", error);
+  }
+};
+
+const addBoard = () => {
+    addBoardModal.value = true
+}
+
+const closeModal = () => {
+    addBoardModal.value = false
+}
+
+const createBoard = async () => {
+  const token = localStorage.getItem('accessToken')
+  console.log(token)
+  try {
+    console.log(boardName.value)
+    const response = await createNewBoard(`${import.meta.env.VITE_API_ENDPOINT}/v3/boards`, token , boardName.value)
+    console.log(response.status)
+    if (response.status === 201) {
+      const newBoard =  response.board
+      console.log(newBoard.name)
+      console.log(newBoard)
+      if(newBoard){
+        router.push({ 
+          name: 'emptyboard', 
+          params: { boardId: newBoard.id},
+        })        
+      }
+      console.log(newBoard.value)
+    } else if (response.status === 401) {
+      console.error('Unauthorized, redirecting to login');
+      router.push('/login'); 
+    } else {
+      router.push('/login')
+    }
+  } catch (err) {
+    console.error('Error creating board:', err);
+  }
+  closeModal();
+};
+
+
+</script>
+ 
+<template>
+    <nav class="bg-white border-gray-200 dark:bg-gray-900">
+  <div class="w-full flex flex-wrap items-center justify-between mx-auto p-4">
+      <h1 class="text-center text-2xl bg-clip-content p-3 font-extrabold mt-5">
+      IT-Bangmod Kradan Kanban SSI-3
+    </h1>
+  <div class="items-center justify-between hidden w-full md:flex md:w-auto md:order-1 pt-7">
+    <ul class="flex flex-col font-medium md:p-0 mt-4 border border-gray-100 rounded-lg bg-gray-50 md:space-x-8  md:flex-row md:mt-0 md:border-0 md:bg-white dark:bg-gray-800 md:dark:bg-gray-900 dark:border-gray-700">
+      <li>
+        <details class="dropdown">
+          <summary v-if="fullName" class="inline-flex items-center font-medium justify-center px-4 py-2 text-xl text-gray-900 dark:text-white rounded-lg cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 dark:hover:text-white itbkk-fullname">
+          {{ fullName }}
+          </summary>
+          <ul class="p-2 shadow menu dropdown-content z-[1] bg-red-600 rounded-box w-full text-center my-2 text-black">
+            <li>
+              <button @click="logout" class="flex justify-center">
+              logout
+              </button>   
+            </li>
+          </ul>     
+      </details>
+      </li>
+      </ul>
+    </div>
+    </div>
+</nav>
+<div v-if="noboard === false">
+<div class="text-center p-5 text-4xl font-semibold itbkk-personal-board">
+    <p>Personal Boards</p>
+</div>
+    <div class="pl-10 pr-10">
+    <table class="w-full table table-lg rounded-lg overflow-hidden">
+          <thead>
+            <tr class="font-bold text-red-800 text-lg bg-pink-300 text-center">
+              <th class="w-1/12"> No</th>
+              <th class="w-8/12">Name</th>
+              <th class="w-3/12">Visibility</th>
+            </tr>
+          </thead>
+          <tbody>
+        <tr v-for="(board, index) in personalBoards" :key="board.id" class="bg-blue-300">
+          <td class="text-center text-black">{{ index + 1 }}</td>
+          <td class="text-black hover:underline font-semibold cursor-pointer" @click="goToBoard(board.id)">
+            {{ board.boardName }}
+          </td>
+          <td class="text-center font-semibold">
+            <span :class="{'text-black': board.visibility === 'private', 'text-green-500': board.visibility === 'public'}">
+              {{ board.visibility.toUpperCase() }}
+            </span>
+          </td>
+        </tr>
+      </tbody>
+        </table>
+    </div>
+<div class="text-center p-5 text-4xl font-semibold itbkk-personal-board">
+    <p>Collab Boards</p>
+</div>
+<div class="pl-10 pr-10">
+    <table class="w-full table table-lg rounded-lg overflow-hidden">
+          <thead>
+            <tr class="font-bold text-red-800 text-lg bg-pink-300 text-center">
+              <th class="w-1/12"> No</th>
+              <th class="w-8/12">Name</th>
+              <th class="w-3/12">Owner</th>
+              <th class="w-3/12">Access Right</th>
+              <th class="w-3/12">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+        <tr v-for="(board, index) in collabBoards" :key="board.id" class="bg-blue-300 font-semibold text-black">
+          <td class="text-center">{{ index + 1 }}</td>
+          <td class="hover:underline font-semibold cursor-pointer" @click="goToBoard(board.id)">
+            {{ board.boardName }}
+          </td>
+          <td class="text-center">{{ board.owner.name }}</td>
+          <td class="text-center">{{ board.accessRight }}</td>
+          <td>
+            <button @click="leaveBoard(board.id)" class=" hover:underline bg-red-500 rounded-lg px-4 py-2">
+        Leave
+      </button>
+          </td>
+        </tr>
+      </tbody>
+        </table>
+    </div>
+</div>
+   <div v-if="noboard === true">
+   <div class="flex justify-center p-10" v-show="!showBoard">
+    <button @click="addBoard" class="bg-green-600 text-black p-3 rounded-lg text-xl font-semibold itbkk-button-create">Create personal board</button>
+</div>
+ <div v-if="addBoardModal" class="w-full h-full flex justify-center itbkk-modal-new">
+    <div class="bg-white w-2/5 h-60 rounded-3xl p-5 modal-box">
+    <h3 class="text-lg font-bold text-black">New Board</h3>
+    <p class="py-4 text-black ">Name</p>
+    <input 
+    type="text" 
+    class="bg-white border w-full text-black itbkk-board-name"
+    maxlength="120"
+    v-model="boardName"
+    >
+    <div class="modal-action">
+        <button @click="createBoard" class="btn bg-green-500 text-black itbkk-button-ok" >Submit</button>
+        <button @click="closeModal" class="btn bg-slate-800 text-white itbkk-cancel">Close</button>
+    </div>
+  </div>
+</div>
+</div>
+</template>
+ 
+<style scoped>
+
+</style>

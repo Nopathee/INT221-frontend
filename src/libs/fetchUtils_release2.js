@@ -134,6 +134,75 @@ async function changeVisi(url, token , visibility) {
 
 }
 
-export { login, getUserBoard , createNewBoard , changeVisi}
+
+async function getAllUsers(url, token) {
+  try {
+    const response = await fetch(url, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`, 
+      },
+    })
+    const data = await response.json() 
+    return {
+      status: response.status,
+      user: data, 
+    }
+  } catch (error) {
+    console.error('Error getting user:', error)
+    return { status: 500, error: 'Internal Server Error' }
+  }
+}
+
+async function addCollab(url, token, items) {
+  try {
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`, 
+      },
+      body: JSON.stringify(items), 
+    })
+
+    console.log('Create board response:', response)
+
+ 
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`)
+    }
+
+    const data = await response.json() 
+    console.log('Add Collab:', data)
+
+    return {
+      status: response.status,
+      collab: data, 
+    }
+  } catch (error) {
+    console.error('Error creating board:', error)
+    return { status: 500, error: 'Internal Server Error' }
+  }
+
+}
+
+async function getCollabs (url, token) {
+  try {
+    const response = await fetch(url, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+    });
+    const data = await response.json();
+    return data; // Return the list of collaborators
+  } catch (error) {
+    console.error("Error fetching collaborators:", error);
+    return [];
+  }
+};
+
+export { login, getUserBoard , createNewBoard , changeVisi , getAllUsers,  addCollab , getCollabs}
 
 

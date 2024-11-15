@@ -479,6 +479,10 @@ const closeVisiModal = () => {
 }
 
 
+const goHome = () => {
+  router.push('/board'); // เปลี่ยนเส้นทางไปยังหน้า boards
+};
+
 console.log(newVisi.value)
 console.log(task.value.status)
 </script>
@@ -494,7 +498,11 @@ console.log(task.value.status)
         >
           IT-Bangmod Kradan Kanban SSI-3
         </h1>
-
+        <div class="text-center mt-5">
+        <button @click="goHome" class="bg-green-500 text-white px-6 py-2 rounded-lg hover:bg-green-700">
+          Home
+        </button>
+      </div>
         <div
           class="items-center justify-between hidden w-full md:flex md:w-auto md:order-1 pt-7"
         >
@@ -573,6 +581,17 @@ console.log(task.value.status)
                 >
                   Manage Status
                 </router-link>
+              </button>
+            </li>
+            <li>
+              <button
+                class="bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 px-4 border-b-4 border-blue-700 hover:border-blue-500 rounded-lg mb-4 itbkk-manage-collaborator"
+              >
+              <router-link
+                  :to="`/board/${props.boardId}/collab`"
+                >
+                Manage Collaborator
+              </router-link>
               </button>
             </li>
             <li>

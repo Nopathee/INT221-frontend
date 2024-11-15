@@ -6,6 +6,8 @@ import Login from '../components/release_2/Login.vue'
 import Board from '@/components/release_2/Board.vue'
 import EmptyBoard from '@/components/release_2/EmptyBoard.vue'
 import StatusBoard from '@/components/release_2/StatusBoard.vue'
+import CollabBoard from '@/components/release_2/collabBoard.vue'
+import BoardList from '@/components/release_2/BoardList.vue'
 
 const history = createWebHistory(import.meta.env.BASE_URL)
 
@@ -110,7 +112,7 @@ const router = createRouter({
     {
       path: '/board',
       name: 'board',
-      component: Board,
+      component: BoardList,
       meta: { requiresAuth: true },
       async beforeEnter(to, from, next){
         const token = localStorage.getItem('accessToken');
@@ -126,9 +128,12 @@ const router = createRouter({
           const data = await response.json()
           console.log(data);
           
-          if(data && data.personalBoards.length > 0){
+          if(data.personalBoards.length > 0 && data.collabBoards.length > 0){
+            console.log('here');
+            next()
+          } else if(data.personalBoards.length > 0 ) {
             console.log(data)
-            next(`/board/${data.personalBoards[0].id}`);
+            next(`/board/${data.personalBoards[0].id}`)
           } else {
             next()
           }
@@ -140,6 +145,7 @@ const router = createRouter({
         }
       },
     },
+
 
     {
       path: '/board/:boardId',
@@ -274,6 +280,42 @@ const router = createRouter({
           next('/login')
         }
       }
+    },
+    {
+      path: '/board/:boardId/collab',
+      name: 'collabBoard',
+      component: CollabBoard,
+      props: true,
+      meta: { requiresAuth: false },
+      async beforeEnter(to , from , next) {
+        const boardId = to.params.boardId
+        const token = localStorage.getItem('accessToken')
+          try {
+            const response = await fetch(`${import.meta.env.VITE_API_ENDPOINT}/v3/boards/${boardId}`, {
+              headers: {
+                Authorization: token ? `Bearer ${token}`: '',
+                "Content-Type": "application/json",
+              },
+            });
+            const boardData = await response.json();
+            console.log(boardData.visibility)
+            if(boardData.visibility === 'PUBLIC'){
+              next()
+            } else if (response.status === 404 || response.status == 401) {
+              localStorage.removeItem('accessToken')
+              next('/login')
+            } else if (response.status === 403) {
+            
+              alert('Access denied, you do not have permission to view this page.');
+              next('/login')
+              } else {
+              next()
+            }
+          } catch (error) {
+            next('/login')
+        } 
+      }
+      
     },
   ],
 })

@@ -1,4 +1,4 @@
-<script setup>
+<!-- <script setup>
 import { ref , onMounted } from 'vue';
 import { jwtDecode } from 'jwt-decode';
 import router from '@/router';
@@ -16,30 +16,7 @@ onMounted(async () => {
     fullName.value = decoded.name;
     boardName.value = `${fullName.value} personal board`
     console.log(fullName.value);
-    try {
-      const response = await fetch(`${import.meta.env.VITE_API_ENDPOINT}/v3/boards` , {
-        headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
-      },
-    });
-    console.log(response.status)
-    if (response.status === 401) {
-        console.error("Unauthorized, redirecting to login");
-        router.push('/login');
-      } else {
-        const data = await response.json();
-        if (data && data.length > 0) {
-          console.log(data);
-          router.push(`/board/${data[0].id}`);
-        } else {
-          router.push('/board');
-        }
-      }
-    } catch (error) {
-    console.error("Error fetching boards:", error);
-    router.push('/login')
-    }
+  
   } else {
     console.error("Error fetching boards:", error);
     router.push('/login');
@@ -48,10 +25,6 @@ onMounted(async () => {
 
 
 console.log(boardName.value)
-
-
-
-
 
 const logout = () => {
   localStorage.removeItem('accessToken')
@@ -66,8 +39,6 @@ const addBoard = () => {
 const closeModal = () => {
     addBoardModal.value = false
 }
-
-
 
 
 const createBoard = async () => {
@@ -101,11 +72,9 @@ const createBoard = async () => {
 };
 
 
-
 </script>
  
 <template>
-
     <nav v-if="!showBoard" class="bg-white border-gray-200 dark:bg-gray-900">
   <div class="w-full flex flex-wrap items-center justify-between mx-auto p-4">
       <h1 class="text-center text-2xl bg-clip-content p-3 font-extrabold mt-5">
@@ -153,6 +122,19 @@ const createBoard = async () => {
 
 
    
+</template>
+ 
+<style scoped>
+
+</style> -->
+<script setup>
+
+</script>
+ 
+<template>
+<div>
+
+</div>
 </template>
  
 <style scoped>
