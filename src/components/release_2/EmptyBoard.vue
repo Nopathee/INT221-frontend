@@ -26,7 +26,7 @@ const props = defineProps({
   tasks: Array,
   statuses: Array,
   boardId: String,
-  
+
 })
 
 console.log(props)
@@ -65,7 +65,7 @@ const decoded = () => {
   if (token) {
     const decoded = jwtDecode(token)
     console.log(decoded);
-    
+
     fullName.value = decoded.name
     console.log(fullName.value)
   } else {
@@ -78,7 +78,7 @@ const logout = () => {
   localStorage.removeItem('accessToken')
   localStorage.removeItem('refreshToken')
   router.push('/login')
-  
+
 }
 
 const sortedTasks = ref([])
@@ -124,7 +124,7 @@ onMounted(async () => {
   try {
     // Fetch board data
     const board = await getItemById(`${import.meta.env.VITE_API_ENDPOINT}/v3/boards`, props.boardId)
-    
+
     if (!board || !board.item) {
       console.error('Board is undefined or missing item field:', board)
       return
@@ -133,7 +133,7 @@ onMounted(async () => {
     console.log(board)
     console.log(board.item.visibility)
     boardVisibility.value = board.item.visibility
-    
+
     // Check if the board is private and the user is not authenticated
     if (boardVisibility.value === 'PRIVATE' && !isAuthenticated.value) {
       console.error('Access denied, you do not have permission to view this page.')
@@ -153,7 +153,7 @@ onMounted(async () => {
       // Fetch tasks and statuses
       const items = await getItems(`${import.meta.env.VITE_API_ENDPOINT}/v3/boards/${props.boardId}/tasks`)
       const status = await getItems(`${import.meta.env.VITE_API_ENDPOINT}/v3/boards/${props.boardId}/statuses`)
-      
+
       // Fetch board name and visibility
       const board = await getUserBoard(
         `${import.meta.env.VITE_API_ENDPOINT}/v3/boards/${props.boardId}`, token
@@ -167,8 +167,8 @@ onMounted(async () => {
       console.log(board)
       console.log(fullName.value)
       console.log(board.board.owner.name);
-      
-      if(fullName.value === board.board.owner.name){
+
+      if (fullName.value === board.board.owner.name) {
         isOwner.value = true
       }
       boardName.value = board.board.boardName
@@ -177,7 +177,7 @@ onMounted(async () => {
 
       console.log(visibility.value)
       console.log(boardName.value)
-      
+
       // Add statuses and tasks
       allStatuses.value.addStatuses(status)
       allTask.value.addDtoTasks(items)
@@ -312,7 +312,7 @@ const saveTask = async (newTask) => {
     status: newTask.status.id,
   }
   console.log(item);
-  
+
   if (newTask.id === undefined) {
     const response = await addItem(
       `${import.meta.env.VITE_API_ENDPOINT}/v3/boards/${props.boardId}/tasks`,
@@ -398,15 +398,15 @@ const saveTask = async (newTask) => {
 const showDetail = async (taskToShow) => {
   try {
     const showTask = await getItemById(
-    `${import.meta.env.VITE_API_ENDPOINT}/v3/boards/${props.boardId}/tasks`,
-    taskToShow
-  )
-  taskDetail.value = showTask
-  showModalDetail.value = true
-  }  catch (error) {
+      `${import.meta.env.VITE_API_ENDPOINT}/v3/boards/${props.boardId}/tasks`,
+      taskToShow
+    )
+    taskDetail.value = showTask
+    showModalDetail.value = true
+  } catch (error) {
     console.error('Error fetching task details:', error);
   }
-  
+
 }
 
 const closeDetail = () => {
@@ -445,15 +445,15 @@ const confDelete = async () => {
 
 const confChangeVisi = async (newVisi) => {
   const token = localStorage.getItem('accessToken')
-  try{
-    console.log('New visibility:' , newVisi)
-    const response = await changeVisi(`${import.meta.env.VITE_API_ENDPOINT}/v3/boards/${props.boardId}`, token , newVisi )
-    if(response  && response.status === 200){
-    visibility.value = newVisi
-    console.log(response.status)
-    console.log(response.board)
-  } 
-} catch (err) {
+  try {
+    console.log('New visibility:', newVisi)
+    const response = await changeVisi(`${import.meta.env.VITE_API_ENDPOINT}/v3/boards/${props.boardId}`, token, newVisi)
+    if (response && response.status === 200) {
+      visibility.value = newVisi
+      console.log(response.status)
+      console.log(response.board)
+    }
+  } catch (err) {
     console.error('Error creating board:', err)
   }
   confirmVisi.value = false
@@ -463,13 +463,13 @@ const toggleVisibility = () => {
   originalVisibility.value = visibility.value
   newVisi.value = visibility.value === 'PRIVATE' ? 'PUBLIC' : 'PRIVATE'
   confirmVisi.value = true
-  
+
 }
 
 const isChecked = computed(() => {
-  if(visibility.value === 'PRIVATE'){
+  if (visibility.value === 'PRIVATE') {
     return false
-  } else if(visibility.value === 'PUBLIC'){
+  } else if (visibility.value === 'PUBLIC') {
     return true
   }
 })
@@ -491,80 +491,36 @@ console.log(task.value.status)
 <template>
   <section class="flex flex-col sm-items-center max-w-full h-auto">
     <nav class="bg-white border-gray-200 dark:bg-gray-900">
-      <div
-        class="w-full flex flex-wrap items-center justify-between mx-auto p-4"
-      >
-        <h1
-          class="text-center text-2xl bg-clip-content p-3 font-extrabold mt-5"
-        >
+      <div class="w-full flex flex-wrap items-center justify-between mx-auto p-4">
+        <h1 class="text-center text-2xl bg-clip-content p-3 font-extrabold mt-5">
           IT-Bangmod Kradan Kanban SSI-3
         </h1>
-        <div class="text-center mt-5">
-        <button @click="goHome" class="bg-green-500 text-white px-6 py-2 rounded-lg hover:bg-green-700">
-          Home
-        </button>
-      </div>
-        <div
-          class="items-center justify-between hidden w-full md:flex md:w-auto md:order-1 pt-7"
-        >
-       
-   
+        <div class="items-center justify-between hidden w-full md:flex md:w-auto md:order-1 pt-7">
           <ul
-            class="flex flex-row font-medium md:p-0 mt-4 border border-gray-100 rounded-lg bg-gray-50 md:space-x-8 md:flex-row md:mt-0 md:border-0 md:bg-white dark:bg-gray-800 md:dark:bg-gray-900 dark:border-gray-700"
-          >
+            class="flex flex-row font-medium md:p-0 mt-4 border border-gray-100 rounded-lg bg-gray-50 md:space-x-8 md:flex-row md:mt-0 md:border-0 md:bg-white dark:bg-gray-800 md:dark:bg-gray-900 dark:border-gray-700">
             <li class="flex items-center space-x-2">
-            <span class="label-text">PRIVATE</span>
-              <input 
-              type="checkbox" 
-              class="toggle itbkk-board-visibility"
-              :checked="isChecked"       
-              @change="toggleVisibility"
-              :disabled="!isAuthenticated || !isOwner"
-            />
-            <span class="label-text">PUBLIC</span>
+              <span class="label-text">PRIVATE</span>
+              <input type="checkbox" class="toggle itbkk-board-visibility" :checked="isChecked"
+                @change="toggleVisibility" :disabled="!isAuthenticated || !isOwner" />
+              <span class="label-text">PUBLIC</span>
             </li>
-            <li class="flex items-center">
-              <details class="dropdown">
-                <summary
-                  v-if="fullName"
-                  class="inline-flex items-center font-medium justify-center px-4 py-2 text-xl text-gray-900 dark:text-white rounded-lg cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 dark:hover:text-white itbkk-fullname"
-                >
-                  {{ fullName }}
-                </summary>
-                <ul
-                  class="p-2 shadow menu dropdown-content z-[1] bg-red-600 rounded-box w-full text-center my-2 text-black"
-                >
-                  <li class="flex items-center">
-                    <button @click="logout" class="flex justify-center">
-                      logout
-                    </button>
-                  </li>
-                </ul>
-              </details>
+
+            <li class="flex item-center">
+              <button @click="goHome"
+                class="py-2 px-4 bg-gradient-to-r from-green-400 to-blue-500 text-white text-xl font-semibold rounded-xl shadow-lg hover:shadow-2xl transform hover:scale-105 transition duration-300 disabled:opacity-50 ">
+                Home
+              </button>
             </li>
             <li class="flex items-center">
               <details class="dropdown itbkk-status-filter">
                 <summary
-                  class="bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 px-4 border-b-4 border-blue-700 hover:border-blue-500 rounded-lg mb-4 itbkk-filter-item"
-                >
+                  class="py-2 px-4 bg-gradient-to-r from-green-400 to-blue-500 text-white text-xl font-semibold rounded-xl shadow-lg hover:shadow-2xl transform hover:scale-105 transition duration-300 disabled:opacity-50 itbkk-filter-statuses">
                   Filter Statuses
                 </summary>
-                <ul
-                  class="p-2 shadow menu dropdown-content z-[1] bg-base-100 rounded-box w-52 itbkk-status-choice"
-                >
-                  <span
-                    v-for="status in props.statuses"
-                    :key="status.id"
-                    class="mx-3 my-2 flex itbkk-filter-item"
-                  >
-                    <input
-                      type="checkbox"
-                      class="checkbox"
-                      :id="status.id"
-                      :value="status.id"
-                      v-model="selectedStatusIds"
-                      @change="updateSelectedStatusNames(status.id)"
-                    />
+                <ul class="p-2 shadow menu dropdown-content z-[1] bg-base-100 rounded-box w-52 itbkk-status-choice">
+                  <span v-for="status in props.statuses" :key="status.id" class="mx-3 my-2 flex itbkk-filter-item">
+                    <input type="checkbox" class="checkbox" :id="status.id" :value="status.id"
+                      v-model="selectedStatusIds" @change="updateSelectedStatusNames(status.id)" />
                     <label :for="status.id" class="ml-2 font-semibold">{{
                       status.name
                     }}</label>
@@ -574,45 +530,52 @@ console.log(task.value.status)
             </li>
             <li>
               <button
-                class="bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 px-4 border-b-4 border-blue-700 hover:border-blue-500 rounded-lg mb-4 itbkk-manage-status"
-              >
-                <router-link
-                  :to="`/board/${props.boardId}/status`"
-                  @click="$emit('statusDetail')"
-                >
+                class="py-2 px-4 bg-gradient-to-r from-green-400 to-blue-500 text-white text-xl font-semibold rounded-xl shadow-lg hover:shadow-2xl transform hover:scale-105 transition duration-300 disabled:opacity-50 itbkk-manage-status">
+                <router-link :to="`/board/${props.boardId}/status`" @click="$emit('statusDetail')">
                   Manage Status
                 </router-link>
               </button>
             </li>
             <li>
               <button
-                class="bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 px-4 border-b-4 border-blue-700 hover:border-blue-500 rounded-lg mb-4 itbkk-manage-collaborator"
-                :disabled="!isOwner"
-              >
-              <router-link
-                  :to="`/board/${props.boardId}/collab`"
-                  v-if="isOwner"
-                >
-                Manage Collaborator
-              </router-link>
-              <span v-else>Manage Collaborator</span>
+                class="py-2 px-4 bg-gradient-to-r from-green-400 to-blue-500 text-white text-xl font-semibold rounded-xl shadow-lg hover:shadow-2xl transform hover:scale-105 transition duration-300 disabled:opacity-50 itbkk-manage-collaborator"
+                :disabled="!isOwner">
+                <router-link :to="`/board/${props.boardId}/collab`" v-if="isOwner">
+                  Manage Collaborator
+                </router-link>
+                <span v-else>Manage Collaborator</span>
               </button>
             </li>
             <li>
               <button
-                class="bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 px-4 border-b-4 border-blue-700 hover:border-blue-500 rounded-lg mb-4"
-                @click="$emit('limitModal', true)"
-              >
+                class="py-2 px-4 bg-gradient-to-r from-green-400 to-blue-500 text-white text-xl font-semibold rounded-xl shadow-lg hover:shadow-2xl transform hover:scale-105 transition duration-300 disabled:opacity-50"
+                @click="$emit('limitModal', true)">
                 Limit tasks
               </button>
+            </li>
+            <li class="flex items-center">
+              <details class="dropdown">
+                <summary v-if="fullName"
+                  class="inline-flex items-center font-medium justify-center px-4 py-2 text-xl text-gray-900 dark:text-white rounded-lg cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 dark:hover:text-white itbkk-fullname">
+                  {{ fullName }}
+                </summary>
+                <ul
+                  class="p-2 shadow menu dropdown-content z-[1] bg-red-600 rounded-box w-full text-center my-2 text-black">
+                  <li class="flex items-center">
+                    <button @click="logout" class="flex justify-center">
+                      logout
+                    </button>
+                  </li>
+                </ul>
+              </details>
             </li>
           </ul>
         </div>
       </div>
     </nav>
     <div class="text-2xl flex justify-center pt-5 font-semibold">
-          <p>{{ boardName }}</p>    
-      </div>
+      <p>{{ boardName }}</p>
+    </div>
     <div class="w-full flex justify-center items-center">
       <div class="rounded-xl p-5 w-5/6">
         <div v-if="selectedStatusNames.length > 0">
@@ -620,39 +583,21 @@ console.log(task.value.status)
         </div>
         <div class="flex gap-2">
           <div v-if="selectedStatusNames.length > 0">
-            <button
-              class="btn btn-sm btn-error btn-outline itbkk-filter-clear"
-              @click="
-                ;(selectedStatusIds = []),
-                  (selectedStatusNames = []),
-                  filterAndSortTasks()
-              "
-            >
+            <button class="btn btn-sm btn-error btn-outline itbkk-filter-clear" @click="
+                ; (selectedStatusIds = []),
+              (selectedStatusNames = []),
+              filterAndSortTasks()
+              ">
               Clear All
             </button>
             <div class="w-1/2 h-1 bg-gray-400 my-2"></div>
           </div>
-          <template
-            v-for="(statusName, index) in selectedStatusNames"
-            :key="index"
-          >
-            <div
-              class="badge m-2 itbkk-filter-item"
-              :style="{ backgroundColor: statusName.color }"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
+          <template v-for="(statusName, index) in selectedStatusNames" :key="index">
+            <div class="badge m-2 itbkk-filter-item" :style="{ backgroundColor: statusName.color }">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                 class="inline-block w-4 h-4 stroke-current itbkk-filter-item-clear"
-                @click="removeSelectedStatus(statusName.id)"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M6 18L18 6M6 6l12 12"
-                ></path>
+                @click="removeSelectedStatus(statusName.id)">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
               </svg>
               {{ statusName.name }}
             </div>
@@ -662,74 +607,48 @@ console.log(task.value.status)
           <thead>
             <tr class="font-bold text-red-800 text-lg bg-pink-300">
               <th class="w-1/12">
-                <button
-                  @click="addNewTask"
-                  class="cursor-pointer itbkk-button-add"
+                <button @click="addNewTask" class="cursor-pointer itbkk-button-add"
                   :class="{ 'cursor-not-allowed opacity-50': !isAuthenticated || !isOwner }"
-                  :disabled="!isAuthenticated || !isOwner"
-                >
-              <img src="../icon/InsertBtn.svg" alt="Add Task" />
-              </button>
+                  :disabled="!isAuthenticated || !isOwner">
+                  <img src="../icon/InsertBtn.svg" alt="Add Task" />
+                </button>
               </th>
               <th class="w-5/12">Title</th>
               <th class="w-3/12">Assignees</th>
               <th class="justify-end w-1/12">
                 <div class="flex">
                   Status &nbsp;
-                  <button
-                    @click="toggleSortOrder"
-                    class="btn btn-sm btn-ghost itbkk-status-sort"
-                  >
-                    <img
-                      v-if="sortOrder === 'A-Z'"
-                      src="../icon/sortaz.svg"
-                      alt="sort Default"
-                    />
-                    <img
-                      v-else-if="sortOrder === 'Z-A'"
-                      src="../icon/sortza.svg"
-                      alt="sort A-Z"
-                    />
+                  <button @click="toggleSortOrder" class="btn btn-sm btn-ghost itbkk-status-sort">
+                    <img v-if="sortOrder === 'A-Z'" src="../icon/sortaz.svg" alt="sort Default" />
+                    <img v-else-if="sortOrder === 'Z-A'" src="../icon/sortza.svg" alt="sort A-Z" />
                     <img v-else src="../icon/sort.svg" alt="sort Z-A" />
                   </button>
                 </div>
               </th>
             </tr>
           </thead>
-            
+
 
           <tbody>
-            <tr
-              v-for="(task, index) in sortedTasks"
-              :key="task.id"
-              class="bg-blue-300 itbkk-item"
-            >
+            <tr v-for="(task, index) in sortedTasks" :key="task.id" class="bg-blue-300 itbkk-item">
               <td class="text-white text-center font-semibold flex">
                 {{ index + 1 }}
                 <div class="dropdown dropdown-right dropdown-end tra itbkk-button-action">
                   <div tabindex="0" role="button">
                     <img src="../icon/Threebtn.svg" />
                   </div>
-                  <ul
-                    class="p-1 shadow menu dropdown-content z-[1] bg-base-100 rounded-box w-32"
-                  >
+                  <ul class="p-1 shadow menu dropdown-content z-[1] bg-base-100 rounded-box w-32">
                     <li class="">
-                      <button
-                        @click="showEdit(task)"
-                        class="text-black dark:text-white itbkk-button-edit"
-                        :class="{ 'cursor-not-allowed opacity-50': !isAuthenticated || !isOwner}"
-                        :disabled="!isAuthenticated || !isOwner"
-                      >
+                      <button @click="showEdit(task)" class="text-black dark:text-white itbkk-button-edit"
+                        :class="{ 'cursor-not-allowed opacity-50': !isAuthenticated || !isOwner }"
+                        :disabled="!isAuthenticated || !isOwner">
                         Edit
                       </button>
                     </li>
                     <li>
-                      <button
-                        @click="showDelete(task.id, index + 1)"
-                        class="text-red-600 itbkk-button-delete"
+                      <button @click="showDelete(task.id, index + 1)" class="text-red-600 itbkk-button-delete"
                         :class="{ 'cursor-not-allowed opacity-50': !isAuthenticated || !isOwner }"
-                        :disabled="!isAuthenticated || !isOwner"
-                      >
+                        :disabled="!isAuthenticated || !isOwner">
                         Delete
                       </button>
                     </li>
@@ -737,25 +656,17 @@ console.log(task.value.status)
                 </div>
               </td>
 
-              <td
-                class="text-blue-800 hover:underline itbkk-title font-semibold transition-property: transform;"
-                @click="showDetail(task.id)"
-              >
+              <td class="text-blue-800 hover:underline itbkk-title font-semibold transition-property: transform;"
+                @click="showDetail(task.id)">
                 {{ task.title }}
               </td>
 
-              <td
-                class="itbkk-assignees font-semibold"
-                :style="{ fontStyle: task.assignees ? 'normal' : 'italic' }"
-                :class="task.assignees ? 'text-white' : 'text-gray-500'"
-              >
+              <td class="itbkk-assignees font-semibold" :style="{ fontStyle: task.assignees ? 'normal' : 'italic' }"
+                :class="task.assignees ? 'text-white' : 'text-gray-500'">
                 {{ task.assignees ? task.assignees : 'Unassigned' }}
               </td>
               <td>
-                <button
-                  class="badge itbkk-status font-semibold"
-                  :style="{ backgroundColor: task.status.color }"
-                >
+                <button class="badge itbkk-status font-semibold" :style="{ backgroundColor: task.status.color }">
                   {{ task.status.name }}
                 </button>
               </td>
@@ -766,26 +677,13 @@ console.log(task.value.status)
     </div>
   </section>
 
-  <Succes
-    v-if="successToast"
-    :taskInsert="taskInsert"
-    @closeToast="successToast = false"
-  />
-  <Delete
-    v-if="deletedToast"
-    :taskDelete="deleteTask.item.title"
-    @closeToast="deletedToast = false"
-  />
+  <Succes v-if="successToast" :taskInsert="taskInsert" @closeToast="successToast = false" />
+  <Delete v-if="deletedToast" :taskDelete="deleteTask.item.title" @closeToast="deletedToast = false" />
   <Edit v-if="editToast" :taskEdit="taskEdit" @closeToast="editToast = false" />
   <Error v-if="errorToast" @closeToast="errorToast = false" />
   <Teleport to="#modal">
     <div v-if="showModal">
-      <TaskModal
-        @cancelTask="closeModal"
-        @saveTask="saveTask"
-        :task="task"
-        :statuses="allStatuses.getStatuses()"
-      />
+      <TaskModal @cancelTask="closeModal" @saveTask="saveTask" :task="task" :statuses="allStatuses.getStatuses()" />
     </div>
   </Teleport>
 
@@ -797,32 +695,19 @@ console.log(task.value.status)
 
   <Teleport to="#modal">
     <div v-if="confirmDelete">
-      <ConfirmDelete
-        @close="closeDelete"
-        @confirm="confDelete"
-        :task="deleteTask"
-        :index="deleteIndex"
-      />
+      <ConfirmDelete @close="closeDelete" @confirm="confDelete" :task="deleteTask" :index="deleteIndex" />
     </div>
   </Teleport>
 
   <Teleport to="#modal">
     <div v-if="confirmVisi">
-      <ConfirmChangeVisi
-        @close="closeVisiModal"
-        @confirm="confChangeVisi"
-        :newVisi="newVisi" 
-      />
+      <ConfirmChangeVisi @close="closeVisiModal" @confirm="confChangeVisi" :newVisi="newVisi" />
     </div>
   </Teleport>
 
   <Teleport to="#modal">
     <div v-if="limitModal">
-      <Limit
-        @cancelLimit="limitModal = false"
-        @saveLimit="saveLimit"
-        :limitNumber="limitNumber"
-      />
+      <Limit @cancelLimit="limitModal = false" @saveLimit="saveLimit" :limitNumber="limitNumber" />
     </div>
   </Teleport>
 </template>

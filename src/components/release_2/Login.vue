@@ -66,23 +66,38 @@ const handlerLogin = async () => {
       <form class="space-y-6">
         <div>
           <label for="username" class="block text-lg font-semibold text-gray-700 mb-2">Username</label>
-          <div class="relative">
-            <span class="absolute left-3 top-3 text-gray-400">
+          <div class="relative group">
+            <!-- ไอคอน Font Awesome -->
+            <span
+              class="absolute left-3 top-3 text-gray-400 transition-all duration-300 group-focus:-translate-y-1 group-hover:-translate-y-1">
               <i class="fas fa-user"></i>
             </span>
+            <!-- ไอคอนรูปภาพ -->
+            <span
+              class="absolute inset-y-0 left-3 flex items-center transition-all duration-300 group-focus:-translate-y-1 group-hover:-translate-y-1">
+              <img src="../icon/user-svgrepo-com.svg" alt="User Icon" class="h-6 w-6" />
+            </span>
             <input type="text" id="username" v-model="userName" placeholder="Enter your username"
-              class="pl-10 w-full h-12 text-base border rounded-lg shadow-inner bg-gradient-to-r from-gray-100 to-gray-200 hover:shadow-lg transform hover:-translate-y-1 focus:ring-2 focus:ring-blue-300 transition duration-300 itbkk-username"
+              class="pl-10 w-full h-12 text-base border rounded-lg shadow-inner bg-gradient-to-r from-gray-100 to-gray-200 hover:shadow-lg transform hover:-translate-y-1 focus:ring-2 focus:ring-green-300 transition-all duration-300 itbkk-username"
               required />
           </div>
         </div>
         <div>
           <label for="password" class="block text-lg font-semibold text-gray-700 mb-2">Password</label>
-          <div class="relative">
-            <span class="absolute left-3 top-3 text-gray-400">
+          <div class="relative group">
+            <!-- ไอคอน Font Awesome -->
+            <span
+              class="absolute left-3 top-3 text-gray-400 transition-all duration-300 group-focus:-translate-y-1 group-hover:-translate-y-1">
               <i class="fas fa-lock"></i>
             </span>
+            <!-- ไอคอนรูปภาพ -->
+            <span
+              class="absolute inset-y-0 left-3 flex items-center transition-all duration-300 group-focus:-translate-y-1 group-hover:-translate-y-1">
+              <img src="../icon/lock-closed-svgrepo-com.svg" alt="lock Icon" class="h-6 w-6" />
+            </span>
+
             <input type="password" id="password" v-model="password" placeholder="Enter your password"
-              class="pl-10 w-full h-12 text-base border rounded-lg shadow-inner bg-gradient-to-r from-gray-100 to-gray-200 hover:shadow-lg transform hover:-translate-y-1 focus:ring-2 focus:ring-blue-300 transition duration-300 itbkk-password"
+              class="pl-10 w-full h-12 text-base border rounded-lg shadow-inner bg-gradient-to-r from-gray-100 to-gray-200 hover:shadow-lg transform hover:-translate-y-1 focus:ring-2 focus:ring-green-300 transition-all duration-300 itbkk-password"
               required />
           </div>
         </div>
