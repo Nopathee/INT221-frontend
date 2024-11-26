@@ -10,7 +10,8 @@ const boardName = ref('')
 const fullName = ref('');
 const personalBoards = ref([]);
 const collabBoards = ref([]); // เก็บข้อมูล collab boards
-const noboard = ref(true)
+const showPersonalboard = ref(false)
+const showCollabBoard = ref(false)
 onMounted(async () => {
   const token = localStorage.getItem('accessToken');
   if (token) {
@@ -41,11 +42,8 @@ const fetchBoards = async () => {
     collabBoards.value = data.collabBoards.sort((a, b) => new Date(a.added_on) - new Date(b.added_on)); // เรียงลำดับจากวันที่เพิ่ม
     console.log(data);
     console.log(personalBoards.value);
-    if (data.personalBoards && data.personalBoards.length > 0) {
-      noboard.value = false;
-    } else {
-      noboard.value = true;
-    }
+    showPersonalboard.value = data.personalBoards && data.personalBoards.length > 0;
+    showCollabBoard.value = data.collabBoards && data.collabBoards.length > 0;
   } catch (error) {
     console.error("Error fetching boards:", error);
   }
@@ -160,10 +158,10 @@ const createBoard = async () => {
       </div>
     </div>
   </nav>
-  <div v-if="noboard === false">
-    <div class="text-center p-5 text-4xl font-semibold itbkk-personal-board">
+  <div class="text-center p-5 text-4xl font-semibold itbkk-personal-board">
       <p>Personal Boards</p>
     </div>
+  <div v-if="showPersonalboard">
     <div class="pl-10 pr-10">
       <table class="w-full table table-lg rounded-lg overflow-hidden">
         <thead>
@@ -189,6 +187,27 @@ const createBoard = async () => {
         </tbody>
       </table>
     </div>
+  </div>
+  <div v-if="!showPersonalboard">
+    <div class="flex justify-center p-10" v-show="!showBoard">
+      <button @click="addBoard"
+      class="p-3 bg-gradient-to-r from-green-400 to-blue-500 text-white text-xl font-semibold rounded-xl shadow-lg hover:shadow-2xl transform hover:scale-105 transition duration-300 disabled:opacity-50 itbkk-button-create">
+        Create personal board</button>
+    </div>
+    <div v-if="addBoardModal" class="w-full h-full flex justify-center itbkk-modal-new">
+      <div class="bg-white w-2/5 h-60 rounded-3xl p-5 modal-box">
+        <h3 class="text-lg font-bold text-black">New Board</h3>
+        <p class="py-4 text-black ">Name</p>
+        <input type="text" class="bg-white border w-full text-black itbkk-board-name" maxlength="120"
+          v-model="boardName">
+        <div class="modal-action">
+          <button @click="createBoard" class="btn bg-green-500 text-black itbkk-button-ok">Submit</button>
+          <button @click="closeModal" class="btn bg-slate-800 text-white itbkk-cancel">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+    <div v-if="showCollabBoard === true">
     <div class="text-center p-5 text-4xl font-semibold itbkk-personal-board">
       <p>Collab Boards</p>
     </div>
@@ -221,25 +240,8 @@ const createBoard = async () => {
       </table>
     </div>
   </div>
-  <div v-if="noboard === true">
-    <div class="flex justify-center p-10" v-show="!showBoard">
-      <button @click="addBoard"
-      class="p-3 bg-gradient-to-r from-green-400 to-blue-500 text-white text-xl font-semibold rounded-xl shadow-lg hover:shadow-2xl transform hover:scale-105 transition duration-300 disabled:opacity-50 itbkk-button-create">
-        Create personal board</button>
-    </div>
-    <div v-if="addBoardModal" class="w-full h-full flex justify-center itbkk-modal-new">
-      <div class="bg-white w-2/5 h-60 rounded-3xl p-5 modal-box">
-        <h3 class="text-lg font-bold text-black">New Board</h3>
-        <p class="py-4 text-black ">Name</p>
-        <input type="text" class="bg-white border w-full text-black itbkk-board-name" maxlength="120"
-          v-model="boardName">
-        <div class="modal-action">
-          <button @click="createBoard" class="btn bg-green-500 text-black itbkk-button-ok">Submit</button>
-          <button @click="closeModal" class="btn bg-slate-800 text-white itbkk-cancel">Close</button>
-        </div>
-      </div>
-    </div>
-  </div>
+ 
+
 </template>
 
 <style scoped></style>

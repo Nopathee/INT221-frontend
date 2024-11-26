@@ -1,14 +1,9 @@
 <script setup>
 import {  defineProps, onMounted, ref , watch} from 'vue'
 import {  useRouter } from 'vue-router'
-
-import {
-  getItemById,
-  getItems,
-} from '@/libs/fetchUtils.js'
- 
-import {  addCollab, getAllUsers, getCollabs } from '@/libs/fetchUtils_release2'
-
+import {getItemById} from '@/libs/fetchUtils.js'
+import {  addCollab, getCollabs , getUserBoard} from '@/libs/fetchUtils_release2'
+import { jwtDecode } from 'jwt-decode'
 import Succes from '../Succes.vue'
 import Delete from '../Delete.vue'
 import Error from '../Error.vue'
@@ -32,30 +27,52 @@ const successToast = ref(false)
 
 const errorToast = ref(false)
 
-
 const isAuthenticated = ref(false)
 
 const boardname = ref('')
 
 const ownerEmail = ref('')
 
+const collabModal = ref(false)
 
-const alluserEmail = ref([])
+const collab = ref([])
+
+const fullName = ref('')
+
+const readOnly = ref(false)
+
+const isOwner = ref(false)
+
+const decoded = () => {
+  const token = localStorage.getItem('accessToken')
+  if (token) {
+    const decoded = jwtDecode(token)
+    console.log(decoded);
+    
+    fullName.value = decoded.name
+    console.log(fullName.value)
+  } else {
+    fullName.value = 'Guest'
+  }
+}
+
 onMounted(async () => {
   const token = localStorage.getItem('accessToken');
   isAuthenticated.value = !!token;
  
-  
-  // ดึงข้อมูล boards
-  const items = await getItems(
-    `${import.meta.env.VITE_API_ENDPOINT}/v3/boards`
-  );
-  const allUsers = await getAllUsers(`${import.meta.env.VITE_API_ENDPOINT}/user`, token)
-  alluserEmail.value = allUsers.user.map(user => user.email);
-  console.log(allUsers);
-  console.log(alluserEmail.value);
 
-  
+  decoded()
+
+  const userBoard = await getUserBoard(
+        `${import.meta.env.VITE_API_ENDPOINT}/v3/boards/${props.boardId}`, token
+      )
+
+      if(fullName.value === userBoard.board.owner.name){
+        isOwner.value = true
+      }
+      if(userBoard.board.accessRight === 'READ'){
+        readOnly.value = true
+      }
   // ดึงข้อมูล board
   const board = await getItemById(`${import.meta.env.VITE_API_ENDPOINT}/v3/boards`, props.boardId);
   console.log(board);
@@ -76,32 +93,7 @@ const back = () => {
 }
 
 
-// const confirmDelete = async (id) => {
-//   const status = await deleteItemById(
-//     `${import.meta.env.VITE_API_ENDPOINT}/v3/boards/${props.boardId}/statuses`,
-//     id
-//   )
-//   if (status === 200) {
-//     statuses.value.removeStatus(id)
-//     deleteModal.value = false
-//     deletedToast.value = true
-//     setTimeout(() => {
-//       deletedToast.value = false
-//     }, 3000)
-//   } else {
-//     statuses.value.removeStatus(id)
-//     deleteModal.value = false
-//     errorToast.value = true
 
-//     setTimeout(() => {
-//       errorToast.value = false
-//       errorDelete.value = false
-//     }, 3000)
-//   }
-// }
-
-const collabModal = ref(false)
-const collab = ref([])
 
 const addCollabModal = () => {
   collabModal.value = true
@@ -153,6 +145,9 @@ const saveCollab = async (newItem) => {
       alert("The user does not exist.");
     } else if (response.status === 409) {
       alert("The user is already a collaborator of this board.");
+    } else if (response.status === 500) {
+      alert("There is a problem. Please try again later.");
+      collabModal.value = false;
     } else {
       collabModal.value = false;
     }
@@ -198,8 +193,8 @@ watch(emailInsert,(newEmail) => {
           <button
             class="bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 px-4 border-b-4 border-blue-700 hover:border-blue-500 rounded itbkk-collaborator-add"
             @click="addCollabModal"
-            :class="{ 'cursor-not-allowed opacity-50': !isAuthenticated }"
-            :disabled="!isAuthenticated"
+            :class="{ 'cursor-not-allowed opacity-50': !isAuthenticated || !isOwner || readOnly }"
+            :disabled="!isAuthenticated || !isOwner || readOnly"
           >
             Add Collaborator
           </button>
@@ -232,7 +227,9 @@ watch(emailInsert,(newEmail) => {
               <td class="text-center">
                 <button
                   class="bg-red-500 text-white text-sm py-2 px-4 rounded ml-2 itbkk-collab-remove"
+                  :class="{ 'cursor-not-allowed opacity-50': !isAuthenticated || !isOwner || readOnly }"
                   @click="deleteCollab(collaborator.oid)"
+                  :disabled="!isAuthenticated || !isOwner || readOnly"
                 >
                   Delete
                 </button>

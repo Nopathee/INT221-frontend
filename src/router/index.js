@@ -50,6 +50,11 @@ const router = createRouter({
     },
     { path: '/', name: 'home', component: Login },
     {
+      path: '/access-denied',
+      name: 'accessDenied',
+      component: () => import('../views/AccessDenied.vue'), // สร้าง component สำหรับแสดงข้อความ
+    },
+    {
       path: '/task/:id',
       name: 'taskDetail',
       component: Task,
@@ -72,6 +77,34 @@ const router = createRouter({
       component: EmptyBoard,
       props: true,
       meta: { requiresAuth: true },
+      async beforeEnter(to , from , next) {
+        const boardId = to.params.boardId
+        const taskId = to.params.id
+        const token = localStorage.getItem('accessToken')
+        if (token) {
+          try {
+            const response = await fetch(`${import.meta.env.VITE_API_ENDPOINT}/v3/boards/${boardId}/tasks`, {
+              headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "application/json",
+              },
+            });
+            console.log('Response status:', response.status);
+            if (response.status === 404 || response.status == 401) {
+              localStorage.removeItem('accessToken')
+              next('/login')
+            } else if (response.status === 403) {          
+              alert('Access denied, you do not have permission to view this page.');
+            }else {
+              next()
+            }
+          } catch (error) {
+            next('/login')
+          }
+        } else {
+          next('/login')
+        }
+      }
     },
     {
       path: '/board/:boardId/task/:id/edit',
@@ -94,7 +127,9 @@ const router = createRouter({
             if (response.status === 404 || response.status == 401) {
               localStorage.removeItem('accessToken')
               next('/login')
-            } else {
+            } else if (response.status === 403) {          
+              alert('Access denied, you do not have permission to view this page.');
+            }else {
               next()
             }
           } catch (error) {
@@ -129,12 +164,13 @@ const router = createRouter({
           console.log(data);
           
           if(data.personalBoards.length > 0 && data.collabBoards.length > 0){
-            console.log('here');
             next()
-          } else if(data.personalBoards.length > 0 ) {
+          } else if(data.personalBoards.length > 0 && data.collabBoards.length === 0 ) {
             console.log(data)
             next(`/board/${data.personalBoards[0].id}`)
-          } else {
+          } else if (data.personalBoards.length === 0 && data.collabBoards.length > 0) {
+            next()
+          }else {
             next()
           }
           } catch (error) {
@@ -237,7 +273,9 @@ const router = createRouter({
             if (response.status === 404 || response.status == 401) {
               localStorage.removeItem('accessToken')
               next('/login')
-            } else {
+            } else if (response.status === 403) {          
+              alert('Access denied, you do not have permission to view this page.');
+            }else {
               next()
             }
           } catch (error) {
@@ -270,7 +308,9 @@ const router = createRouter({
             if (response.status === 404 || response.status == 401) {
               localStorage.removeItem('accessToken')
               next('/login')
-            } else {
+            } else if (response.status === 403) {          
+              alert('Access denied, you do not have permission to view this page.');
+            }else {
               next()
             }
           } catch (error) {

@@ -14,10 +14,12 @@ import {
 import DeleteStatus from '../DeleteStatus.vue'
 import TransferDelete from '../TransferDelete.vue'
 import StatusBoardModal from './StatusBoardModal.vue'
-
+import { getUserBoard } from '@/libs/fetchUtils_release2'
 import Succes from '../Succes.vue'
 import Delete from '../Delete.vue'
 import Error from '../Error.vue'
+import { jwtDecode } from 'jwt-decode'
+
 const props = defineProps({
   statuses: Array,
   id: String,
@@ -51,14 +53,34 @@ const statusNotFound = ref(false)
 
 const editToast = ref(false)
 
+const isAuthenticated = ref(false)
+
+const isOwner = ref(false)
+
+const readOnly = ref(false)
+
+const fullName = ref('')
+
 const status = ref({
   id: undefined,
   name: '',
   description: null,
   color: '#ffffff',
 })
-const isAuthenticated = ref(false)
 
+
+
+const decoded = () => {
+  const token = localStorage.getItem('accessToken')
+  if (token) {
+    const decoded = jwtDecode(token)
+    console.log(decoded);
+    fullName.value = decoded.name
+    console.log(fullName.value)
+  } else {
+    fullName.value = 'Guest'
+  }
+}
 
 onMounted(async () => {
   const token = localStorage.getItem('accessToken')
@@ -68,7 +90,17 @@ onMounted(async () => {
   )
   console.log(items)
   statuses.value.addStatuses(items)
+  const board = await getUserBoard(
+        `${import.meta.env.VITE_API_ENDPOINT}/v3/boards/${props.boardId}`, token
+  )
+  decoded()
 
+  if(fullName.value === board.board.owner.name){
+        isOwner.value = true
+      }
+      if(board.board.accessRight === 'READ'){
+        readOnly.value = true
+      }
 })
 
 const back = () => {
@@ -299,8 +331,8 @@ if (props.notFound) {
           <button
             class="bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 px-4 border-b-4 border-blue-700 hover:border-blue-500 rounded itbkk-button-add"
             @click="addStatus"
-            :class="{ 'cursor-not-allowed opacity-50': !isAuthenticated }"
-            :disabled="!isAuthenticated"
+            :class="{ 'cursor-not-allowed opacity-50': !isAuthenticated || !isOwner || readOnly }"
+            :disabled="!isAuthenticated || !isOwner || readOnly "
           >
             Add Status
           </button>
@@ -350,8 +382,8 @@ if (props.notFound) {
                   @click="editStatus(status.id)"
                   class="bg-slate-200 text-black text-sm py-2 px-4 rounded mr-2 itbkk-button-edit"
                   v-if="status.name !== 'No Status' && status.name !== 'Done'"
-                   :class="{ 'cursor-not-allowed opacity-50': !isAuthenticated }"
-                  :disabled="!isAuthenticated"
+                   :class="{ 'cursor-not-allowed opacity-50': !isAuthenticated || !isOwner || readOnly }"
+                  :disabled="!isAuthenticated || !isOwner || readOnly "
                 >
                   Edit
                 </button>
@@ -359,8 +391,8 @@ if (props.notFound) {
                   @click="deleteStatus(status.id)"
                   class="bg-red-500 text-white text-sm py-2 px-4 rounded ml-2 itbkk-button-delete"
                   v-if="status.name !== 'No Status' && status.name !== 'Done'"
-                  :class="{ 'cursor-not-allowed opacity-50': !isAuthenticated }"
-                  :disabled="!isAuthenticated"
+                  :class="{ 'cursor-not-allowed opacity-50': !isAuthenticated  || !isOwner || readOnly }"
+                  :disabled="!isAuthenticated || !isOwner || readOnly "
                 >
                   Delete
                 </button>

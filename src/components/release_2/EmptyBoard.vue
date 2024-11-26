@@ -1,5 +1,5 @@
 <script setup>
-import { defineProps, ref, watch, onMounted, computed } from 'vue'
+import { defineProps, ref, watch, onMounted, computed, readonly } from 'vue'
 import { jwtDecode } from 'jwt-decode'
 import router from '@/router'
 import {
@@ -118,6 +118,7 @@ const visibility = ref('')
 const boardVisibility = ref('')
 const isAuthenticated = ref(false)
 const isOwner = ref(false)
+const readOnly = ref(false)
 onMounted(async () => {
   const token = localStorage.getItem('accessToken')
   isAuthenticated.value = !!token
@@ -170,6 +171,10 @@ onMounted(async () => {
 
       if (fullName.value === board.board.owner.name) {
         isOwner.value = true
+      }
+
+      if(board.board.accessRight === 'READ'){
+        readOnly.value = true
       }
       boardName.value = board.board.boardName
       visibility.value = board.board.visibility
@@ -265,7 +270,18 @@ const removeSelectedStatus = (statusId) => {
 }
 
 const addNewTask = () => {
-
+  task.value = {
+    id: undefined,
+    title: '',
+    description: null,
+    assignees: null,
+    status: {
+      id: '',
+      name: 'No Status',
+      description: 'A status hos not been assigned',
+      color: '#ffffff',
+    },
+  }
   showModal.value = true
   router.push(`/board/${props.boardId}/task/add`)
 }
@@ -501,7 +517,7 @@ console.log(task.value.status)
             <li class="flex items-center space-x-2">
               <span class="label-text">PRIVATE</span>
               <input type="checkbox" class="toggle itbkk-board-visibility" :checked="isChecked"
-                @change="toggleVisibility" :disabled="!isAuthenticated || !isOwner" />
+                @change="toggleVisibility" :disabled="!isAuthenticated || !isOwner || readOnly" />
               <span class="label-text">PUBLIC</span>
             </li>
 
@@ -539,11 +555,11 @@ console.log(task.value.status)
             <li>
               <button
                 class="py-2 px-4 bg-gradient-to-r from-green-400 to-blue-500 text-white text-xl font-semibold rounded-xl shadow-lg hover:shadow-2xl transform hover:scale-105 transition duration-300 disabled:opacity-50 itbkk-manage-collaborator"
-                :disabled="!isOwner">
-                <router-link :to="`/board/${props.boardId}/collab`" v-if="isOwner">
+                >
+                <router-link :to="`/board/${props.boardId}/collab`">
                   Manage Collaborator
                 </router-link>
-                <span v-else>Manage Collaborator</span>
+
               </button>
             </li>
             <li>
@@ -608,8 +624,8 @@ console.log(task.value.status)
             <tr class="font-bold text-red-800 text-lg bg-pink-300">
               <th class="w-1/12">
                 <button @click="addNewTask" class="cursor-pointer itbkk-button-add"
-                  :class="{ 'cursor-not-allowed opacity-50': !isAuthenticated || !isOwner }"
-                  :disabled="!isAuthenticated || !isOwner">
+                  :class="{ 'cursor-not-allowed opacity-50': !isAuthenticated || !isOwner || readOnly}"
+                  :disabled="!isAuthenticated || !isOwner || readOnly">
                   <img src="../icon/InsertBtn.svg" alt="Add Task" />
                 </button>
               </th>
@@ -640,15 +656,15 @@ console.log(task.value.status)
                   <ul class="p-1 shadow menu dropdown-content z-[1] bg-base-100 rounded-box w-32">
                     <li class="">
                       <button @click="showEdit(task)" class="text-black dark:text-white itbkk-button-edit"
-                        :class="{ 'cursor-not-allowed opacity-50': !isAuthenticated || !isOwner }"
-                        :disabled="!isAuthenticated || !isOwner">
+                        :class="{ 'cursor-not-allowed opacity-50': !isAuthenticated || !isOwner || readOnly }"
+                        :disabled="!isAuthenticated || !isOwner || readOnly">
                         Edit
                       </button>
                     </li>
                     <li>
                       <button @click="showDelete(task.id, index + 1)" class="text-red-600 itbkk-button-delete"
-                        :class="{ 'cursor-not-allowed opacity-50': !isAuthenticated || !isOwner }"
-                        :disabled="!isAuthenticated || !isOwner">
+                        :class="{ 'cursor-not-allowed opacity-50': !isAuthenticated || !isOwner || readOnly }"
+                        :disabled="!isAuthenticated || !isOwner || readOnly" >
                         Delete
                       </button>
                     </li>
