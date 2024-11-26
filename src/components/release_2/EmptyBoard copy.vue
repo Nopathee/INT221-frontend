@@ -1,4 +1,4 @@
-<script setup>
+<!-- <script setup>
 import { defineProps, ref, watch, onMounted } from 'vue'
 import { jwtDecode } from 'jwt-decode'
 import router from '@/router'
@@ -502,4 +502,4 @@ const confDelete = async () => {
   </Teleport>
 </template>
 
-<style scoped></style>
+<style scoped></style> -->

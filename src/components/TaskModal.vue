@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed ,watch } from 'vue'
 const props = defineProps({
   task: {
     type: Object,
@@ -9,14 +9,18 @@ const props = defineProps({
       description: null,
       assignees: null,
       status: {
-      id: '1',
-      name: 'No Status',
-      description: 'A status hos not been assigned',
-      color: '#ffffff',
-    },
+        id: null, // จะเซ็ตค่าเริ่มต้นใน watch
+        name: '',
+        description: '',
+        color: '',
+      },
     },
   },
   statuses: Array,
+})
+
+const defaultStatus = computed(() => {
+  return props.statuses.find(status => status.name === 'No Status') || null
 })
 
 const originalTasks = ref({
@@ -26,6 +30,16 @@ const originalTasks = ref({
   assignees: props.task.assignees,
   status: props.task.status.id,
 })
+
+watch(
+() => props.task.status.id,
+  (newVal) => {
+    if (!newVal && defaultStatus.value) {
+      props.task.status.id = defaultStatus.value.id 
+    }
+  },
+  { immediate: true } 
+)
 
 const isSaveDisabled = computed(() => {
   return (

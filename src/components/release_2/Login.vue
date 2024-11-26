@@ -71,7 +71,7 @@ const handlerLogin = async () => {
               <i class="fas fa-user"></i>
             </span>
             <input type="text" id="username" v-model="userName" placeholder="Enter your username"
-              class="pl-10 w-full h-12 text-base border rounded-lg shadow-inner bg-gradient-to-r from-gray-100 to-gray-200 hover:shadow-lg transform hover:-translate-y-1 focus:ring-2 focus:ring-blue-300 transition duration-300"
+              class="pl-10 w-full h-12 text-base border rounded-lg shadow-inner bg-gradient-to-r from-gray-100 to-gray-200 hover:shadow-lg transform hover:-translate-y-1 focus:ring-2 focus:ring-blue-300 transition duration-300 itbkk-username"
               required />
           </div>
         </div>
@@ -82,12 +82,12 @@ const handlerLogin = async () => {
               <i class="fas fa-lock"></i>
             </span>
             <input type="password" id="password" v-model="password" placeholder="Enter your password"
-              class="pl-10 w-full h-12 text-base border rounded-lg shadow-inner bg-gradient-to-r from-gray-100 to-gray-200 hover:shadow-lg transform hover:-translate-y-1 focus:ring-2 focus:ring-blue-300 transition duration-300"
+              class="pl-10 w-full h-12 text-base border rounded-lg shadow-inner bg-gradient-to-r from-gray-100 to-gray-200 hover:shadow-lg transform hover:-translate-y-1 focus:ring-2 focus:ring-blue-300 transition duration-300 itbkk-password"
               required />
           </div>
         </div>
         <button :disabled="isLoginDisabled" @click.prevent="handlerLogin"
-          class="w-full py-3 bg-gradient-to-r from-green-400 to-blue-500 text-white font-semibold rounded-xl shadow-lg hover:shadow-2xl transform hover:scale-105 transition duration-300 disabled:opacity-50">
+          class="w-full py-3 bg-gradient-to-r from-green-400 to-blue-500 text-white font-semibold rounded-xl shadow-lg hover:shadow-2xl transform hover:scale-105 transition duration-300 disabled:opacity-50 itbkk-button-signin">
           Sign in
         </button>
       </form>

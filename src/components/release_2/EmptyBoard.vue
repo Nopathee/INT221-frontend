@@ -265,20 +265,6 @@ const removeSelectedStatus = (statusId) => {
 }
 
 const addNewTask = () => {
-  // หา "No Status" จาก props.statuse
-
-  task.value = {
-    id: undefined,
-    title: '',
-    description: null,
-    assignees: null,
-    status: {
-      id: '', 
-      name: 'No Status',
-      description: 'A status has not been assigned',
-      color: '#ffffff',
-    },
-  }
 
   showModal.value = true
   router.push(`/board/${props.boardId}/task/add`)
