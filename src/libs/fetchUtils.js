@@ -63,7 +63,7 @@ async function addItem(url, item) {
       
       if(res.status === 401){
         const refreshToken = localStorage.getItem('refreshToken');
-        const response = await fetch(`${import.meta.env.VITE_API_ENDPOINT}/login/token`, {
+        const response = await fetch(`${import.meta.env.VITE_API_ENDPOINT}/token`, {
           method: 'POST',
           headers: {
             'Authorization': `Bearer ${refreshToken}`,

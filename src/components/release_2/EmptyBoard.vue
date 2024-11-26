@@ -265,6 +265,21 @@ const removeSelectedStatus = (statusId) => {
 }
 
 const addNewTask = () => {
+  // หา "No Status" จาก props.statuse
+
+  task.value = {
+    id: undefined,
+    title: '',
+    description: null,
+    assignees: null,
+    status: {
+      id: '', 
+      name: 'No Status',
+      description: 'A status has not been assigned',
+      color: '#ffffff',
+    },
+  }
+
   showModal.value = true
   router.push(`/board/${props.boardId}/task/add`)
 }
@@ -283,7 +298,7 @@ const closeModal = () => {
     description: null,
     assignees: null,
     status: {
-      id: '1',
+      id: '',
       name: 'No Status',
       description: 'A status hos not been assigned',
       color: '#ffffff',
@@ -586,12 +601,15 @@ console.log(task.value.status)
             <li>
               <button
                 class="bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 px-4 border-b-4 border-blue-700 hover:border-blue-500 rounded-lg mb-4 itbkk-manage-collaborator"
+                :disabled="!isOwner"
               >
               <router-link
                   :to="`/board/${props.boardId}/collab`"
+                  v-if="isOwner"
                 >
                 Manage Collaborator
               </router-link>
+              <span v-else>Manage Collaborator</span>
               </button>
             </li>
             <li>

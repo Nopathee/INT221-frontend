@@ -155,34 +155,65 @@ async function getAllUsers(url, token) {
   }
 }
 
-async function addCollab(url, token, items) {
-  try {
-    const response = await fetch(url, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`, 
-      },
-      body: JSON.stringify(items), 
-    })
+async function addCollab(url, items) {
+  let token = localStorage.getItem('accessToken')
+  console.log(token)
+  if(token){
+    try {
+      let res = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'content-type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+        body: JSON.stringify(items),
+      })
+      console.log(res);
+      
+      if(res.status === 401){
+        const refreshToken = localStorage.getItem('refreshToken');
+        const response = await fetch(`${import.meta.env.VITE_API_ENDPOINT}/token`, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${refreshToken}`,
+          }
+        })
+        console.log('Add collab response:', response)
+        if(response.ok){
+          const newacccessToken = await response.json()
+          const newToken = newacccessToken.access_token
+          console.log(newToken);
+          localStorage.setItem('accessToken', newToken);
+          token = newToken;
+          console.log(token)
 
-    console.log('Create board response:', response)
+          res = await fetch(url, {
+            method: 'POST',
+            headers: {
+              'content-type': 'application/json',
+              'Authorization': `Bearer ${token}`,
+            },
+            body: JSON.stringify(items),
+          })
+        } else {
+          localStorage.removeItem('accessToken')
+          localStorage.removeItem('refreshToken')
+          router.push('/login')
+        }
 
- 
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`)
+      }
+      console.log(res)
+      console.log(JSON.stringify(items));
+      
+      const data = await res.json() 
+      console.log('Add Collab:', data)
+      return {
+        status: res.status,
+        collab: data, 
+      }
+    } catch (error) {
+      console.log(`error: ${error}`)
     }
-
-    const data = await response.json() 
-    console.log('Add Collab:', data)
-
-    return {
-      status: response.status,
-      collab: data, 
-    }
-  } catch (error) {
-    console.error('Error creating board:', error)
-    return { status: 500, error: 'Internal Server Error' }
   }
 
 }

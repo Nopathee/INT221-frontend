@@ -1,5 +1,5 @@
 <script setup>
-import {  defineProps, onMounted, ref } from 'vue'
+import {  defineProps, onMounted, ref , watch} from 'vue'
 import {  useRouter } from 'vue-router'
 
 import {
@@ -7,7 +7,7 @@ import {
   getItems,
 } from '@/libs/fetchUtils.js'
  
-import { addCollab, getCollabs } from '@/libs/fetchUtils_release2'
+import {  addCollab, getAllUsers, getCollabs } from '@/libs/fetchUtils_release2'
 
 import Succes from '../Succes.vue'
 import Delete from '../Delete.vue'
@@ -37,21 +37,32 @@ const isAuthenticated = ref(false)
 
 const boardname = ref('')
 
+const ownerEmail = ref('')
 
+
+const alluserEmail = ref([])
 onMounted(async () => {
   const token = localStorage.getItem('accessToken');
   isAuthenticated.value = !!token;
-
+ 
+  
   // ดึงข้อมูล boards
   const items = await getItems(
     `${import.meta.env.VITE_API_ENDPOINT}/v3/boards`
   );
+  const allUsers = await getAllUsers(`${import.meta.env.VITE_API_ENDPOINT}/user`, token)
+  alluserEmail.value = allUsers.user.map(user => user.email);
+  console.log(allUsers);
+  console.log(alluserEmail.value);
+
   
   // ดึงข้อมูล board
   const board = await getItemById(`${import.meta.env.VITE_API_ENDPOINT}/v3/boards`, props.boardId);
   console.log(board);
   boardname.value = board.item.boardName;
-
+  ownerEmail.value = board.item.owner.email
+  console.log(ownerEmail.value);
+  
   // ดึงข้อมูล collaborators
   const collaborators = await getCollabs(`${import.meta.env.VITE_API_ENDPOINT}/v3/boards/${props.boardId}/collabs`, token);
   collab.value = collaborators.showCollabDTOS;
@@ -90,54 +101,81 @@ const back = () => {
 // }
 
 const collabModal = ref(false)
-
+const collab = ref([])
 
 const addCollabModal = () => {
   collabModal.value = true
 }
 
+const emailInsert = ref('')
 const saveCollab = async (newItem) => {
-  const token = localStorage.getItem('accessToken')
   console.log(newItem);
+  emailInsert.value = newItem.email
+  console.log(emailInsert.value);
+  
   const item = {
     email: newItem.email,
     accessRight: newItem.accessRight,
-  }
-
+  };
   try {
-    // ทำการเพิ่ม collaborator ใหม่ผ่าน API
-    const newCollab = await addCollab(
-      `${import.meta.env.VITE_API_ENDPOINT}/v3/boards/${props.boardId}/collabs`, token , item
-    )
-    if (!newCollab) {
-      // กรณีเกิดข้อผิดพลาดในการเพิ่ม collaborator
+    // ส่งคำขอเพิ่ม collaborator ใหม่ผ่าน API
+    const response = await addCollab(
+      `${import.meta.env.VITE_API_ENDPOINT}/v3/boards/${props.boardId}/collabs`, item
+    );
+    console.log(response);
+
+    if (response.status === 201) {
+      // สถานะ 201: เพิ่มสำเร็จ ปิด modal และอัปเดตตาราง
       collabModal.value = false;
-      return;
-    }
-    if (newCollab.status === 500) {
-      // กรณีเกิดข้อผิดพลาดในการเพิ่ม collaborator
-      collabModal.value = false
-      return
-    } else {
-      // เมื่อเพิ่ม collaborator สำเร็จ ทำการปิด modal และแสดง toast แสดงความสำเร็จ
-      collabModal.value = false
-      successToast.value = true
+      console.log("Before setting successToast:", successToast.value);
+      successToast.value = true; // เปลี่ยนค่าให้ Toast แสดงผล
+      console.log("After setting successToast:", successToast.value);
+      console.log(collab.value);
+      
+      // อัปเดต collab ด้วยข้อมูลใหม่ที่ได้จาก API
+      collab.value = response.collab.collaborators.map(collaborator => ({
+      oid: collaborator.oid,
+      name: collaborator.name,
+      email: collaborator.email,
+      access_right: collaborator.access_right,
+      added_on: collaborator.added_on,
+    }));
+    console.log(collab.value);
       setTimeout(() => {
-        successToast.value = false
-      }, 3000)
+        successToast.value = false;
+      }, 3000);
+    } else if (response.status === 401) {
+      alert("You are not authorized. Please log in again.");
+    } else if (response.status === 403) {
+      alert("You do not have permission to add board collaborator.");
+      collabModal.value = false;
+    } else if (response.status === 404) {
+      alert("The user does not exist.");
+    } else if (response.status === 409) {
+      alert("The user is already a collaborator of this board.");
+    } else {
+      collabModal.value = false;
     }
   } catch (error) {
-    console.error("Error adding collaborator:", error)
-    collabModal.value = false
+    console.error("Error adding collaborator:", error);
+    alert("An error occurred while adding the collaborator.");
+    collabModal.value = false;
   }
-}
+};
+
+
 
 const closeModal = () => {
   collabModal.value = false
   router.push(`/board/${props.boardId}/collab`)
 }
 
-const collab = ref([])
+watch(emailInsert,(newEmail) => {
+  console.log(newEmail);
+  
+}) 
+
+
 </script>
 
 <template>
@@ -207,24 +245,23 @@ const collab = ref([])
   </div>
   <Succes
     v-if="successToast"
-    :insertStatus="insertStatus"
+    :collab-insert="emailInsert"
     @closeToast="successToast = false"
   />
   <Delete
     v-if="deletedToast"
-    :statusDelete="deletedStatus"
     @closeToast="deletedToast = false"
   />
   <Error
     v-if="errorToast"
-    :notFound="statusNotFound"
-    :status="true"
     @closeToast="errorToast = false"
   />
 
   <Teleport to="#modal">
     <div v-if="collabModal">
       <CollabModal
+        :userEmail="alluserEmail"
+        :email="ownerEmail"
         @closeModal="closeModal"
         @addCollab="saveCollab"
       />

@@ -8,7 +8,12 @@ const props = defineProps({
       title: '',
       description: null,
       assignees: null,
-      status: '',
+      status: {
+      id: '1',
+      name: 'No Status',
+      description: 'A status hos not been assigned',
+      color: '#ffffff',
+    },
     },
   },
   statuses: Array,
