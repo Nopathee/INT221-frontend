@@ -118,7 +118,10 @@ async function changeVisi(url, token , visibility) {
     console.log('Change Visibility response:', response)
 
     if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`)
+      return {
+        status: response.status,
+        board: null, // กรณีที่เกิดข้อผิดพลาดจะไม่มีข้อมูลเพิ่มเติม
+      };
     }
     const data = await response.json() 
     console.log('Changed visibility:', data)
@@ -129,7 +132,6 @@ async function changeVisi(url, token , visibility) {
     }
   } catch (error) {
     console.error('Error changing visibility:', error)
-    return { status: 500, error: 'Internal Server Error' }
   }
 
 }
@@ -151,7 +153,6 @@ async function getAllUsers(url, token) {
     }
   } catch (error) {
     console.error('Error getting user:', error)
-    return { status: 500, error: 'Internal Server Error' }
   }
 }
 

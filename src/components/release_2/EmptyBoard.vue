@@ -468,9 +468,13 @@ const confChangeVisi = async (newVisi) => {
       visibility.value = newVisi
       console.log(response.status)
       console.log(response.board)
+    } else if(response.status === 403){
+      alert('you do not have permission to change board visibility mode.')
+    } else if (response.status === 500){
+      alert('There is a problem. Please try again later.')
     }
   } catch (err) {
-    console.error('Error creating board:', err)
+    console.error('Error changing visibility:', err)
   }
   confirmVisi.value = false
 }
