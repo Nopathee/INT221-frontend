@@ -221,12 +221,22 @@ async function addCollab(url, items) {
 
 async function getCollabs (url, token) {
   try {
-    const response = await fetch(url, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-        'Content-Type': 'application/json',
-      },
-    });
+    const options = token
+    ? {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    : {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }
+
+    const response = await fetch(url, options);
     const data = await response.json();
     return data; // Return the list of collaborators
   } catch (error) {

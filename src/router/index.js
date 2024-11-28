@@ -3,11 +3,12 @@ import Task from '../views/Task.vue'
 import { getItemById, getItems } from '@/libs/fetchUtils.js'
 import StatusList from '@/components/StatusList.vue'
 import Login from '../components/release_2/Login.vue'
-import Board from '@/components/release_2/Board.vue'
 import EmptyBoard from '@/components/release_2/EmptyBoard.vue'
 import StatusBoard from '@/components/release_2/StatusBoard.vue'
 import CollabBoard from '@/components/release_2/collabBoard.vue'
 import BoardList from '@/components/release_2/BoardList.vue'
+import AccessDenied from '@/views/AccessDenied.vue'
+
 
 const history = createWebHistory(import.meta.env.BASE_URL)
 
@@ -52,7 +53,7 @@ const router = createRouter({
     {
       path: '/access-denied',
       name: 'accessDenied',
-      component: () => import('../views/AccessDenied.vue'), // สร้าง component สำหรับแสดงข้อความ
+      component:AccessDenied 
     },
     {
       path: '/task/:id',
@@ -77,32 +78,31 @@ const router = createRouter({
       component: EmptyBoard,
       props: true,
       meta: { requiresAuth: true },
-      async beforeEnter(to , from , next) {
-        const boardId = to.params.boardId
-        const taskId = to.params.id
-        const token = localStorage.getItem('accessToken')
+      async beforeEnter(to, from, next) {
+        const boardId = to.params.boardId;
+        const token = localStorage.getItem('accessToken');
+      
         if (token) {
           try {
-            const response = await fetch(`${import.meta.env.VITE_API_ENDPOINT}/v3/boards/${boardId}/tasks`, {
+            const response = await fetch(`${import.meta.env.VITE_API_ENDPOINT}/v3/boards/${boardId}`, {
               headers: {
                 Authorization: `Bearer ${token}`,
                 "Content-Type": "application/json",
               },
             });
-            console.log('Response status:', response.status);
-            if (response.status === 404 || response.status == 401) {
-              localStorage.removeItem('accessToken')
-              next('/login')
-            } else if (response.status === 403) {          
-              alert('Access denied, you do not have permission to view this page.');
-            }else {
-              next()
+            const data = await response.json();
+            if (response.status === 200 || data.accessRight === 'WRITE') {
+              next();
+            } else if (data.accessRight === 'READ' || response.status === 403) {
+              next('/access-denied');
+            } else {
+              next('/login');
             }
           } catch (error) {
-            next('/login')
+            next('/login');
           }
         } else {
-          next('/login')
+          next('/access-denied');
         }
       }
     },
@@ -111,32 +111,73 @@ const router = createRouter({
       name: 'editTaskBoard',
       component: EmptyBoard,
       props: true,
-      async beforeEnter(to , from , next) {
-        const boardId = to.params.boardId
-        const taskId = to.params.id
-        const token = localStorage.getItem('accessToken')
+      async beforeEnter(to, from, next) {
+        const boardId = to.params.boardId;
+        const token = localStorage.getItem('accessToken');
+      
         if (token) {
           try {
-            const response = await fetch(`${import.meta.env.VITE_API_ENDPOINT}/v3/boards/${boardId}/tasks/${taskId}`, {
+            const response = await fetch(`${import.meta.env.VITE_API_ENDPOINT}/v3/boards/${boardId}`, {
               headers: {
                 Authorization: `Bearer ${token}`,
                 "Content-Type": "application/json",
               },
             });
-            console.log('Response status:', response.status);
-            if (response.status === 404 || response.status == 401) {
-              localStorage.removeItem('accessToken')
-              next('/login')
-            } else if (response.status === 403) {          
-              alert('Access denied, you do not have permission to view this page.');
-            }else {
-              next()
+            const data = await response.json();
+            if (response.status === 200 || data.accessRight === 'WRITE') {
+              next();
+            } else if (data.accessRight === 'READ' || response.status === 403) {
+              next('/access-denied');
+            } else {
+              next('/login');
             }
           } catch (error) {
-            next('/login')
+            next('/login');
           }
         } else {
-          next('/login')
+          next('/access-denied');
+        }
+      }
+      ,
+      meta: { requiresAuth: true },
+    },
+    {
+      path: '/board/:boardId/task/:id',
+      name: 'TaskBoard',
+      component: EmptyBoard,
+      props: true,
+      async beforeEnter(to, from, next) {
+        const boardId = to.params.boardId;
+        const token = localStorage.getItem('accessToken');
+      
+        if (token) {
+          try {
+            const response = await fetch(`${import.meta.env.VITE_API_ENDPOINT}/v3/boards/${boardId}`, {
+              headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "application/json",
+              },
+            });
+
+            if (response.status === 403) {
+              next('/access-denied');
+              return;
+            }
+            const data = await response.json();
+            console.log(data);
+            
+            if (response.status === 200 || data.accessRight === 'READ') {
+              next();
+            } else if (data.accessRight === 'READ') {
+              next('/access-denied');
+            } else {
+              next('/login');
+            }
+          } catch (error) {
+            next('/login');
+          }
+        } else {
+          next('/login');
         }
       }
       ,
@@ -189,35 +230,42 @@ const router = createRouter({
       component: EmptyBoard,
       props: true,
       meta: { requiresAuth: false },
-      async beforeEnter(to , from , next) {
-        const boardId = to.params.boardId
-        const token = localStorage.getItem('accessToken')
-          try {
-            const response = await fetch(`${import.meta.env.VITE_API_ENDPOINT}/v3/boards/${boardId}`, {
-              headers: {
-                Authorization: token ? `Bearer ${token}`: '',
-                "Content-Type": "application/json",
-              },
-            });
-            const boardData = await response.json();
-            console.log(boardData.visibility)
-            if(boardData.visibility === 'PUBLIC'){
-              next()
-            } else if (response.status === 404 || response.status == 401) {
-              localStorage.removeItem('accessToken')
-              next('/login')
-            } else if (response.status === 403) {
-            
-              alert('Access denied, you do not have permission to view this page.');
-              next('/login')
-              } else {
-              next()
-            }
-          } catch (error) {
-            next('/login')
-        } 
+      async beforeEnter(to, from, next) {
+        const boardId = to.params.boardId;
+        const token = localStorage.getItem('accessToken');
+        try {
+          const response = await fetch(`${import.meta.env.VITE_API_ENDPOINT}/v3/boards/${boardId}`, {
+            headers: {
+              Authorization: token ? `Bearer ${token}` : '',
+              "Content-Type": "application/json",
+            },
+          });
+    
+          console.log(response);
+    
+  
+          if (response.status === 403) {
+            next('/access-denied');
+            return;
+          }
+    
+          // โหลดข้อมูลบอร์ด
+          const boardData = await response.json();
+    
+          console.log(boardData.visibility);
+    
+          if (boardData.visibility === 'PUBLIC') {
+            next();
+          } else if (response.status === 404 || response.status == 401) {
+            localStorage.removeItem('accessToken');
+            next('/login');
+          } else {
+            next();
+          }
+        } catch (error) {
+          next('/login');
+        }
       }
-      
     },
 
     {
@@ -236,14 +284,16 @@ const router = createRouter({
                 "Content-Type": "application/json",
               },
             });
+
+            if (response.status === 403) {
+              next('/access-denied');
+              return;
+            }
             console.log('Response status:', response.status);
             if (response.status === 404 || response.status == 401) {
               localStorage.removeItem('accessToken')
               next('/login')
-            } if (response.status === 403) {
-              alert('Access denied, you do not have permission to view this page.')
-              next(false)
-           } else {
+            } else {
               next()
             }
           } catch (error) {
@@ -257,67 +307,65 @@ const router = createRouter({
       component: StatusBoard,
       props: true,
       meta: { requiresAuth: true },
-      async beforeEnter(to , from , next) {
-        const boardId = to.params.boardId
-        const statusId = to.params.statusId
-        const token = localStorage.getItem('accessToken')
+      async beforeEnter(to, from, next) {
+        const boardId = to.params.boardId;
+        const token = localStorage.getItem('accessToken');
+      
         if (token) {
           try {
-            const response = await fetch(`${import.meta.env.VITE_API_ENDPOINT}/v3/boards/${boardId}/statuses/${statusId}`, {
+            const response = await fetch(`${import.meta.env.VITE_API_ENDPOINT}/v3/boards/${boardId}`, {
               headers: {
                 Authorization: `Bearer ${token}`,
                 "Content-Type": "application/json",
               },
             });
-            console.log('Response status:', response.status);
-            if (response.status === 404 || response.status == 401) {
-              localStorage.removeItem('accessToken')
-              next('/login')
-            } else if (response.status === 403) {          
-              alert('Access denied, you do not have permission to view this page.');
-            }else {
-              next()
+            const data = await response.json();
+            if (response.status === 200 || data.accessRight === 'WRITE') {
+              next();
+            } else if (data.accessRight === 'READ' || response.status === 403) {
+              next('/access-denied');
+            } else {
+              next('/login');
             }
           } catch (error) {
-            next('/login')
+            next('/login');
           }
         } else {
-          next('/login')
+          next('/access-denied');
         }
       }
     },
     {
-      path: '/board/:id/status/add',
+      path: '/board/:boardId/status/add',
       name: 'addStatusBoard',
       component: EmptyBoard,
       props: true,
       meta: { requiresAuth: true },
-      async beforeEnter(to , from , next) {
-        const boardId = to.params.boardId
-        const statusId = to.params.statusId
-        const token = localStorage.getItem('accessToken')
+      async beforeEnter(to, from, next) {
+        const boardId = to.params.boardId;
+        const token = localStorage.getItem('accessToken');
+      
         if (token) {
           try {
-            const response = await fetch(`${import.meta.env.VITE_API_ENDPOINT}/v3/boards/${boardId}/statuses/${statusId}`, {
+            const response = await fetch(`${import.meta.env.VITE_API_ENDPOINT}/v3/boards/${boardId}`, {
               headers: {
                 Authorization: `Bearer ${token}`,
                 "Content-Type": "application/json",
               },
             });
-            console.log('Response status:', response.status);
-            if (response.status === 404 || response.status == 401) {
-              localStorage.removeItem('accessToken')
-              next('/login')
-            } else if (response.status === 403) {          
-              alert('Access denied, you do not have permission to view this page.');
-            }else {
-              next()
+            const data = await response.json();
+            if (response.status === 200 || data.accessRight === 'WRITE') {
+              next();
+            } else if (data.accessRight === 'READ' || response.status === 403) {
+              next('/access-denied');
+            } else {
+              next('/login');
             }
           } catch (error) {
-            next('/login')
+            next('/login');
           }
         } else {
-          next('/login')
+          next('/access-denied');
         }
       }
     },
@@ -337,6 +385,11 @@ const router = createRouter({
                 "Content-Type": "application/json",
               },
             });
+
+            if (response.status === 403) {
+              next('/access-denied');
+              return;
+            }
             const boardData = await response.json();
             console.log(boardData.visibility)
             if(boardData.visibility === 'PUBLIC'){
@@ -344,12 +397,8 @@ const router = createRouter({
             } else if (response.status === 404 || response.status == 401) {
               localStorage.removeItem('accessToken')
               next('/login')
-            } else if (response.status === 403) {
-            
-              alert('Access denied, you do not have permission to view this page.');
+            } else {
               next('/login')
-              } else {
-              next()
             }
           } catch (error) {
             next('/login')

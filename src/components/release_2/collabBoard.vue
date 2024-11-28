@@ -82,6 +82,8 @@ onMounted(async () => {
   
   // ดึงข้อมูล collaborators
   const collaborators = await getCollabs(`${import.meta.env.VITE_API_ENDPOINT}/v3/boards/${props.boardId}/collabs`, token);
+  console.log(collaborators);
+  
   collab.value = collaborators.showCollabDTOS;
   console.log(collab.value);
   
