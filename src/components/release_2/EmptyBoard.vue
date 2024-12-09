@@ -1,5 +1,5 @@
 <script setup>
-import { defineProps, ref, watch, onMounted, computed, readonly } from 'vue'
+import { defineProps, ref, watch, onMounted, computed } from 'vue'
 import { jwtDecode } from 'jwt-decode'
 import router from '@/router'
 import {
@@ -118,6 +118,7 @@ const visibility = ref('')
 const boardVisibility = ref('')
 const isAuthenticated = ref(false)
 const isOwner = ref(false)
+const writeAccess = ref(false)
 const readOnly = ref(false)
 onMounted(async () => {
   const token = localStorage.getItem('accessToken')
@@ -172,10 +173,15 @@ onMounted(async () => {
       if (fullName.value === board.board.owner.name) {
         isOwner.value = true
       }
-
+      console.log(board.board.accessRight);
+      
       if(board.board.accessRight === 'READ'){
         readOnly.value = true
+      } else if (board.board.accessRight === 'WRITE'){
+        writeAccess.value = true
       }
+      console.log(writeAccess.value);
+      
       boardName.value = board.board.boardName
       visibility.value = board.board.visibility
       isChecked.value = true
@@ -518,11 +524,18 @@ console.log(task.value.status)
         <div class="items-center justify-between hidden w-full md:flex md:w-auto md:order-1 pt-7">
           <ul
             class="flex flex-row font-medium md:p-0 mt-4 border border-gray-100 rounded-lg bg-gray-50 md:space-x-8 md:flex-row md:mt-0 md:border-0 md:bg-white dark:bg-gray-800 md:dark:bg-gray-900 dark:border-gray-700">
-            <li class="flex items-center space-x-2">
+            <li class="flex items-center space-x-2  relative group">
               <span class="label-text">PRIVATE</span>
               <input type="checkbox" class="toggle itbkk-board-visibility" :checked="isChecked"
-                @change="toggleVisibility" :disabled="!isAuthenticated || !isOwner || readOnly" />
+                @change="toggleVisibility" :disabled="!isAuthenticated || !isOwner  || readOnly" />
               <span class="label-text">PUBLIC</span>
+              <div
+                v-if="!isOwner"
+                class="absolute top-full mt-1 w-auto bg-gray-800 text-white text-sm rounded-md p-2 opacity-0 group-hover:opacity-100 transition-opacity"
+                role="tooltip"
+              >
+                You need to be board owner to perform this action.
+              </div>
             </li>
 
             <li class="flex item-center">
@@ -627,11 +640,12 @@ console.log(task.value.status)
           <thead>
             <tr class="font-bold text-red-800 text-lg bg-pink-300">
               <th class="w-1/12">
-                <button @click="addNewTask" class="cursor-pointer itbkk-button-add"
-                  :class="{ 'cursor-not-allowed opacity-50': !isAuthenticated || !isOwner || readOnly}"
-                  :disabled="!isAuthenticated || !isOwner || readOnly">
+                <button @click="addNewTask" class="cursor-pointer itbkk-button-add relative group"
+                  :class="{ 'cursor-not-allowed opacity-50': !isAuthenticated || (isOwner === false && writeAccess === false)  || readOnly}"
+                  :disabled="!isAuthenticated || (isOwner === false && writeAccess === false)  || readOnly">
                   <img src="../icon/InsertBtn.svg" alt="Add Task" />
                 </button>
+
               </th>
               <th class="w-5/12">Title</th>
               <th class="w-3/12">Assignees</th>
@@ -660,15 +674,15 @@ console.log(task.value.status)
                   <ul class="p-1 shadow menu dropdown-content z-[1] bg-base-100 rounded-box w-32">
                     <li class="">
                       <button @click="showEdit(task)" class="text-black dark:text-white itbkk-button-edit"
-                        :class="{ 'cursor-not-allowed opacity-50': !isAuthenticated || !isOwner || readOnly }"
-                        :disabled="!isAuthenticated || !isOwner || readOnly">
+                        :class="{ 'cursor-not-allowed opacity-50': !isAuthenticated || (isOwner === false && writeAccess === false)  || readOnly }"
+                        :disabled="!isAuthenticated || (isOwner === false && writeAccess === false)  || readOnly">
                         Edit
                       </button>
                     </li>
                     <li>
                       <button @click="showDelete(task.id, index + 1)" class="text-red-600 itbkk-button-delete"
-                        :class="{ 'cursor-not-allowed opacity-50': !isAuthenticated || !isOwner || readOnly }"
-                        :disabled="!isAuthenticated || !isOwner || readOnly" >
+                        :class="{ 'cursor-not-allowed opacity-50': !isAuthenticated || (isOwner === false && writeAccess === false)  || readOnly }"
+                        :disabled="!isAuthenticated || (isOwner === false && writeAccess === false)  || readOnly" >
                         Delete
                       </button>
                     </li>

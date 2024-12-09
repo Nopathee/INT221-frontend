@@ -2,8 +2,9 @@
 import { ref, onMounted, computed } from 'vue';
 import { jwtDecode } from 'jwt-decode';
 import router from '@/router';
-import { createNewBoard } from '@/libs/fetchUtils_release2'
-
+import { createNewBoard , getCollabs } from '@/libs/fetchUtils_release2'
+import EditDeleteModal from './EditDeleteModal.vue';
+import { deleteItemById } from '@/libs/fetchUtils';
 const addBoardModal = ref(false)
 const showBoard = ref(false)
 const boardName = ref('')
@@ -12,6 +13,7 @@ const personalBoards = ref([]);
 const collabBoards = ref([]); // เก็บข้อมูล collab boards
 const showPersonalboard = ref(false)
 const showCollabBoard = ref(false)
+const boardData = ref([])
 onMounted(async () => {
   const token = localStorage.getItem('accessToken');
   if (token) {
@@ -41,13 +43,16 @@ const fetchBoards = async () => {
     personalBoards.value = data.personalBoards.sort((a, b) => new Date(a.created_on) - new Date(b.created_on)); // เรียงลำดับจากวันที่สร้าง
     collabBoards.value = data.collabBoards.sort((a, b) => new Date(a.added_on) - new Date(b.added_on)); // เรียงลำดับจากวันที่เพิ่ม
     console.log(data);
+    boardData.value = data
     console.log(personalBoards.value);
     showPersonalboard.value = data.personalBoards && data.personalBoards.length > 0;
     showCollabBoard.value = data.collabBoards && data.collabBoards.length > 0;
+
   } catch (error) {
     console.error("Error fetching boards:", error);
   }
 };
+
 
 const logout = () => {
   localStorage.removeItem('accessToken');
@@ -59,34 +64,84 @@ const goToBoard = (boardId) => {
   router.push(`/board/${boardId}`);
 };
 
-const leaveBoard = async (boardId) => {
+const findCollabOid = (collaborators, fullname) => {
+  // ค้นหา collaborator ที่มีชื่อตรงกับ fullname
+  const collab = collaborators.find(c => c.name === fullname);
+
+  // ถ้าพบ collaborator ที่มีชื่อตรงกับ fullname ให้คืนค่า oid
+  if (collab) {
+    return collab.oid;
+  } else {
+    console.log('Collaborator not found.');
+    return null;
+  }
+};
+
+const leaveBoard = async () => {
   const token = localStorage.getItem('accessToken');
   if (!token) {
     console.error("No access token found");
     return;
   }
+  console.log(leaveOid.value);
+  console.log(leaveBoardId.value);
 
+  
+  
   try {
     // ใช้ DELETE method สำหรับการออกจาก board
-    const response = await fetch(`${import.meta.env.VITE_API_ENDPOINT}/v3/boards/${boardId}/collab`, {
-      method: 'DELETE', // ใช้ DELETE เพื่อออกจาก collab board
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
-      },
-    });
+    const response = await deleteItemById(`${import.meta.env.VITE_API_ENDPOINT}/v3/boards/${leaveBoardId.value}/collabs`, leaveOid.value )
 
-    if (response.ok) {
+    console.log(response);
+    
+    if (response === 200) {
       // ทำการอัพเดต collabBoards หลังจากออกจาก board
-      collabBoards.value = collabBoards.value.filter(board => board.id !== boardId);
-      console.log(`Successfully left the board with ID: ${boardId}`);
+      collabBoards.value = collabBoards.value.filter(board => board.id !== leaveBoardId.value);
+      leaveBoardModal.value = false
+      console.log(`Successfully left the board with ID: ${leaveBoardId.value}`);
+      alert(`Successfully left the board with ID: ${leaveBoardId.value}`)
     } else {
-      console.error("Error leaving the board:", response.statusText);
+      console.error("Error leaving the board:", response);
     }
   } catch (error) {
     console.error("Error leaving the board:", error);
   }
 };
+
+const leaveBoardModal = ref(false)
+
+const leaveBoardId = ref('')
+
+const leaveOid = ref('')
+
+const leaveBoardName = ref('')
+
+const showLeaveModal = async (boardId , name , boardName) => {
+  const token = localStorage.getItem('accessToken');
+  if (!token) {
+    console.error("No access token found");
+    return;
+  }
+  leaveBoardName.value = boardName
+  console.log(leaveBoardName.value);
+  
+
+  leaveBoardModal.value = true
+  console.log(leaveBoardModal.value);
+  const fullName = name
+  const collaborators = await getCollabs(`${import.meta.env.VITE_API_ENDPOINT}/v3/boards/${boardId}/collabs`, token);
+  console.log(collaborators);
+  const collabOid = findCollabOid(collaborators.showCollabDTOS, fullName);
+  console.log(fullName);
+  console.log(boardData.value.collabBoards);
+  
+  const selectedBoardId = findBoardIdByName(boardData.value.collabBoards, boardName)
+  console.log(selectedBoardId);
+  
+  console.log(collabOid);
+  leaveBoardId.value = selectedBoardId
+  leaveOid.value = collabOid
+}
 
 const addBoard = () => {
   addBoardModal.value = true
@@ -94,6 +149,22 @@ const addBoard = () => {
 
 const closeModal = () => {
   addBoardModal.value = false
+  
+}
+
+const findBoardIdByName = (boardData, boardName) => {
+  console.log(boardData);
+  console.log(boardName);
+
+  
+  const board = boardData.find((board) => board.boardName === boardName);
+  return board ? board.id : null; 
+};
+
+const closeModalLeave = () => {
+  leaveBoardModal.value = false
+  console.log('test');
+  
 }
 
 const createBoard = async () => {
@@ -231,7 +302,7 @@ const createBoard = async () => {
             <td class="text-center">{{ board.owner.name }}</td>
             <td class="text-center">{{ board.accessRight }}</td>
             <td>
-              <button @click="leaveBoard(board.id)" class=" hover:underline bg-red-500 rounded-lg px-4 py-2">
+              <button @click="showLeaveModal(board.id , fullName , board.boardName)" class=" hover:underline bg-red-500 rounded-lg px-4 py-2">
                 Leave
               </button>
             </td>
@@ -240,7 +311,17 @@ const createBoard = async () => {
       </table>
     </div>
   </div>
- 
+
+  <Teleport to="#modal">
+    <div v-if="showLeaveModal">
+      <EditDeleteModal
+        :leave="leaveBoardModal"
+        :boardName="leaveBoardName"
+        @closeModalLeave="closeModalLeave"
+        @confirmLeave="leaveBoard"
+      />
+    </div>
+  </Teleport>
 
 </template>
 

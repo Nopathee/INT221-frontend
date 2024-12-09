@@ -107,14 +107,45 @@ async function addItem(url, item) {
 
 async function deleteItemById(url, id) {
   console.log(`${url}/${id}`)
-  const token = localStorage.getItem('accessToken')
+  let token = localStorage.getItem('accessToken')
   try {
-    const res = await fetch(`${url}/${id}`, {
+    let res = await fetch(`${url}/${id}`, {
       method: 'DELETE',
       headers: {
         'Authorization': `Bearer ${token}`,
       },
     })
+
+    if(res.status === 401){
+      const refreshToken = localStorage.getItem('refreshToken');
+      const response = await fetch(`${import.meta.env.VITE_API_ENDPOINT}/token`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${refreshToken}`,
+        }
+      })
+      console.log('Delete collab response:', response)
+      if(response.ok){
+        const newacccessToken = await response.json()
+        const newToken = newacccessToken.access_token
+        console.log(newToken);
+        localStorage.setItem('accessToken', newToken);
+        token = newToken;
+        console.log(token)
+
+        res = await fetch(`${url}/${id}`, {
+          method: 'DELETE',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+          },
+        })
+      } else {
+        localStorage.removeItem('accessToken')
+        localStorage.removeItem('refreshToken')
+        router.push('/login')
+      }
+
+    }
     return res.status
   } catch (error) {
     console.log(`error: ${error}`)

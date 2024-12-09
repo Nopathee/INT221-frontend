@@ -392,7 +392,9 @@ const router = createRouter({
             }
             const boardData = await response.json();
             console.log(boardData.visibility)
-            if(boardData.visibility === 'PUBLIC'){
+            console.log(boardData);
+            
+            if(boardData.visibility === 'PUBLIC' || boardData.accessRight === 'OWNER' ){
               next()
             } else if (response.status === 404 || response.status == 401) {
               localStorage.removeItem('accessToken')

@@ -245,6 +245,64 @@ async function getCollabs (url, token) {
   }
 };
 
-export { login, getUserBoard , createNewBoard , changeVisi , getAllUsers,  addCollab , getCollabs}
+async function changeAccessRight(url , newCollab) {
+  let token  = localStorage.getItem('accessToken')
+  try {
+    let res = await fetch(url, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`, 
+      },
+      body: JSON.stringify({accessRight:newCollab.accessRight}), 
+    })
+    console.log('Change accessRight response:', res)
+
+    if(res.status === 401){
+      const refreshToken = localStorage.getItem('refreshToken');
+      const response = await fetch(`${import.meta.env.VITE_API_ENDPOINT}/token`, {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${refreshToken}`, 
+        },
+      })
+      console.log('Change accessRight response:', response)
+      if(response.ok){
+        const newacccessToken = await response.json()
+        const newToken = newacccessToken.access_token
+        console.log(newToken);
+        localStorage.setItem('accessToken', newToken);
+        token = newToken;
+        console.log(token)
+
+        res = await fetch(url, {
+          method: 'PATCH',
+          headers: {
+            'content-type': 'application/json',
+            'Authorization': `Bearer ${token}`,
+          },
+          body: JSON.stringify({accessRight:newCollab.accessRight}), 
+        })
+      } else {
+        localStorage.removeItem('accessToken')
+        localStorage.removeItem('refreshToken')
+        router.push('/login')
+      }
+
+    }
+    const data = await res.json() 
+    console.log('Changed accessRight:', data)
+
+    return {
+      status: res.status,
+      accessRight: data, 
+    }
+  } catch (error) {
+    console.error('Error changing accessRight:', error)
+  }
+
+}
+
+export { login, getUserBoard , createNewBoard , changeVisi , getAllUsers,  addCollab , getCollabs ,changeAccessRight}
 
 

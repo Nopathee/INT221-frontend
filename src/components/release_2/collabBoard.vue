@@ -1,13 +1,15 @@
 <script setup>
 import {  defineProps, onMounted, ref , watch} from 'vue'
 import {  useRouter } from 'vue-router'
-import {getItemById} from '@/libs/fetchUtils.js'
-import {  addCollab, getCollabs , getUserBoard} from '@/libs/fetchUtils_release2'
+import { deleteItemById, getItemById} from '@/libs/fetchUtils.js'
+import {  addCollab, getCollabs , getUserBoard ,changeAccessRight} from '@/libs/fetchUtils_release2'
 import { jwtDecode } from 'jwt-decode'
 import Succes from '../Succes.vue'
 import Delete from '../Delete.vue'
 import Error from '../Error.vue'
 import CollabModal from './collabModal.vue'
+import ChangeAccessRight from './EditDeleteModal.vue'
+import EditDeleteModal from './EditDeleteModal.vue'
 const props = defineProps({
   statuses: Array,
   id: String,
@@ -43,6 +45,7 @@ const readOnly = ref(false)
 
 const isOwner = ref(false)
 
+const deleteCollabModal = ref(false)
 const decoded = () => {
   const token = localStorage.getItem('accessToken')
   if (token) {
@@ -86,7 +89,7 @@ onMounted(async () => {
   
   collab.value = collaborators.showCollabDTOS;
   console.log(collab.value);
-  
+
 });
 
 
@@ -102,6 +105,7 @@ const addCollabModal = () => {
 }
 
 const emailInsert = ref('')
+
 const saveCollab = async (newItem) => {
   console.log(newItem);
   emailInsert.value = newItem.email
@@ -159,11 +163,76 @@ const saveCollab = async (newItem) => {
     collabModal.value = false;
   }
 };
+const changeAccessModal = ref(false)
+
+const collabName = ref('')
+const currentAccessRight = ref('')
+const changeAccess = (name, accessRight , oid) => {  
+  console.log('Change Access for:', name, 'Current Access Right:', accessRight , 'Owner Id:' , oid);
+  collabName.value = name
+  currentAccessRight.value = accessRight
+  changeAccessModal.value = true
+  collabOid.value = oid
+  console.log('Change Access for:', collabName.value, 'Current Access Right:', currentAccessRight.value , 'Owner Id:' , collabOid.value);
+}
 
 
+const saveChange = async (newAccess) => {
+
+  console.log(newAccess);
+  
+  try {
+    // ส่งข้อมูลไปยัง API
+    const response = await changeAccessRight(
+      `${import.meta.env.VITE_API_ENDPOINT}/v3/boards/${props.boardId}/collabs/${newAccess.collabOid}`,
+      newAccess
+    );
+    console.log(response);
+    
+    // ตรวจสอบสถานะการตอบกลับจาก API
+    if (response.status === 200) {
+      // ถ้าการบันทึกสำเร็จ ให้ปิด modal และแสดงข้อความสำเร็จ
+      console.log("Access right updated successfully");
+      console.log(collab.value);
+      changeAccessModal.value = false;
+
+      // อัปเดตข้อมูลของ collab โดยตรง
+
+      const updatedCollab = response.accessRight;  // สมมุติว่า response ส่งข้อมูล collaborator กลับมา
+
+      
+      const collabToUpdate = collab.value.find(c => c.oid === newAccess.collabOid);
+      if (collabToUpdate) {
+        collabToUpdate.access_right = updatedCollab.accessRight;  // อัปเดตข้อมูล access_right
+      }
+
+      console.log(collab.value);
+      
+      alert('Access rights updated successfully!');
+    }else if (response.status === 401) {
+      alert("You are not authorized. Please log in again.");
+    } else if (response.status === 403) {
+      alert("You do not have permission to change collaborator access right.");
+      collabModal.value = false;
+    } else {
+      alert("There is a problem. Please try again later.");
+      collabModal.value = false;
+    }
+  } catch (error) {
+    // จัดการข้อผิดพลาดที่อาจเกิดขึ้นในระหว่างการเรียก API
+    console.error('Error in saveChange:', error);
+  }
+
+  // ล็อกค่า newAccess
+  console.log(newAccess);
+};
+
+const collabOid = ref('')
 
 const closeModal = () => {
   collabModal.value = false
+  changeAccessModal.value = false
+  deleteCollabModal.value = false
   router.push(`/board/${props.boardId}/collab`)
 }
 
@@ -171,6 +240,59 @@ watch(emailInsert,(newEmail) => {
   console.log(newEmail);
   
 }) 
+
+
+
+watch(collab,(newAccess) => {
+  console.log(newAccess);
+})
+
+
+const removeCollab = (oid , name) => {
+  deleteCollabModal.value = true
+  collabName.value = name
+  collabOid.value = oid
+  console.log('Change Access for:', collabName.value, 'Current Access Right:', currentAccessRight.value , 'Owner Id:' , collabOid.value);
+}
+
+const confirmRemove = async (removeCollab) => {
+  try {
+    // ส่งข้อมูลไปยัง API
+    const response = await deleteItemById(
+      `${import.meta.env.VITE_API_ENDPOINT}/v3/boards/${props.boardId}/collabs`,
+      removeCollab
+    );
+    console.log(response);
+    
+
+    if (response === 200) {
+
+      collab.value = collab.value.filter(c => c.oid !== removeCollab);
+      console.log(collab.value);
+      deleteCollabModal.value = false;
+
+
+      alert('Delete collaborator successfully!');
+    } else if (response === 401) {
+      alert("You are not authorized. Please log in again.");
+    } else if (response === 403) {
+      alert("You do not have permission to remove collaborator.");
+      collabModal.value = false;
+    } else if (response === 404) {
+      // ใช้ removeCollab เพื่อแสดงข้อมูลในข้อความ
+      const removedCollab = collab.value.find(c => c.oid === removeCollab);
+      const collabName = removedCollab ? removedCollab.name : 'The user';
+      alert(`${collabName} is not a collaborator.`);
+    }  else {
+      alert("There is a problem. Please try again later.");
+      collabModal.value = false;
+    }
+  } catch (error) {
+    // จัดการข้อผิดพลาดที่อาจเกิดขึ้นในระหว่างการเรียก API
+    console.error('Error in saveChange:', error);
+    alert('An error occurred while delete collaborator. Please try again.');
+  }
+}
 
 
 </script>
@@ -223,14 +345,16 @@ watch(emailInsert,(newEmail) => {
               <td class="font-semibold text-white itbkk-status-description itbkk-email">
                 {{ collaborator.email }}
               </td>
+              <button @click="changeAccess(collaborator.name, collaborator.access_right , collaborator.oid)">
               <td class="font-semibold italic text-gray-500 itbkk-access-right">
                 {{ collaborator.access_right }}
               </td>
+            </button>
               <td class="text-center">
                 <button
                   class="bg-red-500 text-white text-sm py-2 px-4 rounded ml-2 itbkk-collab-remove"
                   :class="{ 'cursor-not-allowed opacity-50': !isAuthenticated || !isOwner || readOnly }"
-                  @click="deleteCollab(collaborator.oid)"
+                  @click="removeCollab(collaborator.oid , collaborator.name)"
                   :disabled="!isAuthenticated || !isOwner || readOnly"
                 >
                   Delete
@@ -259,10 +383,25 @@ watch(emailInsert,(newEmail) => {
   <Teleport to="#modal">
     <div v-if="collabModal">
       <CollabModal
-        :userEmail="alluserEmail"
         :email="ownerEmail"
         @closeModal="closeModal"
         @addCollab="saveCollab"
+      />
+    </div>
+  </Teleport>
+
+  <Teleport to="#modal">
+    <div v-if="changeAccessModal || deleteCollabModal ">
+      <EditDeleteModal
+        :edit="changeAccessModal"
+        :delete="deleteCollabModal"
+        :name="collabName"
+        :accessRight="currentAccessRight"
+        :collabOid="collabOid"
+        @closeModalAccess="closeModal"
+        @confirm="saveChange"
+        @closeModalDelete="closeModal"
+        @confirmDelete="confirmRemove"
       />
     </div>
   </Teleport>

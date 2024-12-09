@@ -2,7 +2,6 @@
 import { computed, defineProps, ref, watch } from 'vue'
 const props = defineProps({
   email: String,
-  userEmail: Array
 })
 const newcollabEmail = ref('')
 const newAccess = ref('READ')
@@ -13,7 +12,6 @@ const newCollab = computed(() => ({
 }))
 
 const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-console.log(props.userEmail);
 console.log(props.email);
 
 const notvalidEmail = computed(() => {

@@ -57,6 +57,8 @@ const isAuthenticated = ref(false)
 
 const isOwner = ref(false)
 
+const writeAccess = ref(false)
+
 const readOnly = ref(false)
 
 const fullName = ref('')
@@ -100,6 +102,10 @@ onMounted(async () => {
       }
       if(board.board.accessRight === 'READ'){
         readOnly.value = true
+      }
+
+      if(board.board.accessRight === 'WRITE'){
+        writeAccess.value = true
       }
 })
 
@@ -331,8 +337,8 @@ if (props.notFound) {
           <button
             class="bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 px-4 border-b-4 border-blue-700 hover:border-blue-500 rounded itbkk-button-add"
             @click="addStatus"
-            :class="{ 'cursor-not-allowed opacity-50': !isAuthenticated || !isOwner || readOnly }"
-            :disabled="!isAuthenticated || !isOwner || readOnly "
+            :class="{ 'cursor-not-allowed opacity-50': !isAuthenticated || (isOwner === false && writeAccess === false) || readOnly }"
+            :disabled="!isAuthenticated || (isOwner === false && writeAccess === false) || readOnly "
           >
             Add Status
           </button>
@@ -382,8 +388,8 @@ if (props.notFound) {
                   @click="editStatus(status.id)"
                   class="bg-slate-200 text-black text-sm py-2 px-4 rounded mr-2 itbkk-button-edit"
                   v-if="status.name !== 'No Status' && status.name !== 'Done'"
-                   :class="{ 'cursor-not-allowed opacity-50': !isAuthenticated || !isOwner || readOnly }"
-                  :disabled="!isAuthenticated || !isOwner || readOnly "
+                   :class="{ 'cursor-not-allowed opacity-50': !isAuthenticated || (isOwner === false && writeAccess === false) || readOnly }"
+                  :disabled="!isAuthenticated || (isOwner === false && writeAccess === false) || readOnly "
                 >
                   Edit
                 </button>
@@ -391,8 +397,8 @@ if (props.notFound) {
                   @click="deleteStatus(status.id)"
                   class="bg-red-500 text-white text-sm py-2 px-4 rounded ml-2 itbkk-button-delete"
                   v-if="status.name !== 'No Status' && status.name !== 'Done'"
-                  :class="{ 'cursor-not-allowed opacity-50': !isAuthenticated  || !isOwner || readOnly }"
-                  :disabled="!isAuthenticated || !isOwner || readOnly "
+                  :class="{ 'cursor-not-allowed opacity-50': !isAuthenticated  || (isOwner === false && writeAccess === false) || readOnly }"
+                  :disabled="!isAuthenticated || (isOwner === false && writeAccess === false) || readOnly "
                 >
                   Delete
                 </button>
