@@ -63,12 +63,12 @@ defineEmits(['confirm', 'closeModalAccess', 'confirmDelete', 'closeModalDelete' 
       <div class="bg-white rounded-lg p-8 w-3/5 shadow-2xl dark:bg-gray-700">
         <div class="flex items-center justify-between p-4 border-b rounded-t dark:border-gray-600">
           <h2 class="text-lg font-semibold text-gray-900 dark:text-white">
-            Delete Collaborator
+            Remove Collaborator
           </h2>
         </div>
         <div class="flex items-center justify-between p-4 border-b dark:border-gray-600">
           <h2 class="text-lg font-semibold text-gray-900 dark:text-white itbkk-message">
-            Are you sure you want to delete collaborator "{{ props.name }}"?
+            Do you want to remove "{{ props.name }}" from the board?
           </h2>
         </div>
         <div class="flex justify-end">

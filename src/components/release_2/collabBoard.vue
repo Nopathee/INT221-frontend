@@ -357,7 +357,7 @@ const confirmRemove = async (removeCollab) => {
                   @click="removeCollab(collaborator.oid , collaborator.name)"
                   :disabled="!isAuthenticated || !isOwner || readOnly"
                 >
-                  Delete
+                  Remove
                 </button>
               </td>
             </tr>
