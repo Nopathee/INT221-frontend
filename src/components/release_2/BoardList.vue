@@ -38,7 +38,8 @@ const fetchBoards = async () => {
       },
     });
     const data = await response.json();
-
+    console.log(data);
+    
     // แยก personal boards และ collab boards
     personalBoards.value = data.personalBoards.sort((a, b) => new Date(a.created_on) - new Date(b.created_on)); // เรียงลำดับจากวันที่สร้าง
     collabBoards.value = data.collabBoards.sort((a, b) => new Date(a.added_on) - new Date(b.added_on)); // เรียงลำดับจากวันที่เพิ่ม

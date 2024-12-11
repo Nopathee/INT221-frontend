@@ -91,11 +91,12 @@ const router = createRouter({
               },
             });
             const data = await response.json();
-            if (response.status === 200 || data.accessRight === 'WRITE') {
-              next();
-            } else if (data.accessRight === 'READ' || response.status === 403) {
+            console.log(data);
+           if (data.accessRight === 'READ' || response.status === 403 ) {
               next('/access-denied');
-            } else {
+            } else if (response.status === 200 || data.accessRight === 'WRITE') {
+              next();
+            }  else {
               next('/login');
             }
           } catch (error) {
@@ -124,10 +125,12 @@ const router = createRouter({
               },
             });
             const data = await response.json();
-            if (response.status === 200 || data.accessRight === 'WRITE') {
-              next();
-            } else if (data.accessRight === 'READ' || response.status === 403) {
+            console.log(data);
+            
+            if (data.accessRight === 'READ' || response.status === 403) {
               next('/access-denied');
+            } else if (response.status === 200 || data.accessRight === 'WRITE') {
+              next();
             } else {
               next('/login');
             }
@@ -158,7 +161,8 @@ const router = createRouter({
                 "Content-Type": "application/json",
               },
             });
-
+            console.log(response);
+            
             if (response.status === 403) {
               next('/access-denied');
               return;
@@ -166,18 +170,34 @@ const router = createRouter({
             const data = await response.json();
             console.log(data);
             
-            if (response.status === 200 || data.accessRight === 'READ') {
-              next();
-            } else if (data.accessRight === 'READ') {
-              next('/access-denied');
+            if(data.visibility === 'PUBLIC' || data.accessRight === 'OWNER' || data.accessRight === 'READ' ){
+              next()
+            } else if (response.status === 404 || response.status == 401) {
+              localStorage.removeItem('accessToken')
+              next('/login')
             } else {
-              next('/login');
+              next('/login')
             }
           } catch (error) {
             next('/login');
           }
         } else {
-          next('/login');
+          try {
+            const response = await fetch(`${import.meta.env.VITE_API_ENDPOINT}/v3/boards/${boardId}`, {
+              headers: {
+                "Content-Type": "application/json",
+              },
+            });
+            const data = await response.json();
+            
+            if (data.visibility === 'PUBLIC') {
+              next();
+            } else {
+              next('/access-denied');
+            }
+          } catch (error) {
+            next('/access-denied');
+          }
         }
       }
       ,
@@ -251,7 +271,8 @@ const router = createRouter({
     
           // โหลดข้อมูลบอร์ด
           const boardData = await response.json();
-    
+          console.log(boardData);
+          
           console.log(boardData.visibility);
     
           if (boardData.visibility === 'PUBLIC') {
@@ -320,10 +341,10 @@ const router = createRouter({
               },
             });
             const data = await response.json();
-            if (response.status === 200 || data.accessRight === 'WRITE') {
-              next();
-            } else if (data.accessRight === 'READ' || response.status === 403) {
+            if (data.accessRight === 'READ' || response.status === 403) {
               next('/access-denied');
+            } else if (response.status === 200 || data.accessRight === 'WRITE') {
+              next();
             } else {
               next('/login');
             }
@@ -354,10 +375,10 @@ const router = createRouter({
               },
             });
             const data = await response.json();
-            if (response.status === 200 || data.accessRight === 'WRITE') {
-              next();
-            } else if (data.accessRight === 'READ' || response.status === 403) {
+            if (data.accessRight === 'READ' || response.status === 403) {
               next('/access-denied');
+            } else if (response.status === 200 || data.accessRight === 'WRITE') {
+              next();
             } else {
               next('/login');
             }
@@ -394,13 +415,11 @@ const router = createRouter({
             console.log(boardData.visibility)
             console.log(boardData);
             
-            if(boardData.visibility === 'PUBLIC' || boardData.accessRight === 'OWNER' ){
-              next()
-            } else if (response.status === 404 || response.status == 401) {
+            if (response.status === 404 || response.status == 401) {
               localStorage.removeItem('accessToken')
               next('/login')
             } else {
-              next('/login')
+              next()
             }
           } catch (error) {
             next('/login')

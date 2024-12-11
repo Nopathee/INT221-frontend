@@ -173,8 +173,9 @@ onMounted(async () => {
       if (fullName.value === board.board.owner.name) {
         isOwner.value = true
       }
-      console.log(board.board.accessRight);
-      
+     
+   
+    console.log(board.board.accessRight);
       if(board.board.accessRight === 'READ'){
         readOnly.value = true
       } else if (board.board.accessRight === 'WRITE'){

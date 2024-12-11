@@ -14,7 +14,7 @@ const props = defineProps({
 const newAccess = ref('');
 
 onMounted(() => {
-  newAccess.value = props.accessRight === 'READ' ? 'WRITE' : 'READ';
+  newAccess.value = props.accessRight;
 });
 
 const newCollab = computed(() => ({
@@ -38,7 +38,7 @@ defineEmits(['confirm', 'closeModalAccess', 'confirmDelete', 'closeModalDelete' 
         <div class="flex items-center justify-between p-4 border-b dark:border-gray-600">
           <h2 class="text-lg font-semibold text-gray-900 dark:text-white itbkk-message">
             Do you want to change access right of "{{ props.name }}" to
-            "{{ props.accessRight === 'READ' ? 'WRITE' : 'READ' }}"?
+            "{{ props.accessRight}}"?
           </h2>
         </div>
         <div class="flex justify-end">

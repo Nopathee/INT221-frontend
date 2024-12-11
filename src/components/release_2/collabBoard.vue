@@ -345,11 +345,19 @@ const confirmRemove = async (removeCollab) => {
               <td class="font-semibold text-white itbkk-status-description itbkk-email">
                 {{ collaborator.email }}
               </td>
-              <button @click="changeAccess(collaborator.name, collaborator.access_right , collaborator.oid)">
-              <td class="font-semibold italic text-gray-500 itbkk-access-right">
-                {{ collaborator.access_right }}
-              </td>
-            </button>
+              <td class="font-semibold italic text-white">
+  <div class="relative inline-block">
+    <select
+      @input="changeAccess(collaborator.name, $event.target.value, collaborator.oid)"
+      class="bg-gray-800 text-white text-sm py-2 px-4 rounded itbkk-access-right border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+      :class="{ 'cursor-not-allowed opacity-50': !isAuthenticated || !isOwner || readOnly }"
+      :disabled="!isAuthenticated || !isOwner || readOnly"
+    >
+      <option value="READ" :selected="collaborator.access_right === 'READ'" class="bg-gray-800 hover:bg-blue-500">READ</option>
+      <option value="WRITE" :selected="collaborator.access_right === 'WRITE'" class="bg-gray-800 hover:bg-green-500">WRITE</option>
+    </select>
+  </div>
+</td>
               <td class="text-center">
                 <button
                   class="bg-red-500 text-white text-sm py-2 px-4 rounded ml-2 itbkk-collab-remove"
