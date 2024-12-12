@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted, computed } from 'vue';
+import { ref, onMounted } from 'vue';
 import { jwtDecode } from 'jwt-decode';
 import router from '@/router';
 import { createNewBoard , getCollabs } from '@/libs/fetchUtils_release2'
@@ -14,6 +14,11 @@ const collabBoards = ref([]); // เก็บข้อมูล collab boards
 const showPersonalboard = ref(false)
 const showCollabBoard = ref(false)
 const boardData = ref([])
+const leaveBoardModal = ref(false)
+const leaveBoardId = ref('')
+const leaveOid = ref('')
+const leaveBoardName = ref('')
+
 onMounted(async () => {
   const token = localStorage.getItem('accessToken');
   if (token) {
@@ -95,13 +100,7 @@ const leaveBoard = async () => {
   }
 };
 
-const leaveBoardModal = ref(false)
 
-const leaveBoardId = ref('')
-
-const leaveOid = ref('')
-
-const leaveBoardName = ref('')
 
 const showLeaveModal = async (boardId , name , boardName) => {
   const token = localStorage.getItem('accessToken');

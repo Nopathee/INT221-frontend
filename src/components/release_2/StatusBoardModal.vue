@@ -20,6 +20,14 @@ onMounted(() => {
 const showTime = ref({
   timezone: '',
 })
+const OriginalStatus = ref({
+  id: props.status.id,
+  name: props.status.name,
+  description: props.status.description,
+  color: props.status.color,
+})
+
+
 const formatterCreateOn = computed(() => {
   if (!props.status || !props.status.createdOn) return ''
   const createdOn = new Date(props.status.createdOn).toLocaleString('en-GB')
@@ -34,12 +42,6 @@ const getTimezone = () => {
   showTime.value.timezone = Intl.DateTimeFormat().resolvedOptions().timeZone
 }
 
-const OriginalStatus = ref({
-  id: props.status.id,
-  name: props.status.name,
-  description: props.status.description,
-  color: props.status.color,
-})
 
 const isSaveDisabled = computed(() => {
   const currentName = props.status.name?.trim().toLowerCase()

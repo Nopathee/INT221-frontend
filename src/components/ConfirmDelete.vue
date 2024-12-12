@@ -1,6 +1,4 @@
 <script setup>
-import { getItemById } from '@/libs/fetchUtils'
-import { onMounted, ref } from 'vue'
 
 defineEmits(['close', 'confirm'])
 

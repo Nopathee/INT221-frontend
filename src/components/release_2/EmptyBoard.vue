@@ -21,7 +21,6 @@ import Error from '../Error.vue'
 import { changeVisi, getUserBoard } from '@/libs/fetchUtils_release2'
 import ConfirmChangeVisi from './ConfirmChangeVisi.vue'
 
-
 const props = defineProps({
   tasks: Array,
   statuses: Array,
@@ -38,22 +37,51 @@ const emit = defineEmits([
   'statusDetail',
   'limitModal',
 ])
-
 const boardName = ref('')
-
 const deletedToast = ref(false)
-
 const successToast = ref(false)
-
 const editToast = ref(false)
-
 const errorToast = ref(false)
-
 const fullName = ref('')
-
 const taskInsert = ref('')
-
 const taskEdit = ref('')
+const showModal = ref(false)
+const limitModal = ref(false)
+const confirmDelete = ref(false)
+const showModalDetail = ref(false)
+const confirmVisi = ref(false)
+const sortedTasks = ref([])
+const originalTasks = ref([])
+const sortOrder = ref('Default')
+const task = ref({
+  id: undefined,
+  title: '',
+  description: null,
+  assignees: null,
+  status: {
+    id: '1',
+    name: 'No Status',
+    description: 'A status has not been assigned',
+    color: '#ffffff',
+  },
+})
+const taskDetail = ref(null)
+const deleteTask = ref(null)
+const deleteIndex = ref(null)
+const newVisi = ref('')
+const visibility = ref('')
+const boardVisibility = ref('')
+const isAuthenticated = ref(false)
+const isOwner = ref(false)
+const writeAccess = ref(false)
+const readOnly = ref(false)
+const originalVisibility = ref('')
+const tasks = ref(props.tasks || [])
+const statuses = ref(props.statuses || [])
+const allTask = ref(new TaskManagement())
+const allStatuses = ref(new StatusManagement())
+const selectedStatusIds = ref([])
+const selectedStatusNames = ref([])
 
 const decoded = () => {
   const token = localStorage.getItem('accessToken')
@@ -71,45 +99,7 @@ const logout = () => {
   router.push('/login')
 }
 
-const sortedTasks = ref([])
-const originalTasks = ref([])
-const sortOrder = ref('Default')
 
-const tasks = ref(props.tasks || [])
-const statuses = ref(props.statuses || [])
-
-const allTask = ref(new TaskManagement())
-const allStatuses = ref(new StatusManagement())
-
-const showModal = ref(false)
-const limitModal = ref(false)
-const confirmDelete = ref(false)
-const showModalDetail = ref(false)
-const confirmVisi = ref(false)
-
-const task = ref({
-  id: undefined,
-  title: '',
-  description: null,
-  assignees: null,
-  status: {
-    id: '1',
-    name: 'No Status',
-    description: 'A status has not been assigned',
-    color: '#ffffff',
-  },
-})
-
-const taskDetail = ref(null)
-const deleteTask = ref(null)
-const deleteIndex = ref(null)
-const newVisi = ref('')
-const visibility = ref('')
-const boardVisibility = ref('')
-const isAuthenticated = ref(false)
-const isOwner = ref(false)
-const writeAccess = ref(false)
-const readOnly = ref(false)
 onMounted(async () => {
   const token = localStorage.getItem('accessToken')
   isAuthenticated.value = !!token
@@ -122,7 +112,6 @@ onMounted(async () => {
       return
     }
 
-
     boardVisibility.value = board.item.visibility
 
     // Check if the board is private and the user is not authenticated
@@ -132,7 +121,6 @@ onMounted(async () => {
       router.push('/login')
       return
     }
-
     if (props.tasks) {
       originalTasks.value = props.tasks
     }
@@ -182,7 +170,6 @@ onMounted(async () => {
   }
 })
 
-const selectedStatusIds = ref([])
 
 watch(
   () => props.tasks,
@@ -227,7 +214,7 @@ const toggleSortOrder = () => {
   filterAndSortTasks()
 }
 
-const selectedStatusNames = ref([])
+
 
 const updateSelectedStatusNames = (statusId) => {
   const status = props.statuses.find((s) => s.id === statusId)
@@ -453,7 +440,7 @@ const confChangeVisi = async (newVisi) => {
   }
   confirmVisi.value = false
 }
-const originalVisibility = ref('')
+
 const toggleVisibility = () => {
   originalVisibility.value = visibility.value
   newVisi.value = visibility.value === 'PRIVATE' ? 'PUBLIC' : 'PRIVATE'

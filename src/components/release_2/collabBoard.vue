@@ -8,7 +8,6 @@ import Succes from '../Succes.vue'
 import Delete from '../Delete.vue'
 import Error from '../Error.vue'
 import CollabModal from './collabModal.vue'
-import ChangeAccessRight from './EditDeleteModal.vue'
 import EditDeleteModal from './EditDeleteModal.vue'
 const props = defineProps({
   statuses: Array,
@@ -18,34 +17,27 @@ const props = defineProps({
   boardId: String,
   statusId: String
 })
+const router = useRouter()
+const deletedToast = ref(false)
+const successToast = ref(false)
+const errorToast = ref(false)
+const isAuthenticated = ref(false)
+const boardname = ref('')
+const ownerEmail = ref('')
+const collabModal = ref(false)
+const collab = ref([])
+const fullName = ref('')
+const readOnly = ref(false)
+const isOwner = ref(false)
+const deleteCollabModal = ref(false)
+const changeAccessModal = ref(false)
+const collabName = ref('')
+const currentAccessRight = ref('')
+const emailInsert = ref('')
+const collabOid = ref('')
 
 defineEmits(['addStatus'])
 
-const router = useRouter()
-
-const deletedToast = ref(false)
-
-const successToast = ref(false)
-
-const errorToast = ref(false)
-
-const isAuthenticated = ref(false)
-
-const boardname = ref('')
-
-const ownerEmail = ref('')
-
-const collabModal = ref(false)
-
-const collab = ref([])
-
-const fullName = ref('')
-
-const readOnly = ref(false)
-
-const isOwner = ref(false)
-
-const deleteCollabModal = ref(false)
 const decoded = () => {
   const token = localStorage.getItem('accessToken')
   if (token) {
@@ -94,7 +86,7 @@ const addCollabModal = () => {
   collabModal.value = true
 }
 
-const emailInsert = ref('')
+
 
 const saveCollab = async (newItem) => {
   emailInsert.value = newItem.email 
@@ -145,10 +137,7 @@ const saveCollab = async (newItem) => {
     collabModal.value = false;
   }
 };
-const changeAccessModal = ref(false)
 
-const collabName = ref('')
-const currentAccessRight = ref('')
 const changeAccess = (name, accessRight , oid) => {  
   collabName.value = name
   currentAccessRight.value = accessRight
@@ -199,7 +188,7 @@ const saveChange = async (newAccess) => {
 
 };
 
-const collabOid = ref('')
+
 
 const closeModal = () => {
   collabModal.value = false

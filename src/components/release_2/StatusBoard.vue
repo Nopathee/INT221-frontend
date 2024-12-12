@@ -1,6 +1,6 @@
 <script setup>
-import { defineProps, onMounted, ref, watch } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
+import { defineProps, onMounted, ref } from 'vue'
+import {  useRouter } from 'vue-router'
 import Edit from '../Edit.vue'
 import { StatusManagement } from '@/libs/StatusManagement'
 import {
@@ -32,45 +32,36 @@ const props = defineProps({
 defineEmits(['addStatus'])
 
 const router = useRouter()
-
 const statuses = ref(new StatusManagement())
-
 const insertStatus = ref('')
-
 const taskCount = ref(0)
-
 const statusEdit = ref('')
-
 const deletedToast = ref(false)
-
 const successToast = ref(false)
-
 const errorToast = ref(false)
-
 const deletedStatus = ref('')
-
 const statusNotFound = ref(false)
-
 const editToast = ref(false)
-
 const isAuthenticated = ref(false)
-
 const isOwner = ref(false)
-
 const writeAccess = ref(false)
-
 const readOnly = ref(false)
-
 const fullName = ref('')
-
 const status = ref({
   id: undefined,
   name: '',
   description: null,
   color: '#ffffff',
 })
-
-
+const statusToDelete = ref({
+  id: undefined,
+  name: '',
+  description: null,
+  color: null,
+})
+const transDelete = ref(false)
+const deleteModal = ref(false)
+const editModal = ref(false)
 
 const decoded = () => {
   const token = localStorage.getItem('accessToken')
@@ -110,14 +101,9 @@ const back = () => {
   router.push(`/board/${props.boardId}`)
 }
 
-const statusToDelete = ref({
-  id: undefined,
-  name: '',
-  description: null,
-  color: null,
-})
 
-const transDelete = ref(false)
+
+
 
 const deleteStatus = async (id) => {
   const status = await getItemById(
@@ -140,7 +126,7 @@ const deleteStatus = async (id) => {
   }
 }
 
-const deleteModal = ref(false)
+
 
 const confirmDelete = async (id) => {
   const status = await deleteItemById(
@@ -191,7 +177,7 @@ const transferStatus = async (id, newId) => {
   }
 }
 
-const editModal = ref(false)
+
 
 const editStatus = async (id) => {
   const item = await getItemById(
