@@ -51,63 +51,48 @@ const handlerLogin = async () => {
 
 <template>
   <section class="bg-gradient-to-r from-blue-500 to-indigo-600 min-h-screen flex items-center justify-center">
-    <div v-if="error"
-      class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4 shadow-lg transition-opacity duration-500"
-      role="alert">
-      <strong class="font-bold">Error:</strong>
-      <span class="block sm:inline">Username or Password is incorrect.</span>
-      <button @click="error = false" class="absolute top-0 right-0 p-2 text-red-500">
-        <i class="fas fa-times"></i>
-      </button>
-    </div>
     <div
       class="w-full max-w-md p-8 space-y-8 bg-white rounded-3xl shadow-2xl transform hover:scale-105 transition duration-500">
       <h2 class="text-4xl font-extrabold text-center text-gray-900 mb-4">Login</h2>
       <form class="space-y-6">
         <div>
           <label for="username" class="block text-lg font-semibold text-gray-700 mb-2">Username</label>
-          <div class="relative group">
-            <!-- ไอคอน Font Awesome -->
-            <span
-              class="absolute left-3 top-3 text-gray-400 transition-all duration-300 group-focus:-translate-y-1 group-hover:-translate-y-1">
+          <div class="relative">
+            <span class="absolute left-3 top-3 text-gray-400">
               <i class="fas fa-user"></i>
             </span>
-            <!-- ไอคอนรูปภาพ -->
-            <span
-              class="absolute inset-y-0 left-3 flex items-center transition-all duration-300 group-focus:-translate-y-1 group-hover:-translate-y-1">
+            <span class="absolute inset-y-0 left-3 flex items-center">
               <img src="../icon/user-svgrepo-com.svg" alt="User Icon" class="h-6 w-6" />
             </span>
             <input type="text" id="username" v-model="userName" placeholder="Enter your username"
-              class="pl-10 w-full h-12 text-base border rounded-lg shadow-inner bg-gradient-to-r from-gray-100 to-gray-200 hover:shadow-lg transform hover:-translate-y-1 focus:ring-2 focus:ring-green-300 transition-all duration-300 itbkk-username"
+              class="pl-10 w-full h-12 text-base border rounded-lg shadow-inner bg-gradient-to-r from-gray-100 to-gray-200 focus:ring-2 focus:ring-green-300 transition-all duration-300"
               required />
           </div>
         </div>
+
         <div>
           <label for="password" class="block text-lg font-semibold text-gray-700 mb-2">Password</label>
-          <div class="relative group">
-            <!-- ไอคอน Font Awesome -->
-            <span
-              class="absolute left-3 top-3 text-gray-400 transition-all duration-300 group-focus:-translate-y-1 group-hover:-translate-y-1">
+          <div class="relative">
+            <span class="absolute left-3 top-3 text-gray-400">
               <i class="fas fa-lock"></i>
             </span>
-            <!-- ไอคอนรูปภาพ -->
-            <span
-              class="absolute inset-y-0 left-3 flex items-center transition-all duration-300 group-focus:-translate-y-1 group-hover:-translate-y-1">
+            <span class="absolute inset-y-0 left-3 flex items-center">
               <img src="../icon/lock-closed-svgrepo-com.svg" alt="lock Icon" class="h-6 w-6" />
             </span>
-
             <input type="password" id="password" v-model="password" placeholder="Enter your password"
-              class="pl-10 w-full h-12 text-base border rounded-lg shadow-inner bg-gradient-to-r from-gray-100 to-gray-200 hover:shadow-lg transform hover:-translate-y-1 focus:ring-2 focus:ring-green-300 transition-all duration-300 itbkk-password"
+              class="pl-10 w-full h-12 text-base border rounded-lg shadow-inner bg-gradient-to-r from-gray-100 to-gray-200 focus:ring-2 focus:ring-green-300 transition-all duration-300"
               required />
           </div>
         </div>
+
         <button :disabled="isLoginDisabled" @click.prevent="handlerLogin"
-          class="w-full py-3 bg-gradient-to-r from-green-400 to-blue-500 text-white font-semibold rounded-xl shadow-lg hover:shadow-2xl transform hover:scale-105 transition duration-300 disabled:opacity-50 itbkk-button-signin">
+          class="w-full py-3 bg-gradient-to-r from-green-400 to-blue-500 text-white font-semibold rounded-xl shadow-lg hover:shadow-2xl transform hover:scale-105 transition duration-300 disabled:opacity-50">
           Sign in
         </button>
       </form>
     </div>
   </section>
 </template>
+
 
 <style scoped></style>
