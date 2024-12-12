@@ -14,8 +14,6 @@ const props = defineProps({
 })
 
 onMounted(() => {
-  console.log('Status:', props.status);
-  console.log('All Statuses:', props.allStatuses);
   getTimezone();
 
 });

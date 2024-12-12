@@ -12,7 +12,7 @@ const newCollab = computed(() => ({
 }))
 
 const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-console.log(props.email);
+
 
 const notvalidEmail = computed(() => {
   if (!newcollabEmail.value) {
@@ -26,7 +26,6 @@ const notvalidEmail = computed(() => {
 });
 
 
-console.log(newCollab);
 
 
 defineEmits(['addCollab', 'closeModal'])

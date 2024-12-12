@@ -19,8 +19,6 @@ const props = defineProps({
 })
 
 
-console.log(props.task)
-
 const formatterCreateOn = computed(() => {
   if (!props.task || !props.task.item.createdOn) return ''
   const createdOn = new Date(props.task.item.createdOn).toLocaleString('en-GB')

@@ -91,7 +91,6 @@ const router = createRouter({
               },
             });
             const data = await response.json();
-            console.log(data);
            if (data.accessRight === 'READ' || response.status === 403 ) {
               next('/access-denied');
             } else if (response.status === 200 || data.accessRight === 'WRITE') {
@@ -125,7 +124,6 @@ const router = createRouter({
               },
             });
             const data = await response.json();
-            console.log(data);
             
             if (data.accessRight === 'READ' || response.status === 403) {
               next('/access-denied');
@@ -161,14 +159,14 @@ const router = createRouter({
                 "Content-Type": "application/json",
               },
             });
-            console.log(response);
+ 
             
             if (response.status === 403) {
               next('/access-denied');
               return;
             }
             const data = await response.json();
-            console.log(data);
+
             
             if(data.visibility === 'PUBLIC' || data.accessRight === 'OWNER' || data.accessRight === 'READ' ){
               next()
@@ -221,13 +219,10 @@ const router = createRouter({
             },
           });
       
-          const data = await response.json()
-          console.log(data);
-          
+          const data = await response.json()         
           if(data.personalBoards.length > 0 && data.collabBoards.length > 0){
             next()
           } else if(data.personalBoards.length > 0 && data.collabBoards.length === 0 ) {
-            console.log(data)
             next(`/board/${data.personalBoards[0].id}`)
           } else if (data.personalBoards.length === 0 && data.collabBoards.length > 0) {
             next()
@@ -260,21 +255,11 @@ const router = createRouter({
               "Content-Type": "application/json",
             },
           });
-    
-          console.log(response);
-    
-  
           if (response.status === 403) {
             next('/access-denied');
             return;
           }
-    
-          // โหลดข้อมูลบอร์ด
           const boardData = await response.json();
-          console.log(boardData);
-          
-          console.log(boardData.visibility);
-    
           if (boardData.visibility === 'PUBLIC') {
             next();
           } else if (response.status === 404 || response.status == 401) {
@@ -310,7 +295,6 @@ const router = createRouter({
               next('/access-denied');
               return;
             }
-            console.log('Response status:', response.status);
             if (response.status === 404 || response.status == 401) {
               localStorage.removeItem('accessToken')
               next('/login')
@@ -411,10 +395,7 @@ const router = createRouter({
               next('/access-denied');
               return;
             }
-            const boardData = await response.json();
-            console.log(boardData.visibility)
-            console.log(boardData);
-            
+            const boardData = await response.json();          
             if (response.status === 404 || response.status == 401) {
               localStorage.removeItem('accessToken')
               next('/login')

@@ -29,10 +29,6 @@ const props = defineProps({
 
 })
 
-console.log(props)
-console.log(props.boardId)
-
-
 const emit = defineEmits([
   'openModal',
   'closeModal',
@@ -44,7 +40,6 @@ const emit = defineEmits([
 ])
 
 const boardName = ref('')
-console.log(boardName.value)
 
 const deletedToast = ref(false)
 
@@ -64,21 +59,16 @@ const decoded = () => {
   const token = localStorage.getItem('accessToken')
   if (token) {
     const decoded = jwtDecode(token)
-    console.log(decoded);
-
     fullName.value = decoded.name
-    console.log(fullName.value)
   } else {
     fullName.value = 'Guest'
   }
 }
 
 const logout = () => {
-  console.log("Logging out...")
   localStorage.removeItem('accessToken')
   localStorage.removeItem('refreshToken')
   router.push('/login')
-
 }
 
 const sortedTasks = ref([])
@@ -132,8 +122,7 @@ onMounted(async () => {
       return
     }
 
-    console.log(board)
-    console.log(board.item.visibility)
+
     boardVisibility.value = board.item.visibility
 
     // Check if the board is private and the user is not authenticated
@@ -166,38 +155,25 @@ onMounted(async () => {
         return
       }
 
-      console.log(board)
-      console.log(fullName.value)
-      console.log(board.board.owner.name);
-
       if (fullName.value === board.board.owner.name) {
         isOwner.value = true
       }
      
-   
-    console.log(board.board.accessRight);
       if(board.board.accessRight === 'READ'){
         readOnly.value = true
       } else if (board.board.accessRight === 'WRITE'){
         writeAccess.value = true
       }
-      console.log(writeAccess.value);
-      
+       
       boardName.value = board.board.boardName
       visibility.value = board.board.visibility
       isChecked.value = true
-
-      console.log(visibility.value)
-      console.log(boardName.value)
-
       // Add statuses and tasks
       allStatuses.value.addStatuses(status)
       allTask.value.addDtoTasks(items)
       tasks.value = items
       statuses.value = status
       sortedTasks.value = allTask.value.getTasks()
-
-      console.log(tasks.value)
     } else {
       console.error('Board ID is undefined')
     }
@@ -296,7 +272,6 @@ const addNewTask = () => {
 const showEdit = (taskToEdit) => {
   task.value = { ...taskToEdit }
   showModal.value = true
-  console.log(taskToEdit.id)
   router.push(`/board/${props.boardId}/task/${taskToEdit.id}/edit`)
 }
 
@@ -318,7 +293,6 @@ const closeModal = () => {
 }
 
 const saveTask = async (newTask) => {
-  console.log(newTask);
   if (!newTask.status || !newTask.status.id) {
     console.error("Status or status ID is undefined");
     return;
@@ -334,7 +308,6 @@ const saveTask = async (newTask) => {
     assignees: newTask.assignees,
     status: newTask.status.id,
   }
-  console.log(item);
 
   if (newTask.id === undefined) {
     const response = await addItem(
@@ -346,7 +319,6 @@ const saveTask = async (newTask) => {
       return; // จบการทำงานถ้า response เป็น null
     }
     taskInsert.value = newTask.title
-    console.log(response)
     allTask.value.addTask(
       response.id,
       response.title,
@@ -456,7 +428,6 @@ const confDelete = async () => {
       `${import.meta.env.VITE_API_ENDPOINT}/v3/boards/${props.boardId}/tasks`,
       deleteTask.value.item.id
     )
-    console.log(deleteTask.value.item.id)
     allTask.value.removeTask(deleteTask.value.item.id)
     tasks.value = tasks.value.filter((t) => t.id !== deleteTask.value.item.id)
     filterAndSortTasks()
@@ -469,12 +440,9 @@ const confDelete = async () => {
 const confChangeVisi = async (newVisi) => {
   const token = localStorage.getItem('accessToken')
   try {
-    console.log('New visibility:', newVisi)
     const response = await changeVisi(`${import.meta.env.VITE_API_ENDPOINT}/v3/boards/${props.boardId}`, token, newVisi)
     if (response && response.status === 200) {
       visibility.value = newVisi
-      console.log(response.status)
-      console.log(response.board)
     } else if(response.status === 403){
       alert('you do not have permission to change board visibility mode.')
     } else if (response.status === 500){
@@ -511,8 +479,6 @@ const goHome = () => {
   router.push('/board'); // เปลี่ยนเส้นทางไปยังหน้า boards
 };
 
-console.log(newVisi.value)
-console.log(task.value.status)
 </script>
 
 <template>

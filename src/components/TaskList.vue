@@ -59,8 +59,6 @@ const saveLimit = (limitNumber) => {
   limitModal.value = false
   successToast.value = true
   router.push('/task')
-  console.log(limitNumber)
-  console.log(successToast.value)
 }
 
 const cancelLimit = () => {

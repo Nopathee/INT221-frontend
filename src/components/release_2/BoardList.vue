@@ -38,14 +38,10 @@ const fetchBoards = async () => {
       },
     });
     const data = await response.json();
-    console.log(data);
-    
     // แยก personal boards และ collab boards
     personalBoards.value = data.personalBoards.sort((a, b) => new Date(a.created_on) - new Date(b.created_on)); // เรียงลำดับจากวันที่สร้าง
     collabBoards.value = data.collabBoards.sort((a, b) => new Date(a.added_on) - new Date(b.added_on)); // เรียงลำดับจากวันที่เพิ่ม
-    console.log(data);
     boardData.value = data
-    console.log(personalBoards.value);
     showPersonalboard.value = data.personalBoards && data.personalBoards.length > 0;
     showCollabBoard.value = data.collabBoards && data.collabBoards.length > 0;
 
@@ -73,7 +69,6 @@ const findCollabOid = (collaborators, fullname) => {
   if (collab) {
     return collab.oid;
   } else {
-    console.log('Collaborator not found.');
     return null;
   }
 };
@@ -84,22 +79,13 @@ const leaveBoard = async () => {
     console.error("No access token found");
     return;
   }
-  console.log(leaveOid.value);
-  console.log(leaveBoardId.value);
-
-  
-  
   try {
     // ใช้ DELETE method สำหรับการออกจาก board
     const response = await deleteItemById(`${import.meta.env.VITE_API_ENDPOINT}/v3/boards/${leaveBoardId.value}/collabs`, leaveOid.value )
-
-    console.log(response);
-    
     if (response === 200) {
       // ทำการอัพเดต collabBoards หลังจากออกจาก board
       collabBoards.value = collabBoards.value.filter(board => board.id !== leaveBoardId.value);
       leaveBoardModal.value = false
-      console.log(`Successfully left the board with ID: ${leaveBoardId.value}`);
       alert(`Successfully left the board with ID: ${leaveBoardId.value}`)
     } else {
       console.error("Error leaving the board:", response);
@@ -124,22 +110,11 @@ const showLeaveModal = async (boardId , name , boardName) => {
     return;
   }
   leaveBoardName.value = boardName
-  console.log(leaveBoardName.value);
-  
-
   leaveBoardModal.value = true
-  console.log(leaveBoardModal.value);
   const fullName = name
   const collaborators = await getCollabs(`${import.meta.env.VITE_API_ENDPOINT}/v3/boards/${boardId}/collabs`, token);
-  console.log(collaborators);
   const collabOid = findCollabOid(collaborators.showCollabDTOS, fullName);
-  console.log(fullName);
-  console.log(boardData.value.collabBoards);
-  
   const selectedBoardId = findBoardIdByName(boardData.value.collabBoards, boardName)
-  console.log(selectedBoardId);
-  
-  console.log(collabOid);
   leaveBoardId.value = selectedBoardId
   leaveOid.value = collabOid
 }
@@ -154,38 +129,26 @@ const closeModal = () => {
 }
 
 const findBoardIdByName = (boardData, boardName) => {
-  console.log(boardData);
-  console.log(boardName);
-
-  
   const board = boardData.find((board) => board.boardName === boardName);
   return board ? board.id : null; 
 };
 
 const closeModalLeave = () => {
-  leaveBoardModal.value = false
-  console.log('test');
-  
+  leaveBoardModal.value = false  
 }
 
 const createBoard = async () => {
   const token = localStorage.getItem('accessToken')
-  console.log(token)
   try {
-    console.log(boardName.value)
     const response = await createNewBoard(`${import.meta.env.VITE_API_ENDPOINT}/v3/boards`, token, boardName.value)
-    console.log(response.status)
     if (response.status === 201) {
       const newBoard = response.board
-      console.log(newBoard.name)
-      console.log(newBoard)
       if (newBoard) {
         router.push({
           name: 'emptyboard',
           params: { boardId: newBoard.id },
         })
       }
-      console.log(newBoard.value)
     } else if (response.status === 401) {
       console.error('Unauthorized, redirecting to login');
       router.push('/login');

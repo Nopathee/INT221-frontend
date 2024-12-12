@@ -9,17 +9,12 @@ async function login(url, user) {
       },
       body: JSON.stringify(user),
     })
-    console.log(JSON.stringify(user))
-    console.log(response)
-
     if (response.status === 401) {
       console.error('Unauthorized, redirecting to login');
-      router.push('/login'); // Redirect to login if unauthorized
-      return { status: 401, error: 'Unauthorized' }; // Return 401 status
+      router.push('/login');
+      return { status: 401, error: 'Unauthorized' }; 
     }
     const data = await response.json()
-    console.log(data)
-    console.log(data.refresh_token)
     return {
       status: response.status,
       token: data.access_token,
@@ -54,7 +49,6 @@ async function getUserBoard(url, token) {
     }
 
     const data = await response.json()
-    console.log('Fetched user board:', data)
     if (data && data.id) {
       return {
         status: response.status,
@@ -84,7 +78,7 @@ async function createNewBoard(url, token, boardName) {
         body: JSON.stringify({ name: boardName }), 
       })
   
-      console.log('Create board response:', response)
+   
 
    
       if (!response.ok) {
@@ -93,7 +87,6 @@ async function createNewBoard(url, token, boardName) {
   
       const data = await response.json() 
       console.log('Created board:', data)
-  
       return {
         status: response.status,
         board: data, 
@@ -115,7 +108,6 @@ async function changeVisi(url, token , visibility) {
       },
       body: JSON.stringify({visibility:visibility}), 
     })
-    console.log('Change Visibility response:', response)
 
     if (!response.ok) {
       return {
@@ -158,7 +150,7 @@ async function getAllUsers(url, token) {
 
 async function addCollab(url, items) {
   let token = localStorage.getItem('accessToken')
-  console.log(token)
+
   if(token){
     try {
       let res = await fetch(url, {
@@ -169,7 +161,7 @@ async function addCollab(url, items) {
         },
         body: JSON.stringify(items),
       })
-      console.log(res);
+
       
       if(res.status === 401){
         const refreshToken = localStorage.getItem('refreshToken');
@@ -179,15 +171,11 @@ async function addCollab(url, items) {
             'Authorization': `Bearer ${refreshToken}`,
           }
         })
-        console.log('Add collab response:', response)
         if(response.ok){
           const newacccessToken = await response.json()
           const newToken = newacccessToken.access_token
-          console.log(newToken);
           localStorage.setItem('accessToken', newToken);
           token = newToken;
-          console.log(token)
-
           res = await fetch(url, {
             method: 'POST',
             headers: {
@@ -202,12 +190,8 @@ async function addCollab(url, items) {
           router.push('/login')
         }
 
-      }
-      console.log(res)
-      console.log(JSON.stringify(items));
-      
+      }     
       const data = await res.json() 
-      console.log('Add Collab:', data)
       return {
         status: res.status,
         collab: data, 
@@ -256,7 +240,6 @@ async function changeAccessRight(url , newCollab) {
       },
       body: JSON.stringify({accessRight:newCollab.accessRight}), 
     })
-    console.log('Change accessRight response:', res)
 
     if(res.status === 401){
       const refreshToken = localStorage.getItem('refreshToken');
@@ -266,15 +249,11 @@ async function changeAccessRight(url , newCollab) {
           Authorization: `Bearer ${refreshToken}`, 
         },
       })
-      console.log('Change accessRight response:', response)
       if(response.ok){
         const newacccessToken = await response.json()
         const newToken = newacccessToken.access_token
-        console.log(newToken);
         localStorage.setItem('accessToken', newToken);
         token = newToken;
-        console.log(token)
-
         res = await fetch(url, {
           method: 'PATCH',
           headers: {
@@ -292,7 +271,6 @@ async function changeAccessRight(url , newCollab) {
     }
     const data = await res.json() 
     console.log('Changed accessRight:', data)
-
     return {
       status: res.status,
       accessRight: data, 

@@ -49,11 +49,8 @@ const deleteCollabModal = ref(false)
 const decoded = () => {
   const token = localStorage.getItem('accessToken')
   if (token) {
-    const decoded = jwtDecode(token)
-    console.log(decoded);
-    
+    const decoded = jwtDecode(token)  
     fullName.value = decoded.name
-    console.log(fullName.value)
   } else {
     fullName.value = 'Guest'
   }
@@ -78,18 +75,11 @@ onMounted(async () => {
       }
   // ดึงข้อมูล board
   const board = await getItemById(`${import.meta.env.VITE_API_ENDPOINT}/v3/boards`, props.boardId);
-  console.log(board);
   boardname.value = board.item.boardName;
   ownerEmail.value = board.item.owner.email
-  console.log(ownerEmail.value);
-  
   // ดึงข้อมูล collaborators
-  const collaborators = await getCollabs(`${import.meta.env.VITE_API_ENDPOINT}/v3/boards/${props.boardId}/collabs`, token);
-  console.log(collaborators);
-  
+  const collaborators = await getCollabs(`${import.meta.env.VITE_API_ENDPOINT}/v3/boards/${props.boardId}/collabs`, token); 
   collab.value = collaborators.showCollabDTOS;
-  console.log(collab.value);
-
 });
 
 
@@ -107,10 +97,7 @@ const addCollabModal = () => {
 const emailInsert = ref('')
 
 const saveCollab = async (newItem) => {
-  console.log(newItem);
-  emailInsert.value = newItem.email
-  console.log(emailInsert.value);
-  
+  emailInsert.value = newItem.email 
   const item = {
     email: newItem.email,
     accessRight: newItem.accessRight,
@@ -120,16 +107,12 @@ const saveCollab = async (newItem) => {
     const response = await addCollab(
       `${import.meta.env.VITE_API_ENDPOINT}/v3/boards/${props.boardId}/collabs`, item
     );
-    console.log(response);
+
 
     if (response.status === 201) {
       // สถานะ 201: เพิ่มสำเร็จ ปิด modal และอัปเดตตาราง
       collabModal.value = false;
-      console.log("Before setting successToast:", successToast.value);
-      successToast.value = true; // เปลี่ยนค่าให้ Toast แสดงผล
-      console.log("After setting successToast:", successToast.value);
-      console.log(collab.value);
-      
+      successToast.value = true; // เปลี่ยนค่าให้ Toast แสดงผล      
       // อัปเดต collab ด้วยข้อมูลใหม่ที่ได้จาก API
       collab.value = response.collab.collaborators.map(collaborator => ({
       oid: collaborator.oid,
@@ -138,7 +121,6 @@ const saveCollab = async (newItem) => {
       access_right: collaborator.access_right,
       added_on: collaborator.added_on,
     }));
-    console.log(collab.value);
       setTimeout(() => {
         successToast.value = false;
       }, 3000);
@@ -168,18 +150,15 @@ const changeAccessModal = ref(false)
 const collabName = ref('')
 const currentAccessRight = ref('')
 const changeAccess = (name, accessRight , oid) => {  
-  console.log('Change Access for:', name, 'Current Access Right:', accessRight , 'Owner Id:' , oid);
   collabName.value = name
   currentAccessRight.value = accessRight
   changeAccessModal.value = true
   collabOid.value = oid
-  console.log('Change Access for:', collabName.value, 'Current Access Right:', currentAccessRight.value , 'Owner Id:' , collabOid.value);
 }
 
 
 const saveChange = async (newAccess) => {
 
-  console.log(newAccess);
   
   try {
     // ส่งข้อมูลไปยัง API
@@ -187,13 +166,10 @@ const saveChange = async (newAccess) => {
       `${import.meta.env.VITE_API_ENDPOINT}/v3/boards/${props.boardId}/collabs/${newAccess.collabOid}`,
       newAccess
     );
-    console.log(response);
+
     
     // ตรวจสอบสถานะการตอบกลับจาก API
     if (response.status === 200) {
-      // ถ้าการบันทึกสำเร็จ ให้ปิด modal และแสดงข้อความสำเร็จ
-      console.log("Access right updated successfully");
-      console.log(collab.value);
       changeAccessModal.value = false;
 
       // อัปเดตข้อมูลของ collab โดยตรง
@@ -206,7 +182,6 @@ const saveChange = async (newAccess) => {
         collabToUpdate.access_right = updatedCollab.accessRight;  // อัปเดตข้อมูล access_right
       }
 
-      console.log(collab.value);
       
       alert('Access rights updated successfully!');
     }else if (response.status === 401) {
@@ -219,12 +194,9 @@ const saveChange = async (newAccess) => {
       collabModal.value = false;
     }
   } catch (error) {
-    // จัดการข้อผิดพลาดที่อาจเกิดขึ้นในระหว่างการเรียก API
     console.error('Error in saveChange:', error);
   }
 
-  // ล็อกค่า newAccess
-  console.log(newAccess);
 };
 
 const collabOid = ref('')
@@ -236,15 +208,11 @@ const closeModal = () => {
   router.push(`/board/${props.boardId}/collab`)
 }
 
-watch(emailInsert,(newEmail) => {
-  console.log(newEmail);
-  
+watch(emailInsert,() => {
 }) 
 
 
-
-watch(collab,(newAccess) => {
-  console.log(newAccess);
+watch(collab,() => {
 })
 
 
@@ -252,7 +220,6 @@ const removeCollab = (oid , name) => {
   deleteCollabModal.value = true
   collabName.value = name
   collabOid.value = oid
-  console.log('Change Access for:', collabName.value, 'Current Access Right:', currentAccessRight.value , 'Owner Id:' , collabOid.value);
 }
 
 const confirmRemove = async (removeCollab) => {
@@ -262,15 +229,10 @@ const confirmRemove = async (removeCollab) => {
       `${import.meta.env.VITE_API_ENDPOINT}/v3/boards/${props.boardId}/collabs`,
       removeCollab
     );
-    console.log(response);
-    
-
     if (response === 200) {
 
       collab.value = collab.value.filter(c => c.oid !== removeCollab);
-      console.log(collab.value);
       deleteCollabModal.value = false;
-
 
       alert('Delete collaborator successfully!');
     } else if (response === 401) {

@@ -76,9 +76,7 @@ const decoded = () => {
   const token = localStorage.getItem('accessToken')
   if (token) {
     const decoded = jwtDecode(token)
-    console.log(decoded);
     fullName.value = decoded.name
-    console.log(fullName.value)
   } else {
     fullName.value = 'Guest'
   }
@@ -90,7 +88,6 @@ onMounted(async () => {
   const items = await getItems(
     `${import.meta.env.VITE_API_ENDPOINT}/v3/boards/${props.boardId}/statuses`
   )
-  console.log(items)
   statuses.value.addStatuses(items)
   const board = await getUserBoard(
         `${import.meta.env.VITE_API_ENDPOINT}/v3/boards/${props.boardId}`, token
@@ -123,7 +120,6 @@ const statusToDelete = ref({
 const transDelete = ref(false)
 
 const deleteStatus = async (id) => {
-  console.log(id)
   const status = await getItemById(
     `${import.meta.env.VITE_API_ENDPOINT}/v3/boards/${props.boardId}/statuses`,
     id
@@ -132,7 +128,6 @@ const deleteStatus = async (id) => {
     `${import.meta.env.VITE_API_ENDPOINT}/v3/boards/${props.boardId}/tasks`
   )
   const task = allTask.filter((task) => task.status.id === status.item.id)
-  console.log(status.item.name)
   deletedStatus.value = status.item.name
 
   taskCount.value = task.length

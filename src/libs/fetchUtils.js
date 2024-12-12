@@ -10,7 +10,6 @@ async function getItems(url) {
     })
     if(data.status === 200){
       const items = await data.json()
-      console.log('Task data:', items);
       return items
     } else if (data.status === 401) {
       localStorage.removeItem('accessToken');
@@ -26,7 +25,6 @@ async function getItems(url) {
 }
 
 async function getItemById(url, id) {
-  console.log(url)
   const token = localStorage.getItem('accessToken')
   try {
     const data = await fetch(`${url}/${id}`,{
@@ -37,7 +35,6 @@ async function getItemById(url, id) {
       }
     })
     const item = await data.json()
-    console.log(`item: ${item}`)
     return {item:item , status: data.status}
   } catch (error) {
     console.log(`error: ${error}`)
@@ -46,9 +43,7 @@ async function getItemById(url, id) {
 }
 
 async function addItem(url, item) {
-  console.log(url)
   let token = localStorage.getItem('accessToken')
-  console.log(token)
   if(token){
     try {
       let res = await fetch(url, {
@@ -58,9 +53,7 @@ async function addItem(url, item) {
           'Authorization': `Bearer ${token}`,
         },
         body: JSON.stringify(item),
-      })
-      console.log(res);
-      
+      }) 
       if(res.status === 401){
         const refreshToken = localStorage.getItem('refreshToken');
         const response = await fetch(`${import.meta.env.VITE_API_ENDPOINT}/token`, {
@@ -69,15 +62,11 @@ async function addItem(url, item) {
             'Authorization': `Bearer ${refreshToken}`,
           }
         })
-        console.log(response);
         if(response.ok){
           const newacccessToken = await response.json()
           const newToken = newacccessToken.access_token
-          console.log(newToken);
           localStorage.setItem('accessToken', newToken);
           token = newToken;
-          console.log(token)
-
           res = await fetch(url, {
             method: 'POST',
             headers: {
@@ -92,10 +81,7 @@ async function addItem(url, item) {
           router.push('/login')
         }
 
-      }
-      console.log(res)
-      console.log(JSON.stringify(item));
-      
+      }     
       const addedItem = await res.json()
       return addedItem
     } catch (error) {
@@ -106,7 +92,6 @@ async function addItem(url, item) {
 }
 
 async function deleteItemById(url, id) {
-  console.log(`${url}/${id}`)
   let token = localStorage.getItem('accessToken')
   try {
     let res = await fetch(`${url}/${id}`, {
@@ -124,15 +109,11 @@ async function deleteItemById(url, id) {
           'Authorization': `Bearer ${refreshToken}`,
         }
       })
-      console.log('Delete collab response:', response)
       if(response.ok){
         const newacccessToken = await response.json()
         const newToken = newacccessToken.access_token
-        console.log(newToken);
         localStorage.setItem('accessToken', newToken);
         token = newToken;
-        console.log(token)
-
         res = await fetch(`${url}/${id}`, {
           method: 'DELETE',
           headers: {
